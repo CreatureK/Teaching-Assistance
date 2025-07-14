@@ -1,0 +1,11 @@
+{
+    "courseContent": [
+        {
+            "courseTitle": "<课程标题>",
+            "keyTeachingContent": "<教学重点内容>",
+            "credit": "<学分>",
+            "creditHour": "<学时>",
+            "request": "<制作要求>"
+        }
+    ]
+}

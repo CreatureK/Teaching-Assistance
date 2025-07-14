@@ -1,0 +1,34 @@
+2025-04-18 17:02:31 - INFO - Pika version 1.3.2 connecting to ('24.233.0.18', 5671)
+2025-04-18 17:02:31 - INFO - Socket connected: <socket.socket fd=1096, family=2, type=1, proto=6, laddr=('192.168.41.18', 9673), raddr=('24.233.0.18', 5671)>
+2025-04-18 17:02:31 - INFO - SSL handshake completed successfully: <ssl.SSLSocket fd=1096, family=2, type=1, proto=0, laddr=('192.168.41.18', 9673), raddr=('24.233.0.18', 5671)>
+2025-04-18 17:02:31 - INFO - Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncSSLTransport object at 0x0000024095E67830>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncSSLTransport object at 0x0000024095E67830> params=<ConnectionParameters host=me.kldrgon.com port=5671 virtual_host=/ ssl=True>>).
+2025-04-18 17:02:31 - INFO - AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncSSLTransport object at 0x0000024095E67830> params=<ConnectionParameters host=me.kldrgon.com port=5671 virtual_host=/ ssl=True>>
+2025-04-18 17:02:31 - INFO - AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncSSLTransport object at 0x0000024095E67830> params=<ConnectionParameters host=me.kldrgon.com port=5671 virtual_host=/ ssl=True>>
+2025-04-18 17:02:31 - INFO - Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncSSLTransport object at 0x0000024095E67830> params=<ConnectionParameters host=me.kldrgon.com port=5671 virtual_host=/ ssl=True>>
+2025-04-18 17:02:31 - INFO - Created channel=1
+2025-04-18 17:02:31 - INFO - 课程序号：CS101
+2025-04-18 17:02:31 - INFO - 课程标题：微积分基础
+2025-04-18 17:02:31 - INFO - 授课语言：中文
+2025-04-18 17:02:31 - INFO - 课程学分：4
+2025-04-18 17:02:31 - INFO - 课程学时：64
+2025-04-18 17:02:31 - INFO - 课程大纲导入成功
+2025-04-18 17:02:31 - INFO - 用户需求导入成功
+2025-04-18 17:02:31 - INFO - 知识点模板导入成功
+2025-04-18 17:02:31 - INFO - Prompt导入成功
+2025-04-18 17:02:31 - INFO - 开始调用大模型生成知识点，请耐心等待...
+2025-04-18 17:02:59 - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2025-04-18 17:02:59 - INFO - 知识点生成完成，正在保存文件...
+2025-04-18 17:02:59 - INFO - 知识点已成功保存到: D:\大创代码\llm_git\edu_agent\output\knowledge_of_chapter\knowledge_point.json
+2025-04-18 17:03:17 - INFO - 课程序号：CS101
+2025-04-18 17:03:17 - INFO - 课程标题：微积分基础
+2025-04-18 17:03:17 - INFO - 授课语言：中文
+2025-04-18 17:03:17 - INFO - 课程学分：4
+2025-04-18 17:03:17 - INFO - 课程学时：64
+2025-04-18 17:03:17 - INFO - 课程大纲导入成功
+2025-04-18 17:03:17 - INFO - 用户需求导入成功
+2025-04-18 17:03:17 - INFO - 知识点模板导入成功
+2025-04-18 17:03:17 - INFO - Prompt导入成功
+2025-04-18 17:03:17 - INFO - 开始调用大模型生成知识点，请耐心等待...
+2025-04-18 17:04:05 - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2025-04-18 17:04:05 - INFO - 知识点生成完成，正在保存文件...
+2025-04-18 17:04:05 - INFO - 知识点已成功保存到: D:\大创代码\llm_git\edu_agent\output\knowledge_of_chapter\knowledge_point.json

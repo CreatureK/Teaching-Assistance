@@ -1,0 +1,11 @@
+{
+    "initialSyllabus": [
+        {
+            "courseTitle": "<课程标题>",
+            "teachingContent": "<教学内容>",
+            "keyTeachingContent": "<教学重点内容>",
+            "creditHours": "<学时>",
+            "request": "<用户修改要求>"
+        }
+    ]
+}

@@ -1,0 +1,74 @@
+{
+  "course_title": "<此处填写本课程的课程标题>",
+  "chapters": [
+    {
+      "unitNumber": "1",
+      "unitName": "<大章节>",
+      "unitGoal": "<此处填写大章节1的总教学目标>",
+      "subChapters": [
+        {
+          "subNumber": "<小章节序号>",
+          "subName": "<小章节>",
+          "subContent": "<此处填写小章节1.1的教学内容>",
+          "subGoal": "<此处填写小章节1.1的教学目标>"
+        },
+        {
+          "subNumber": "<小章节序号>",
+          "subName": "<小章节>",
+          "subContent": "<此处填写小章节1.2的教学内容>",
+          "subGoal": "<此处填写小章节1.2的教学目标>"
+        },
+        {
+          "subNumber": "<小章节序号>",
+          "subName": "<小章节>",
+          "subContent": "<此处填写小章节1.3的教学内容>",
+          "subGoal": "<此处填写小章节1.3的教学目标>"
+        }
+      ]
+    },
+    {
+      "unitNumber": "2",
+      "unitName": "<大章节2>",
+      "unitGoal": "<此处填写大章节2的总教学目标>",
+      "subChapters": [
+        {
+          "subName": "<小章节2.1>",
+          "subContent": "<此处填写小章节2.1的教学内容>",
+          "subGoal": "<此处填写小章节2.1的教学目标>"
+        },
+        {
+          "subName": "<小章节2.2>",
+          "subContent": "<此处填写小章节2.2的教学内容>",
+          "subGoal": "<此处填写小章节2.2的教学目标>"
+        },
+        {
+          "subName": "<小章节2.3>",
+          "subContent": "<此处填写小章节2.3的教学内容>",
+          "subGoal": "<此处填写小章节2.3的教学目标>"
+        }
+      ]
+    },
+    {
+      "unitNumber": "3",
+      "unitName": "<大章节3>",
+      "unitGoal": "<此处填写大章节3的总教学目标>",
+      "subChapters": [
+        {
+          "subName": "<小章节3.1>",
+          "subContent": "<此处填写小章节3.1的教学内容>",
+          "subGoal": "<此处填写小章节3.1的教学目标>"
+        },
+        {
+          "subName": "<小章节3.2>",
+          "subContent": "<此处填写小章节3.2的教学内容>",
+          "subGoal": "<此处填写小章节3.2的教学目标>"
+        },
+        {
+          "subName": "<小章节3.3>",
+          "subContent": "<此处填写小章节3.3的教学内容>",
+          "subGoal": "<此处填写小章节3.3的教学目标>"
+        }
+      ]
+    }
+  ]
+}

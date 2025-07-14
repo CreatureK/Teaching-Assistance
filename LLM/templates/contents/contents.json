@@ -1,0 +1,28 @@
+{
+  "chapters": [
+    {
+      "unitName": "<大章节>",
+      "subChapters": [
+        {"subName": "<小章节>"},
+        {"subName": "<小章节>"},
+        {"subName": "<小章节>"}
+      ]
+    },
+    {
+      "unitName": "<大章节>",
+      "subChapters": [
+        {"subName": "<小章节>"},
+        {"subName": "<小章节>"},
+        {"subName": "<小章节>"}
+      ]
+    },
+    {
+      "unitName": "<大章节>",
+      "subChapters": [
+        {"subName": "<小章节>"},
+        {"subName": "<小章节>"},
+        {"subName": "<小章节>"}
+      ]
+    }
+  ]
+}
