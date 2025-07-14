@@ -1,0 +1,110 @@
+{
+  "teachingContentAndSchedule": [
+    {
+      "content": "<此处填写课程大章节内容>",
+      "unit_time_allocation": "<此处填写大章节学时分配>",
+      "subsections": [
+        {
+          "content": "<此处填写课程小章节内容>",
+          "details": [
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            },
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            }
+          ]
+        },
+        {
+          "content": "<此处填写课程小章节内容>",
+          "details": [
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            },
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            },
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            }
+          ]
+        },
+        {
+          "content": "<此处填写课程小章节内容>",
+          "details": [
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            },
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            },
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "content": "<此处填写课程大章节内容>",
+      "unit_time_allocation": "4学时",
+      "subsections": [
+        {
+          "content": "<此处填写课程小章节内容>",
+          "details": [
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            },
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            }
+          ]
+        },
+        {
+          "content": "<此处填写课程小章节内容>",
+          "details": [
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            },
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            },
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            },
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            }
+          ]
+        },
+        {
+          "content": "<此处填写课程小章节内容>",
+          "details": [
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            },
+            {
+              "knowledge_point": "<此处填写本小节独立的知识点>",
+              "time_allocation": "<此处填写知识点学时分配>"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

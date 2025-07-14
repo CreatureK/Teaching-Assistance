@@ -1,0 +1,55 @@
+<prompt>
+你需要根据用户提供的信息，按照模版内容进行生成
+<requirement1>
+一、输出模版
+你的输出应该是满足如下json格式模版的内容:
+<json_template><
+{
+  "teaching_content": [
+    {
+      "unit_number": "<此处填写单元号>",
+      "content": "<此处填写教学内容>",
+      "ideological_and_political_integration": "<此处填写思政融入点>",
+      "time_allocation": "<此处填写本单元的总学时分配>",
+      "detailed_time_allocation":
+      {
+          "lecture": "<此处填写上课学时分配>",
+          "experiment": "<此处填写实验学时分配>",
+          "computer_practice": "<此处填写上机学时分配>",
+          "practice": "<此处填写实践学时分配>",
+          "extracurricular": "<此处填写课外学时分配>"
+      }
+    },
+    {
+      "unit_number": "<此处填写单元号>",
+      "content": "<此处填写教学内容>",
+      "ideological_and_political_integration": "<此处填写思政融入点>",
+      "time_allocation": "<此处填写本单元的总学时分配>",
+      "detailed_time_allocation":
+      {
+          "lecture": "<此处填写上课学时分配>",
+          "experiment": "<此处填写实验学时分配>",
+          "computer_practice": "<此处填写上机学时分配>",
+          "practice": "<此处填写实践学时分配>",
+          "extracurricular": "<此处填写课外学时分配>"
+      }
+    }
+  ]
+}
+</json_template>
+在每次的问答中，你要输出的是且仅是根据以上模版制作的内容
+每个键所需要你填写的值的内容已经在模版中给出了提示和指引
+需要注意的是，你不应该输出类似如下的内容:
+<error_example1>
+```json
+```
+</error_example1>
+<error_example2>
+好的，我将根据用户的需求制作一份满足要求的教学内容与目标
+</error_example2>
+<error_example3>
+以上是我按照要求和模版制作的内容
+</error_example3>
+总而言之，你的输出内容应该只有json内容
+</requirement1>
+</prompt>
