@@ -9,9 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.17"
+    "element-plus": "^2.10.4",
+    "vue": "^3.5.17",
+    "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@stagewise-plugins/vue": "^0.5.2",
+    "@stagewise/toolbar-vue": "^0.5.2",
+    "@types/node": "^24.0.13",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/tsconfig": "^0.7.0",
     "typescript": "~5.8.3",
