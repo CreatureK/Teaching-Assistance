@@ -1,8 +1,8 @@
-package com.java_web.backend.service;
+package com.java_web.backend.Service;
 
-import com.java_web.backend.config.OpenAIConfig;
-import com.java_web.backend.entity.SyllabusRequest;
-import com.java_web.backend.utils.HttpUtil;
+import com.java_web.backend.Config.OpenAIConfig;
+import com.java_web.backend.Entity.SyllabusRequest;
+import com.java_web.backend.Utils.HttpUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

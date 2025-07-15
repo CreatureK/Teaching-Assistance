@@ -1,8 +1,8 @@
-package com.java_web.backend.service;
+package com.java_web.backend.Service;
 
-import com.java_web.backend.config.OpenAIConfig;
-import com.java_web.backend.entity.IntroductionRequest;
-import com.java_web.backend.utils.HttpUtil;
+import com.java_web.backend.Config.OpenAIConfig;
+import com.java_web.backend.Entity.IntroductionAndTargetRequest;
+import com.java_web.backend.Utils.HttpUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class LLMIntroductionAndTargetService {
     @Autowired
     private OpenAIConfig openAIConfig;
 
-    public String generateIntroductionAndTarget(IntroductionRequest req) {
+    public String generateIntroductionAndTarget(IntroductionAndTargetRequest req) throws IOException {
         String prompt = PromptUtil.readPrompt("prompt/introduction_and_target/prompt_for_introduction_and_target.txt");
         JSONObject body = new JSONObject();
         body.put("model", openAIConfig.getModelName());
