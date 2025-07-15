@@ -1,4 +1,4 @@
-package com.java_web.backend.utils;
+package com.java_web.backend.Utils;
 
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;

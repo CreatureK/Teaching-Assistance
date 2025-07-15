@@ -1,12 +1,16 @@
-package com.java_web.backend.controller;
+package com.java_web.backend.Controller;
 
-import com.java_web.backend.entity.IntroductionRequest;
-import com.java_web.backend.entity.SyllabusRequest;
-import com.java_web.backend.service.LLMIntroductionService;
-import com.java_web.backend.service.LLMSyllabusService;
+import com.java_web.backend.Entity.IntroductionAndTargetRequest;
+import com.java_web.backend.Entity.LectureRequest;
+import com.java_web.backend.Entity.SyllabusRequest;
+import com.java_web.backend.Service.LLMIntroductionAndTargetService;
+import com.java_web.backend.Service.LLMLectureService;
+import com.java_web.backend.Service.LLMSyllabusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 /**
  * LLMController 控制器
@@ -16,9 +20,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/llm")
 public class LLMController {
     @Autowired
-    private LLMIntroductionService introductionService;
+    private LLMIntroductionAndTargetService introductionService;
     @Autowired
     private LLMSyllabusService syllabusService;
+    @Autowired
+    private LLMLectureService lectureService;
 
     /**
      * 生成课程介绍和教学目标
@@ -26,7 +32,7 @@ public class LLMController {
      * @return 由大模型生成的课程介绍和教学目标内容
      */
     @PostMapping("/introduction_and_target")
-    public ResponseEntity<String> generateIntroduction(@RequestBody IntroductionRequest req) {
+    public ResponseEntity<String> generateIntroductionAndTarget(@RequestBody IntroductionAndTargetRequest req) throws IOException {
         String result = introductionService.generateIntroductionAndTarget(req);
         return ResponseEntity.ok(result);
     }
@@ -39,6 +45,12 @@ public class LLMController {
     @PostMapping("/syllabus")
     public ResponseEntity<String> generateSyllabus(@RequestBody SyllabusRequest req) {
         String result = syllabusService.generateInitialSyllabus(req);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("lecture")
+    public ResponseEntity<String> generateLecture(@RequestBody LectureRequest req) throws IOException {
+        String result = lectureService.generateLecture(req);
         return ResponseEntity.ok(result);
     }
 } 

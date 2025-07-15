@@ -1,4 +1,4 @@
-package com.java_web.backend.config;
+package com.java_web.backend.Config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

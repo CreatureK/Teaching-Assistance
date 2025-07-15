@@ -4,25 +4,10 @@ from core.text_read import TextReader
 from pathlib import Path
 import re
 from concurrent.futures import ThreadPoolExecutor
-import logging
-from datetime import datetime
 
 # 获取项目根目录
 current_dir = Path(__file__).parent
 project_root = current_dir.parent
-
-# 设置日志记录
-log_dir = Path(project_root / "log_information/lecture")
-log_dir.mkdir(parents=True, exist_ok=True)  # 确保日志目录存在
-log_filename = log_dir / f"lecture_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
-logging.basicConfig(
-    filename=log_filename,
-    filemode='a',
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    encoding='utf-8'
-)
 
 class LectureMaterialGenerator:
     def __init__(self, knowledge_hierarchy_data):
@@ -41,14 +26,6 @@ class LectureMaterialGenerator:
 
         # 使用传入的知识点数据
         self.knowledge_hierarchy = self._parse_knowledge_hierarchy(knowledge_hierarchy_data)
-
-        # 加载提示模板
-        self.prompt_path = project_root / "prompt/lecture/prompt_for_lecture_generation.txt"
-        self.prompt_template = TextReader(self.prompt_path).read()
-
-        # 加载用户额外要求
-        self.user_request_path = project_root / "input/lecture/request_for_teaching_material.txt"
-        self.user_request = TextReader(self.user_request_path).read()
 
         # 模板加载
         self.lecture_template = self._load_template(project_root / "templates/lecture/lecture_note.txt")
@@ -75,7 +52,7 @@ class LectureMaterialGenerator:
             with open(str(path), 'r', encoding='utf-8') as f:
                 return f.read()
         except FileNotFoundError:
-            logging.warning(f"警告：模板文件 {path} 未找到")
+            print(f"警告：模板文件 {path} 未找到")
             return ""
 
     def _parse_lecture_template(self):
@@ -93,10 +70,10 @@ class LectureMaterialGenerator:
         command_match = re.search(command_pattern, self.lecture_template, re.DOTALL)
         if command_match:
             self.command_instructions = command_match.group(1).strip()
-            logging.info(f"成功提取命令指令，长度：{len(self.command_instructions)}字符")
+            print(f"成功提取命令指令，长度：{len(self.command_instructions)}字符")
         else:
             self.command_instructions = ""
-            logging.warning("警告：未找到命令指令部分")
+            print("警告：未找到命令指令部分")
 
         parsed = {}
         for start_tag, end_tag in sections:
@@ -107,12 +84,12 @@ class LectureMaterialGenerator:
                 parsed[start_tag] = '\n'.join(line.strip() for line in content.split('\n'))
             else:
                 parsed[start_tag] = ""
-                logging.warning(f"警告：未找到 {start_tag} 部分")
+                print(f"警告：未找到 {start_tag} 部分")
 
         return parsed
 
     def generate_lecture_materials(self):
-        logging.info("正在生成课程讲义，请稍候...")
+        print("正在生成课程讲义，请稍候...")
 
         try:
             self.client = OpenAI(
@@ -122,7 +99,7 @@ class LectureMaterialGenerator:
 
             self.lecture_content = ""
             knowledge_point = self.knowledge_hierarchy["knowledge_point"]
-            logging.info(f"正在生成知识点: {knowledge_point}")
+            print(f"正在生成知识点: {knowledge_point}")
 
             section_results = {}
             with ThreadPoolExecutor(max_workers=7) as executor:
@@ -140,17 +117,17 @@ class LectureMaterialGenerator:
                     try:
                         section_results[section_name] = future.result()
                     except Exception as e:
-                        logging.error(f"生成 {section_name} 部分失败: {str(e)}")
+                        print(f"生成 {section_name} 部分失败: {str(e)}")
                         section_results[section_name] = f"# {section_name} 生成失败\n\n错误: {str(e)}"
 
             formatted_content = self._format_content(knowledge_point, section_results)
             self.lecture_content += formatted_content + "\n\n"
 
-            logging.info("讲义生成完成！")
+            print("讲义生成完成！")
             return self.lecture_content
 
         except Exception as e:
-            logging.error(f"严重错误导致进程终止：{str(e)}")
+            print(f"严重错误导致进程终止：{str(e)}")
             raise
 
     def _format_content(self, knowledge_point, section_results):
@@ -193,11 +170,11 @@ class LectureMaterialGenerator:
             )
             return response.choices[0].message.content
         except Exception as e:
-            logging.error(f"生成 {section_name} 部分时出错: {str(e)}")
+            print(f"生成 {section_name} 部分时出错: {str(e)}")
             raise
 
     def _save_lecture(self):
-        logging.info(f"生成的讲义内容:\n{self.lecture_content}")
+        print(f"生成的讲义内容:\n{self.lecture_content}")
 
     def _generate_filename(self, knowledge_point):
         safe_name = knowledge_point.replace(' ', '_').replace('/', '-')

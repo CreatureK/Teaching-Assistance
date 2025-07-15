@@ -1,7 +1,7 @@
 package com.java_web.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.entity.IntroductionRequest;
+import com.java_web.backend.Entity.IntroductionAndTargetRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,7 +23,7 @@ public class LLMControllerTest {
 
     @Test
     public void testGenerateIntroductionAndTarget() throws Exception {
-        IntroductionRequest req = new IntroductionRequest();
+        IntroductionAndTargetRequest req = new IntroductionAndTargetRequest();
         req.setCourseId("1");
         req.setCourseTitle("高等数学");
         req.setRequest("请结合工程实际，突出应用能力培养");
