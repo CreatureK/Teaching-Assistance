@@ -10,7 +10,8 @@ logging.basicConfig(filename = 'log_information/introduction_and_target/introduc
                     filemode = 'a', # 指定输出模式
                     level = logging.INFO, # 指定最低输出的日志级别
                     format = '%(asctime)s - %(levelname)s - %(message)s',  # 指定输出日志的格式
-                    datefmt='%Y-%m-%d %H:%M:%S' # 格式化时间戳
+                    datefmt='%Y-%m-%d %H:%M:%S', # 格式化时间戳
+                    encoding='gb2312' # 改为GB2312编码
                     )
 
 class IntroductionAndTargetGenerator:
@@ -57,7 +58,7 @@ class IntroductionAndTargetGenerator:
         # self.detailed_prompt = self.reader.read()
         # logging.info(f"课程具体教学内容及其对应教学目标 prompt 导入")
 
-        # 教学内容及其对应教学目标生成的 prompt 导入
+        # 课程介绍与教学目标生成的 prompt 导入
         self.whole_prompt_file_path = "prompt/introduction_and_target/prompt_for_introduction_and_target.txt"
         self.reader = TextReader(self.whole_prompt_file_path)
         self.prompt = self.reader.read()
