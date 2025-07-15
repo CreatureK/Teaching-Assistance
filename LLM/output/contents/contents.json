@@ -1,146 +1,104 @@
 {
   "chapters": [
     {
-      "unitName": "函数与极限",
+      "unitName": "课程导论与基础概念",
       "subChapters": [
-        {"subName": "函数的概念及其性质"},
-        {"subName": "初等函数"},
-        {"subName": "数列的极限"},
-        {"subName": "函数的极限"},
-        {"subName": "无穷小与无穷大"},
-        {"subName": "极限运算法则"},
-        {"subName": "极限存在准则 两个重要极限"},
-        {"subName": "无穷小的比较"},
-        {"subName": "函数的连续性与间断点"},
-        {"subName": "连续函数的运算与初等函数的连续性"},
-        {"subName": "闭区间上连续函数的性质"}
+        {"subName": "课程介绍与学习目标"},
+        {"subName": "数据结构与算法的关系"},
+        {"subName": "算法的基本特性与评价标准"},
+        {"subName": "抽象数据类型（ADT）的概念"},
+        {"subName": "程序效率的重要性"},
+        {"subName": "时间复杂度与空间复杂度分析（Big O、Ω、Θ）"}
       ]
     },
     {
-      "unitName": "导数与微分",
+      "unitName": "基本数据结构",
       "subChapters": [
-        {"subName": "导数概念"},
-        {"subName": "函数的求导法则"},
-        {"subName": "高阶导数"},
-        {"subName": "隐函数及由参数方程所确定的函数的导数 相关变化率"},
-        {"subName": "函数的微分"}
+        {"subName": "数组（Array）"},
+        {"subName": "链表（Singly Linked List, Doubly Linked List, Circular List）"},
+        {"subName": "栈（Stack）及其应用（如括号匹配、表达式求值）"},
+        {"subName": "队列（Queue）与双端队列（Deque）"},
+        {"subName": "实现方式与性能比较"},
+        {"subName": "字符串的基本操作"},
+        {"subName": "模式匹配算法（Brute Force、KMP算法）"},
+        {"subName": "字符串处理常见问题（如回文判断、子串查找）"}
       ]
     },
     {
-      "unitName": "微分中值定理与导数的应用",
+      "unitName": "树与图结构",
       "subChapters": [
-        {"subName": "微分中值定理"},
-        {"subName": "洛必达法则"},
-        {"subName": "泰勒公式"},
-        {"subName": "函数的单调性与曲线的凹凸性"},
-        {"subName": "函数的极值与最大值最小值"},
-        {"subName": "函数图形的描绘"},
-        {"subName": "曲率"}
+        {"subName": "树的基本概念与术语"},
+        {"subName": "二叉树（Binary Tree）及其遍历（前序、中序、后序、层序）"},
+        {"subName": "二叉搜索树（BST）"},
+        {"subName": "平衡二叉树（AVL树、红黑树简介）"},
+        {"subName": "堆（Heap）与优先队列"},
+        {"subName": "哈夫曼树与哈夫曼编码"},
+        {"subName": "图的基本概念与表示（邻接矩阵、邻接表）"},
+        {"subName": "图的遍历（深度优先 DFS、广度优先 BFS）"},
+        {"subName": "最小生成树（Prim、Kruskal算法）"},
+        {"subName": "最短路径算法（Dijkstra、Floyd-Warshall）"},
+        {"subName": "拓扑排序与关键路径"},
+        {"subName": "图的应用案例（如社交网络、地图导航）"}
       ]
     },
     {
-      "unitName": "不定积分",
+      "unitName": "查找与排序算法",
       "subChapters": [
-        {"subName": "不定积分的概念与性质"},
-        {"subName": "换元积分法"},
-        {"subName": "分部积分法"},
-        {"subName": "有理函数的积分"},
-        {"subName": "积分表的使用"}
+        {"subName": "顺序查找与二分查找"},
+        {"subName": "散列（Hashing）与哈希冲突解决方法（链地址法、开放定址法）"},
+        {"subName": "跳跃查找、插值查找、斐波那契查找（选讲）"},
+        {"subName": "冒泡排序、插入排序、选择排序（O(n²)类）"},
+        {"subName": "快速排序、归并排序、堆排序（O(n log n)类）"},
+        {"subName": "计数排序、桶排序、基数排序（线性时间排序）"},
+        {"subName": "排序算法比较与应用场景分析"}
       ]
     },
     {
-      "unitName": "定积分",
+      "unitName": "算法设计策略",
       "subChapters": [
-        {"subName": "定积分的概念与性质"},
-        {"subName": "微积分基本公式"},
-        {"subName": "定积分的换元法和分部积分法"},
-        {"subName": "反常积分"},
-        {"subName": "反常积分的审敛法 Γ函数"}
+        {"subName": "分治思想与典型问题（如归并排序、快速排序、大整数乘法）"},
+        {"subName": "递归与递推方程求解"},
+        {"subName": "动态规划的基本原理"},
+        {"subName": "典型问题：背包问题、最长公共子序列（LCS）、最长递增子序列（LIS）"},
+        {"subName": "状态转移与记忆化搜索"},
+        {"subName": "贪心策略与局部最优"},
+        {"subName": "典型问题：活动选择、霍夫曼编码、最小硬币找零"},
+        {"subName": "回溯法的基本思想"},
+        {"subName": "N皇后问题、旅行商问题（TSP）、子集和问题"},
+        {"subName": "分支限界法简介"}
       ]
     },
     {
-      "unitName": "定积分的应用",
+      "unitName": "高级数据结构与算法",
       "subChapters": [
-        {"subName": "定积分的元素法"},
-        {"subName": "平面图形的面积"},
-        {"subName": "体积"},
-        {"subName": "平面曲线的弧长"},
-        {"subName": "功 水压力和引力"}
+        {"subName": "并查集（Union-Find）"},
+        {"subName": "Trie树（字典树）"},
+        {"subName": "B树与B+树（数据库索引结构）"},
+        {"subName": "线段树与树状数组（用于区间查询与更新）"},
+        {"subName": "向量运算与点积叉积"},
+        {"subName": "凸包问题（Graham扫描、Andrew算法）"},
+        {"subName": "最近点对问题"},
+        {"subName": "KMP算法深入解析"},
+        {"subName": "Trie + 自动机（AC自动机）"},
+        {"subName": "正则表达式匹配原理"}
       ]
     },
     {
-      "unitName": "微分方程",
+      "unitName": "算法复杂度与NP完全理论（选修）",
       "subChapters": [
-        {"subName": "微分方程的基本概念"},
-        {"subName": "可分离变量的微分方程"},
-        {"subName": "齐次方程"},
-        {"subName": "一阶线性微分方程"},
-        {"subName": "全微分方程"},
-        {"subName": "可降阶的高阶微分方程"},
-        {"subName": "高阶线性微分方程"},
-        {"subName": "常系数齐次线性微分方程"},
-        {"subName": "常系数非齐次线性微分方程"}
+        {"subName": "P、NP、NPC问题概述"},
+        {"subName": "多项式时间归约"},
+        {"subName": "常见NP完全问题举例（如SAT、TSP、独立集等）"},
+        {"subName": "近似算法与启发式算法简介"}
       ]
     },
     {
-      "unitName": "空间解析几何与向量代数",
+      "unitName": "项目实践与综合训练",
       "subChapters": [
-        {"subName": "向量及其线性运算"},
-        {"subName": "数量积 向量积 混合积"},
-        {"subName": "曲面及其方程"},
-        {"subName": "空间曲线及其方程"},
-        {"subName": "平面及其方程"},
-        {"subName": "空间直线及其方程"}
-      ]
-    },
-    {
-      "unitName": "多元函数微分法及其应用",
-      "subChapters": [
-        {"subName": "多元函数的基本概念"},
-        {"subName": "偏导数"},
-        {"subName": "全微分"},
-        {"subName": "多元复合函数的求导法则"},
-        {"subName": "隐函数的求导公式"},
-        {"subName": "多元函数微分学的几何应用"},
-        {"subName": "方向导数与梯度"},
-        {"subName": "多元函数的极值及其求法"},
-        {"subName": "二元函数的泰勒公式"},
-        {"subName": "最小二乘法"}
-      ]
-    },
-    {
-      "unitName": "重积分",
-      "subChapters": [
-        {"subName": "二重积分的概念与性质"},
-        {"subName": "二重积分的计算法"},
-        {"subName": "三重积分的概念及其计算法"},
-        {"subName": "重积分的应用"},
-        {"subName": "含参变量的积分"}
-      ]
-    },
-    {
-      "unitName": "曲线积分与曲面积分",
-      "subChapters": [
-        {"subName": "对弧长的曲线积分"},
-        {"subName": "对坐标的曲线积分"},
-        {"subName": "格林公式及其应用"},
-        {"subName": "对面积的曲面积分"},
-        {"subName": "对坐标的曲面积分"},
-        {"subName": "高斯公式 通量与散度"},
-        {"subName": "斯托克斯公式 环流量与旋度"}
-      ]
-    },
-    {
-      "unitName": "无穷级数",
-      "subChapters": [
-        {"subName": "常数项级数的概念和性质"},
-        {"subName": "常数项级数的审敛法"},
-        {"subName": "幂级数"},
-        {"subName": "函数展开成幂级数"},
-        {"subName": "函数的幂级数展开式的应用"},
-        {"subName": "函数项级数的一致收敛性及一致收敛级数的基本性质"},
-        {"subName": "傅里叶级数"},
-        {"subName": "一般周期函数的傅里叶级数"}
+        {"subName": "课程项目选题指导"},
+        {"subName": "算法优化实战（如LeetCode刷题）"},
+        {"subName": "综合实验：开发一个小型算法系统（如迷宫求解器、词频统计器、文件压缩工具）"},
+        {"subName": "代码调试与性能调优技巧"}
       ]
     }
   ]
