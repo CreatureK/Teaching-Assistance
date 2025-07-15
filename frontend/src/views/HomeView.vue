@@ -8,6 +8,7 @@ import FunctionSelect from '@/components/FunctionSelect.vue'
 import CourseInfo from '@/components/CourseInfo.vue'
 import CourseDescription from '@/components/CourseDescription.vue'
 import CourseOutline from '@/components/CourseOutline.vue'
+import TeachingLecture from '@/components/TeachingLecture.vue'
 
 const router = useRouter()
 const username = ref('')
@@ -16,6 +17,7 @@ const showFunctionSelect = ref(false)
 const showCourseInfo = ref(false)
 const showCourseDescription = ref(false)
 const showCourseOutline = ref(false)
+const showTeachingLecture = ref(false)
 const selectedCourseTitle = ref('')
 const selectedModuleId = ref('')
 
@@ -25,6 +27,7 @@ const restoreState = () => {
   const storedShowCourseInfo = localStorage.getItem('showCourseInfo')
   const storedShowCourseDescription = localStorage.getItem('showCourseDescription')
   const storedShowCourseOutline = localStorage.getItem('showCourseOutline')
+  const storedShowTeachingLecture = localStorage.getItem('showTeachingLecture')
   const storedCourseTitle = localStorage.getItem('selectedCourseTitle')
   const storedModuleId = localStorage.getItem('selectedModuleId')
   
@@ -45,14 +48,19 @@ const restoreState = () => {
   if (storedShowCourseOutline === 'true') {
     showCourseOutline.value = true
   }
+  
+  if (storedShowTeachingLecture === 'true') {
+    showTeachingLecture.value = true
+  }
 }
 
 // 保存状态到本地存储
-watch([showFunctionSelect, showCourseInfo, showCourseDescription, showCourseOutline, selectedCourseTitle, selectedModuleId], () => {
+watch([showFunctionSelect, showCourseInfo, showCourseDescription, showCourseOutline, showTeachingLecture, selectedCourseTitle, selectedModuleId], () => {
   localStorage.setItem('showFunctionSelect', showFunctionSelect.value.toString())
   localStorage.setItem('showCourseInfo', showCourseInfo.value.toString())
   localStorage.setItem('showCourseDescription', showCourseDescription.value.toString())
   localStorage.setItem('showCourseOutline', showCourseOutline.value.toString())
+  localStorage.setItem('showTeachingLecture', showTeachingLecture.value.toString())
   localStorage.setItem('selectedCourseTitle', selectedCourseTitle.value)
   localStorage.setItem('selectedModuleId', selectedModuleId.value)
 })
@@ -127,8 +135,15 @@ const showModule = (moduleId: string) => {
     showCourseDescription.value = true
     showCourseInfo.value = false
     showCourseOutline.value = false
+    showTeachingLecture.value = false
   } else if (moduleId === 'outline') {
     showCourseOutline.value = true
+    showCourseDescription.value = false
+    showCourseInfo.value = false
+    showTeachingLecture.value = false
+  } else if (moduleId === 'lecture') {
+    showTeachingLecture.value = true
+    showCourseOutline.value = false
     showCourseDescription.value = false
     showCourseInfo.value = false
   }
@@ -139,6 +154,19 @@ const showModule = (moduleId: string) => {
 const backToFunctionSelect = () => {
   showCourseDescription.value = false
   showCourseOutline.value = false
+  showTeachingLecture.value = false
+}
+
+// 保存讲义
+const handleSaveLecture = (content: string) => {
+  console.log('保存讲义内容', content)
+  // 这里实现保存讲义内容的逻辑
+}
+
+// 保存讲义草稿
+const handleSaveLectureDraft = (content: string) => {
+  console.log('保存讲义草稿', content)
+  // 这里实现保存讲义草稿的逻辑
 }
 </script>
 
@@ -148,9 +176,9 @@ const backToFunctionSelect = () => {
     
     <div v-if="isLoggedIn" class="content-area">
       <!-- 根据当前状态显示课程管理、功能选择或课程信息 -->
-      <CourseManage v-if="!showFunctionSelect && !showCourseInfo && !showCourseDescription && !showCourseOutline" @course-selected="openFunctionSelect" />
+      <CourseManage v-if="!showFunctionSelect && !showCourseInfo && !showCourseDescription && !showCourseOutline && !showTeachingLecture" @course-selected="openFunctionSelect" />
       <FunctionSelect 
-        v-else-if="showFunctionSelect && !showCourseInfo && !showCourseDescription && !showCourseOutline" 
+        v-else-if="showFunctionSelect && !showCourseInfo && !showCourseDescription && !showCourseOutline && !showTeachingLecture" 
         :courseTitle="selectedCourseTitle" 
         @back="backToCourseManage"
         @show-course-info="showCourseInfoPanel"
@@ -167,6 +195,12 @@ const backToFunctionSelect = () => {
       <CourseOutline
         v-else-if="showCourseOutline"
         @back="backToFunctionSelect"
+      />
+      <TeachingLecture
+        v-else-if="showTeachingLecture"
+        @back="backToFunctionSelect"
+        @save="handleSaveLecture"
+        @save-draft="handleSaveLectureDraft"
       />
     </div>
   </div>
