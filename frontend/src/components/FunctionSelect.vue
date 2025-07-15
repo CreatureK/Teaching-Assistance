@@ -6,7 +6,7 @@ interface Props {
   courseTitle?: string
 }
 const props = defineProps<Props>()
-const emit = defineEmits(['back', 'show-course-info'])
+const emit = defineEmits(['back', 'show-course-info', 'show-module'])
 
 // 课程标题
 const courseTitle = ref(props.courseTitle || '课程标题')
@@ -51,6 +51,11 @@ const goBack = () => {
 // 显示课程信息
 const showCourseInfo = () => {
   emit('show-course-info')
+}
+
+// 显示模块内容
+const showModule = (moduleId: string) => {
+  emit('show-module', moduleId)
 }
 
 // 获取状态图标
@@ -128,7 +133,7 @@ const getModuleIcon = (iconName: string) => {
     <div class="modules-container">
       <template v-for="(module, index) in modules" :key="module.id">
         <!-- 模块 -->
-        <div class="module-card">
+        <div class="module-card" @click="showModule(module.id)">
           <div class="status-icon" :class="`status-${module.status}`">
             {{ getStatusIcon(module.status) }}
           </div>

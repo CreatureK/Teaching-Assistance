@@ -52,6 +52,10 @@ const handleLogout = async () => {
   // 使用API进行登出
   await authApi.logout();
   
+  localStorage.removeItem('showFunctionSelect')
+  localStorage.removeItem('showCourseInfo')
+  localStorage.removeItem('selectedCourseTitle')
+  
   // 显示退出成功提示
   ElMessage({
     message: '退出登录成功',
@@ -72,8 +76,11 @@ const handleLogout = async () => {
   -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  position: relative;
-  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
   display: flex; /* 添加flex布局 */
   align-items: center; /* 垂直居中 */
 }
