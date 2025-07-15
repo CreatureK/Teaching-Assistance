@@ -10,13 +10,17 @@
   },
   "dependencies": {
     "@toast-ui/editor": "^3.2.2",
+    "@toast-ui/editor-plugin-uml": "^3.0.1",
     "element-plus": "^2.10.4",
+    "katex": "^0.16.22",
+    "mathjax": "3",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
     "@stagewise-plugins/vue": "^0.5.2",
     "@stagewise/toolbar-vue": "^0.5.2",
+    "@types/mathjax": "^0.0.40",
     "@types/node": "^24.0.13",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/tsconfig": "^0.7.0",

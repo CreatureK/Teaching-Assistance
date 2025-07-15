@@ -7,6 +7,7 @@ import CourseManage from '@/components/CourseManage.vue'
 import FunctionSelect from '@/components/FunctionSelect.vue'
 import CourseInfo from '@/components/CourseInfo.vue'
 import CourseDescription from '@/components/CourseDescription.vue'
+import CourseOutline from '@/components/CourseOutline.vue'
 
 const router = useRouter()
 const username = ref('')
@@ -14,6 +15,7 @@ const isLoggedIn = ref(false)
 const showFunctionSelect = ref(false)
 const showCourseInfo = ref(false)
 const showCourseDescription = ref(false)
+const showCourseOutline = ref(false)
 const selectedCourseTitle = ref('')
 const selectedModuleId = ref('')
 
@@ -22,6 +24,7 @@ const restoreState = () => {
   const storedShowFunctionSelect = localStorage.getItem('showFunctionSelect')
   const storedShowCourseInfo = localStorage.getItem('showCourseInfo')
   const storedShowCourseDescription = localStorage.getItem('showCourseDescription')
+  const storedShowCourseOutline = localStorage.getItem('showCourseOutline')
   const storedCourseTitle = localStorage.getItem('selectedCourseTitle')
   const storedModuleId = localStorage.getItem('selectedModuleId')
   
@@ -38,13 +41,18 @@ const restoreState = () => {
     showCourseDescription.value = true
     selectedModuleId.value = storedModuleId
   }
+  
+  if (storedShowCourseOutline === 'true') {
+    showCourseOutline.value = true
+  }
 }
 
 // 保存状态到本地存储
-watch([showFunctionSelect, showCourseInfo, showCourseDescription, selectedCourseTitle, selectedModuleId], () => {
+watch([showFunctionSelect, showCourseInfo, showCourseDescription, showCourseOutline, selectedCourseTitle, selectedModuleId], () => {
   localStorage.setItem('showFunctionSelect', showFunctionSelect.value.toString())
   localStorage.setItem('showCourseInfo', showCourseInfo.value.toString())
   localStorage.setItem('showCourseDescription', showCourseDescription.value.toString())
+  localStorage.setItem('showCourseOutline', showCourseOutline.value.toString())
   localStorage.setItem('selectedCourseTitle', selectedCourseTitle.value)
   localStorage.setItem('selectedModuleId', selectedModuleId.value)
 })
@@ -118,6 +126,11 @@ const showModule = (moduleId: string) => {
   if (moduleId === 'basic') {
     showCourseDescription.value = true
     showCourseInfo.value = false
+    showCourseOutline.value = false
+  } else if (moduleId === 'outline') {
+    showCourseOutline.value = true
+    showCourseDescription.value = false
+    showCourseInfo.value = false
   }
   // 其他模块的处理可以在这里添加
 }
@@ -125,6 +138,7 @@ const showModule = (moduleId: string) => {
 // 返回功能选择
 const backToFunctionSelect = () => {
   showCourseDescription.value = false
+  showCourseOutline.value = false
 }
 </script>
 
@@ -134,9 +148,9 @@ const backToFunctionSelect = () => {
     
     <div v-if="isLoggedIn" class="content-area">
       <!-- 根据当前状态显示课程管理、功能选择或课程信息 -->
-      <CourseManage v-if="!showFunctionSelect && !showCourseInfo && !showCourseDescription" @course-selected="openFunctionSelect" />
+      <CourseManage v-if="!showFunctionSelect && !showCourseInfo && !showCourseDescription && !showCourseOutline" @course-selected="openFunctionSelect" />
       <FunctionSelect 
-        v-else-if="showFunctionSelect && !showCourseInfo && !showCourseDescription" 
+        v-else-if="showFunctionSelect && !showCourseInfo && !showCourseDescription && !showCourseOutline" 
         :courseTitle="selectedCourseTitle" 
         @back="backToCourseManage"
         @show-course-info="showCourseInfoPanel"
@@ -148,6 +162,10 @@ const backToFunctionSelect = () => {
       />
       <CourseDescription
         v-else-if="showCourseDescription"
+        @back="backToFunctionSelect"
+      />
+      <CourseOutline
+        v-else-if="showCourseOutline"
         @back="backToFunctionSelect"
       />
     </div>

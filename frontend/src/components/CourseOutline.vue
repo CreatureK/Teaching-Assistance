@@ -2,6 +2,7 @@
   <div class="course-description-container">
     <div class="header">
       <button class="back-button" @click="$emit('back')">←</button>
+      <h3 class="section-title">课程大纲</h3>
       <div class="header-right">
         <button class="ai-btn">
           <span class="ai-icon">✨</span>
@@ -13,43 +14,48 @@
     </div>
 
     <div class="section">
-      <h2  class="section-title">课程介绍</h2>
+      
       <Markdown 
-        :initial-value="courseIntroduction" 
-        height="200px" 
+        :initial-value="courseOutline" 
+        :height="editorHeight" 
         preview-style="tab"
         :editable="false" 
       />
     </div>
-
-    <div class="section">
-      <h2  class="section-title">教学目标</h2>
-      <Markdown 
-        :initial-value="courseContent" 
-        height="200px" 
-        preview-style="tab"
-        :editable="false" 
-      />
-    </div>
-
-    
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits, onMounted, onUnmounted } from 'vue';
 import Markdown from './markdown.vue';
 
 defineEmits(['back']);
 
-// 示例课程简介内容
-const courseIntroduction = ref(`本课程是一门综合性学科课程，旨在帮助学习者掌握该领域的基础理论和实践技能。通过系统化的学习，学员将能够理解核心概念，并具备解决实际问题的能力。`);
-
-// 示例课程主要内容
-const courseContent = ref(`1. 基础理论篇：核心概念与原理
+// 示例课程大纲内容
+const courseOutline = ref(`1. 基础理论篇：核心概念与原理
 2. 实践应用篇：案例分析与项目实战
 3. 进阶提升篇：前沿技术与发展趋势
-4. 综合评估篇：项目实践与成果展示`);
+4. 综合评估篇：项目实践与成果展示
+
+`);
+
+// 编辑器高度响应式处理
+const editorHeight = ref('calc(100vh - 200px)');
+
+// 更新编辑器高度
+const updateEditorHeight = () => {
+  const calculatedHeight = Math.min(window.innerHeight - 200, 1800);
+  editorHeight.value = `${calculatedHeight}px`;
+};
+
+onMounted(() => {
+  updateEditorHeight();
+  window.addEventListener('resize', updateEditorHeight);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateEditorHeight);
+});
 </script>
 
 <style scoped>
@@ -58,6 +64,9 @@ const courseContent = ref(`1. 基础理论篇：核心概念与原理
   margin: 0 auto;
   padding: 20px;
   overflow: hidden; /* 隐藏滚动条 */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -124,10 +133,12 @@ const courseContent = ref(`1. 基础理论篇：核心概念与原理
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 500;
   color: #333;
   margin-bottom: 10px;
+  text-align: center;
+  flex-grow: 1;
 }
 
 
