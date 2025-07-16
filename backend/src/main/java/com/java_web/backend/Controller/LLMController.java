@@ -1,6 +1,7 @@
 package com.java_web.backend.Controller;
 
 import com.java_web.backend.Entity.IntroductionAndTargetRequest;
+import com.java_web.backend.Entity.IntroductionAndTargetResponse;
 import com.java_web.backend.Entity.LectureRequest;
 import com.java_web.backend.Entity.SyllabusRequest;
 import com.java_web.backend.Service.LLMIntroductionAndTargetService;
@@ -32,8 +33,8 @@ public class LLMController {
      * @return 由大模型生成的课程介绍和教学目标内容
      */
     @PostMapping("/introduction_and_target")
-    public ResponseEntity<String> generateIntroductionAndTarget(@RequestBody IntroductionAndTargetRequest req) throws IOException {
-        String result = introductionService.generateIntroductionAndTarget(req);
+    public ResponseEntity<IntroductionAndTargetResponse> generateIntroductionAndTarget(@RequestBody IntroductionAndTargetRequest req) throws IOException {
+        IntroductionAndTargetResponse result = introductionService.generateIntroductionAndTarget(req);
         return ResponseEntity.ok(result);
     }
 
