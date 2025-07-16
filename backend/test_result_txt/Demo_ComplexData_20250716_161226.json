@@ -1,0 +1,21 @@
+// 测试名称: Demo_ComplexData
+// 生成时间: 2025-07-16 16:12:26
+{
+  "request" : {
+    "courseTitle" : "高等数学",
+    "request" : "请结合工程实际，突出应用能力培养",
+    "courseId" : "1"
+  },
+  "metadata" : {
+    "processingTime" : "1.5秒",
+    "modelUsed" : "qwen-plus",
+    "status" : "success"
+  },
+  "response" : {
+    "courseIntroduction" : "课程介绍内容",
+    "teachingTarget" : "教学目标内容",
+    "courseId" : "1"
+  },
+  "testName" : "复杂数据结构测试",
+  "timestamp" : 1752653546322
+}
