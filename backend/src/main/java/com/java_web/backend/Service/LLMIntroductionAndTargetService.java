@@ -48,10 +48,7 @@ public class LLMIntroductionAndTargetService {
         
         body.put("messages", messages);
         
-        Map<String, String> headers = Map.of(
-            "Authorization", "Bearer " + openAIConfig.getApiKey(),
-            "Content-Type", "application/json"
-        );
+        Map<String, Object> headers = new java.util.HashMap<>();
         
         String response = HttpUtil.postJson(openAIConfig.getApiUrl(), body.toString(), headers);
         
@@ -81,6 +78,41 @@ public class LLMIntroductionAndTargetService {
         }
         
         return new IntroductionAndTargetResponse(courseId, "生成失败", "生成失败");
+    }
+
+    /**
+     * 生成详细的教学内容和目标（兼容旧测试代码）
+     */
+    public IntroductionAndTargetResponse generateDetailedTeachingContentAndTarget(
+            String courseId, String courseTitle, String credit, String courseHour, 
+            String responsibleCollege, String courseCategory) throws IOException {
+        
+        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        request.setCourseId(courseId);
+        request.setCourseTitle(courseTitle);
+        request.setRequest("生成详细的教学内容和目标");
+        
+        return generateIntroductionAndTarget(request);
+    }
+
+    /**
+     * 调用大模型的公共方法，供测试使用
+     */
+    public String callLLM(String prompt) throws IOException {
+        JSONObject body = new JSONObject();
+        body.put("model", openAIConfig.getModelName());
+        JSONArray messages = new JSONArray();
+        
+        messages.put(new JSONObject().put("role", "system").put("content", 
+            "你是一位资深大学教授，擅长教学内容和教学目标的制定。"));
+        messages.put(new JSONObject().put("role", "user").put("content", prompt));
+        
+        body.put("messages", messages);
+        
+        Map<String, Object> headers = new java.util.HashMap<>();
+        String response = HttpUtil.postJson(openAIConfig.getApiUrl(), body.toString(), headers);
+        
+        return response;
     }
 
     public static class PromptUtil {

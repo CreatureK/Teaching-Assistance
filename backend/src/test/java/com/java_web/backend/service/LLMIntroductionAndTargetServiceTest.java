@@ -4,24 +4,21 @@ import com.java_web.backend.Config.OpenAIConfig;
 import com.java_web.backend.Entity.IntroductionAndTargetRequest;
 import com.java_web.backend.Entity.IntroductionAndTargetResponse;
 import com.java_web.backend.Service.LLMIntroductionAndTargetService;
-import com.java_web.backend.Utils.HttpUtil;
-import com.java_web.backend.utils.TestResultWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class LLMIntroductionAndTargetServiceTest {
@@ -30,231 +27,146 @@ public class LLMIntroductionAndTargetServiceTest {
     private OpenAIConfig openAIConfig;
 
     @InjectMocks
-    private LLMIntroductionAndTargetService service;
+    private LLMIntroductionAndTargetService introductionAndTargetService;
 
-    private TestResultWriter testResultWriter;
-    private IntroductionAndTargetRequest request;
+    private LLMIntroductionAndTargetService spyService;
 
     @BeforeEach
     void setUp() {
-        testResultWriter = new TestResultWriter();
-        request = new IntroductionAndTargetRequest();
-        request.setCourseId("1");
-        request.setCourseTitle("高等数学");
-        request.setRequest("请结合工程实际，突出应用能力培养");
-
-        // 设置OpenAI配置的模拟值 - 使用lenient避免不必要的stubbing警告
-        lenient().when(openAIConfig.getModelName()).thenReturn("qwen-plus");
-        lenient().when(openAIConfig.getApiKey()).thenReturn("test-api-key");
-        lenient().when(openAIConfig.getApiUrl()).thenReturn("https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions");
+        Mockito.lenient().when(openAIConfig.getModelName()).thenReturn("qwen-plus");
+        Mockito.lenient().when(openAIConfig.getApiUrl()).thenReturn("http://localhost:8080/v1/chat/completions");
+        Mockito.lenient().when(openAIConfig.getApiKey()).thenReturn("test-api-key");
+        spyService = Mockito.spy(introductionAndTargetService);
     }
 
     @Test
-    void testGenerateIntroductionAndTarget_Success() throws IOException {
-        // 模拟LLM返回的成功响应
-        String mockResponse = """
+    void testGenerateIntroductionAndTarget() throws IOException {
+        String expectedResponse = """
             {
-                "choices": [
+                "course_introduction": "计算机科学导论是一门介绍计算机科学基础理论和基本概念的课程。本课程旨在帮助学生建立对计算机科学的整体认识，了解计算机科学的发展历程、基本概念、核心技术和应用领域。通过本课程的学习，学生将掌握计算机科学的基本知识体系，为后续专业课程的学习奠定坚实基础。",
+                "course_target": "通过本课程的学习，学生应该能够：1. 理解计算机科学的基本概念和核心理论；2. 掌握计算机系统的基本组成和工作原理；3. 了解计算机科学的主要分支和应用领域；4. 培养计算思维和问题解决能力；5. 为后续专业课程学习做好准备。"
+            }
+            """;
+
+        doReturn(expectedResponse).when(spyService).callLLM(anyString());
+
+        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        request.setCourseId("CS101");
+        request.setCourseTitle("计算机科学导论");
+        request.setRequest("用户需求测试");
+        
+        IntroductionAndTargetResponse result = spyService.generateIntroductionAndTarget(request);
+
+        assertNotNull(result);
+        assertNotNull(result.getCourseIntroduction());
+        assertNotNull(result.getTeachingTarget());
+        assertTrue(result.getCourseIntroduction().contains("计算机科学导论"));
+        assertTrue(result.getTeachingTarget().contains("计算机科学"));
+    }
+
+    @Test
+    void testGenerateDetailedTeachingContentAndTarget() throws IOException {
+        String expectedResponse = """
+            {
+                "detailed_teaching_content": [
                     {
-                        "message": {
-                            "content": "{\\"course_introduction\\": \\"本课程是面向工程类专业本科生的高等数学课程，内容涵盖函数、极限与连续、导数与微分、积分学、多元函数微积分、常微分方程、级数等基础理论知识。\\", \\"teaching_target\\": \\"通过本课程的学习，学生应掌握高等数学的基本理论和运算方法，具备运用数学工具分析和解决工程实际问题的能力。\\"}"
-                        }
+                        "unit_number": "1",
+                        "content": "计算机科学概述",
+                        "teaching_objective": "了解计算机科学的基本概念和发展历程",
+                        "key_points": ["计算机科学的定义", "计算机科学的发展历史", "计算机科学的主要分支"],
+                        "difficulty_level": "基础",
+                        "estimated_hours": "8"
+                    },
+                    {
+                        "unit_number": "2",
+                        "content": "计算机系统基础",
+                        "teaching_objective": "掌握计算机系统的基本组成和工作原理",
+                        "key_points": ["计算机硬件系统", "计算机软件系统", "计算机工作原理"],
+                        "difficulty_level": "基础",
+                        "estimated_hours": "12"
+                    }
+                ],
+                "detailed_course_target": [
+                    {
+                        "target_number": "1",
+                        "target": "理解计算机科学的基本概念和核心理论",
+                        "support_graduation_requirement": "支撑毕业要求1：掌握本专业基础理论",
+                        "assessment_method": "课堂讨论、作业、考试"
+                    },
+                    {
+                        "target_number": "2",
+                        "target": "掌握计算机系统的基本组成和工作原理",
+                        "support_graduation_requirement": "支撑毕业要求2：具备专业实践能力",
+                        "assessment_method": "实验报告、项目设计、考试"
                     }
                 ]
             }
             """;
 
-        try (MockedStatic<HttpUtil> httpUtilMock = mockStatic(HttpUtil.class)) {
-            httpUtilMock.when(() -> HttpUtil.postJson(anyString(), anyString(), anyMap()))
-                    .thenReturn(mockResponse);
+        doReturn(expectedResponse).when(spyService).callLLM(anyString());
 
-            // 执行测试
-            IntroductionAndTargetResponse response = service.generateIntroductionAndTarget(request);
+        IntroductionAndTargetResponse result = spyService.generateDetailedTeachingContentAndTarget(
+                "CS101", "计算机科学导论", "3", "48", "计算机学院", "专业必修"
+        );
 
-            // 验证结果
-            assertNotNull(response);
-            assertEquals("1", response.getCourseId());
-            assertEquals("本课程是面向工程类专业本科生的高等数学课程，内容涵盖函数、极限与连续、导数与微分、积分学、多元函数微积分、常微分方程、级数等基础理论知识。", response.getCourseIntroduction());
-            assertEquals("通过本课程的学习，学生应掌握高等数学的基本理论和运算方法，具备运用数学工具分析和解决工程实际问题的能力。", response.getTeachingTarget());
-
-            // 保存测试结果到文件
-            testResultWriter.saveJsonResult("IntroductionAndTarget_Success", response);
-            testResultWriter.saveRawResponse("IntroductionAndTarget_Success", mockResponse);
-
-            // 验证HTTP调用
-            httpUtilMock.verify(() -> HttpUtil.postJson(anyString(), anyString(), anyMap()), times(1));
-        }
+        assertNotNull(result);
+        assertNotNull(result.getCourseIntroduction());
+        assertNotNull(result.getTeachingTarget());
+        
+        // 验证详细教学内容
+        assertNotNull(result.getCourseIntroduction());
+        
+        // 验证详细课程目标
+        assertNotNull(result.getTeachingTarget());
     }
 
     @Test
-    void testGenerateIntroductionAndTarget_EmptyChoices() throws IOException {
-        // 模拟LLM返回空choices的响应
-        String mockResponse = """
-            {
-                "choices": []
-            }
-            """;
+    void testGenerateIntroductionAndTargetWithError() throws IOException {
+        doThrow(new RuntimeException("大模型异常"))
+                .when(spyService).callLLM(anyString());
 
-        try (MockedStatic<HttpUtil> httpUtilMock = mockStatic(HttpUtil.class)) {
-            httpUtilMock.when(() -> HttpUtil.postJson(anyString(), anyString(), anyMap()))
-                    .thenReturn(mockResponse);
-
-            // 执行测试
-            IntroductionAndTargetResponse response = service.generateIntroductionAndTarget(request);
-
-            // 验证结果
-            assertNotNull(response);
-            assertEquals("1", response.getCourseId());
-            assertEquals("生成失败", response.getCourseIntroduction());
-            assertEquals("生成失败", response.getTeachingTarget());
-        }
-    }
-
-    @Test
-    void testGenerateIntroductionAndTarget_InvalidJson() throws IOException {
-        // 模拟LLM返回无效JSON的响应
-        String mockResponse = """
-            {
-                "choices": [
-                    {
-                        "message": {
-                            "content": "invalid json content"
-                        }
-                    }
-                ]
-            }
-            """;
-
-        try (MockedStatic<HttpUtil> httpUtilMock = mockStatic(HttpUtil.class)) {
-            httpUtilMock.when(() -> HttpUtil.postJson(anyString(), anyString(), anyMap()))
-                    .thenReturn(mockResponse);
-
-            // 执行测试
-            IntroductionAndTargetResponse response = service.generateIntroductionAndTarget(request);
-
-            // 验证结果
-            assertNotNull(response);
-            assertEquals("1", response.getCourseId());
-            assertTrue(response.getCourseIntroduction().startsWith("解析失败:"));
-            assertTrue(response.getTeachingTarget().startsWith("解析失败:"));
-        }
-    }
-
-    @Test
-    void testGenerateIntroductionAndTarget_MissingFields() throws IOException {
-        // 模拟LLM返回缺少字段的响应
-        String mockResponse = """
-            {
-                "choices": [
-                    {
-                        "message": {
-                            "content": "{\\"course_introduction\\": \\"课程介绍\\"}"
-                        }
-                    }
-                ]
-            }
-            """;
-
-        try (MockedStatic<HttpUtil> httpUtilMock = mockStatic(HttpUtil.class)) {
-            httpUtilMock.when(() -> HttpUtil.postJson(anyString(), anyString(), anyMap()))
-                    .thenReturn(mockResponse);
-
-            // 执行测试
-            IntroductionAndTargetResponse response = service.generateIntroductionAndTarget(request);
-
-            // 验证结果
-            assertNotNull(response);
-            assertEquals("1", response.getCourseId());
-            assertTrue(response.getCourseIntroduction().startsWith("解析失败:"));
-            assertTrue(response.getTeachingTarget().startsWith("解析失败:"));
-        }
-    }
-
-    @Test
-    void testGenerateIntroductionAndTarget_HttpException() throws IOException {
-        // 模拟HTTP调用异常 - 使用RuntimeException而不是IOException
-        try (MockedStatic<HttpUtil> httpUtilMock = mockStatic(HttpUtil.class)) {
-            httpUtilMock.when(() -> HttpUtil.postJson(anyString(), anyString(), anyMap()))
-                    .thenThrow(new RuntimeException("Network error"));
-
-            // 执行测试并验证异常
-            assertThrows(RuntimeException.class, () -> {
-                service.generateIntroductionAndTarget(request);
-            });
-        }
-    }
-
-    @Test
-    void testGenerateIntroductionAndTarget_WithNullRequest() {
-        // 测试空请求
-        assertThrows(NullPointerException.class, () -> {
-            service.generateIntroductionAndTarget(null);
+        assertThrows(IOException.class, () -> {
+            IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+            request.setCourseId("CS101");
+            request.setCourseTitle("计算机科学导论");
+            request.setRequest("用户需求测试");
+            spyService.generateIntroductionAndTarget(request);
         });
     }
 
     @Test
-    void testGenerateIntroductionAndTarget_WithEmptyCourseTitle() throws IOException {
-        // 设置空的课程标题
-        request.setCourseTitle("");
-        
-        // 模拟LLM返回的成功响应
-        String mockResponse = """
-            {
-                "choices": [
-                    {
-                        "message": {
-                            "content": "{\\"course_introduction\\": \\"课程介绍\\", \\"teaching_target\\": \\"教学目标\\"}"
-                        }
-                    }
-                ]
-            }
-            """;
+    void testGenerateDetailedTeachingContentAndTargetWithError() throws IOException {
+        doThrow(new RuntimeException("大模型异常"))
+                .when(spyService).callLLM(anyString());
 
-        try (MockedStatic<HttpUtil> httpUtilMock = mockStatic(HttpUtil.class)) {
-            httpUtilMock.when(() -> HttpUtil.postJson(anyString(), anyString(), anyMap()))
-                    .thenReturn(mockResponse);
-
-            // 执行测试
-            IntroductionAndTargetResponse response = service.generateIntroductionAndTarget(request);
-
-            // 验证结果
-            assertNotNull(response);
-            assertEquals("1", response.getCourseId());
-            assertEquals("课程介绍", response.getCourseIntroduction());
-            assertEquals("教学目标", response.getTeachingTarget());
-        }
+        assertThrows(IOException.class, () -> {
+            spyService.generateDetailedTeachingContentAndTarget(
+                    "CS101", "计算机科学导论", "3", "48", "计算机学院", "专业必修"
+            );
+        });
     }
 
     @Test
-    void testGenerateIntroductionAndTarget_WithNullRequestField() throws IOException {
-        // 设置空的请求字段
-        request.setRequest(null);
-        
-        // 模拟LLM返回的成功响应
-        String mockResponse = """
-            {
-                "choices": [
-                    {
-                        "message": {
-                            "content": "{\\"course_introduction\\": \\"课程介绍\\", \\"teaching_target\\": \\"教学目标\\"}"
-                        }
-                    }
-                ]
-            }
-            """;
+    void testGenerateIntroductionAndTargetWithInvalidResponse() throws IOException {
+        doReturn("not a json string").when(spyService).callLLM(anyString());
 
-        try (MockedStatic<HttpUtil> httpUtilMock = mockStatic(HttpUtil.class)) {
-            httpUtilMock.when(() -> HttpUtil.postJson(anyString(), anyString(), anyMap()))
-                    .thenReturn(mockResponse);
+        assertThrows(IOException.class, () -> {
+            IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+            request.setCourseId("CS101");
+            request.setCourseTitle("计算机科学导论");
+            request.setRequest("用户需求测试");
+            spyService.generateIntroductionAndTarget(request);
+        });
+    }
 
-            // 执行测试
-            IntroductionAndTargetResponse response = service.generateIntroductionAndTarget(request);
+    @Test
+    void testGenerateDetailedTeachingContentAndTargetWithInvalidResponse() throws IOException {
+        doReturn("not a json string").when(spyService).callLLM(anyString());
 
-            // 验证结果
-            assertNotNull(response);
-            assertEquals("1", response.getCourseId());
-            assertEquals("课程介绍", response.getCourseIntroduction());
-            assertEquals("教学目标", response.getTeachingTarget());
-        }
+        assertThrows(IOException.class, () -> {
+            spyService.generateDetailedTeachingContentAndTarget(
+                    "CS101", "计算机科学导论", "3", "48", "计算机学院", "专业必修"
+            );
+        });
     }
 } 

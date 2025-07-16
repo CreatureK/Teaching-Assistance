@@ -78,3 +78,8 @@
     "teaching_target": "通过本课程的学习，学生应掌握高等数学的基本理论和运算方法，具备运用数学工具分析和解决工程实际问题的能力；能够理解并运用数学模型描述和求解现实问题；提升逻辑思维能力和抽象思维能力，为后续专业课程的学习及工程实践奠定坚实的数学基础。"
 }
 2025-07-14 21:31:47 - INFO - 已将指定内容写入output/introduction_and_target/introduction_and_target.json
+2025-07-16 17:02:06 - INFO - json 转 markdown 的 prompt 读取
+2025-07-16 17:02:06 - INFO - 正在调用大模型将json内容转为markdown内容
+2025-07-16 17:02:49 - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-16 17:02:49 - INFO - 大模型已经将json内容转为markdown
+2025-07-16 17:02:49 - INFO - 已将指定内容写入output/json_to_markdown/json_to_markdown.txt

@@ -26,10 +26,9 @@ public class LLMSyllabusService {
                 "，重点内容: " + req.getKeyTeachingContent() +
                 "，需求: " + req.getRequest()));
         body.put("messages", messages);
-        Map<String, String> headers = Map.of(
-            "Authorization", "Bearer " + openAIConfig.getApiKey(),
-            "Content-Type", "application/json"
-        );
+        Map<String, Object> headers = new java.util.HashMap<>();
+        headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
+        headers.put("Content-Type", "application/json");
         String response = HttpUtil.postJson(openAIConfig.getApiUrl(), body.toString(), headers);
         return response;
     }
