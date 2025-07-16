@@ -1,0 +1,123 @@
+{
+  "course_title": "<此处填写本课程的课程标题>",
+  "teachingContentAndSchedule": [
+    {
+      "unitNumber": "<此处填写课程大章节序号>",
+      "unitContent": "<此处填写课程大章节内容>",
+      "unit_knowledge_point": [
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        },
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        },
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        },
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        },
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        },
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        }
+      ],
+      "unit_time_allocation": "<此处填写大章节学时分配>",
+      "subsections": [
+        {
+          "subUnitNumber": "<此处填写课程小章节序号>",
+          "content": "<此处填写课程小章节内容>",
+          "knowledge_point": [
+            {
+              "knowledge_point": "<此处填写知识点>"
+            },
+            {
+              "knowledge_point": "<此处填写知识点>"
+            },
+            {
+              "knowledge_point": "<此处填写知识点>"
+            }
+          ],
+          "time_allocation": "<此处填写小章节学时分配>"
+        },
+        {
+          "subUnitNumber": "<此处填写课程小章节序号>",
+          "content": "<此处填写课程小章节内容>",
+          "knowledge_point": [
+            {
+              "knowledge_point": "<此处填写知识点>"
+            },
+            {
+              "knowledge_point": "<此处填写知识点>"
+            },
+            {
+              "knowledge_point": "<此处填写知识点>"
+            }
+          ],
+          "time_allocation": "<此处填写小章节学时分配>"
+        }
+      ]
+    },
+    {
+      "unitNumber": "<此处填写课程大章节序号>",
+      "unitContent": "<此处填写课程大章节内容>",
+      "unit_knowledge_point": [
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        },
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        },
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        },
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        },
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        },
+        {
+          "unit_knowledge_point": "<此处填写知识点>"
+        }
+      ],
+      "unit_time_allocation": "<此处填写大章节学时分配>",
+      "subsections": [
+        {
+          "subUnitNumber": "<此处填写课程小章节序号>",
+          "content": "<此处填写课程小章节内容>",
+          "knowledge_point": [
+            {
+              "knowledge_point": "<此处填写知识点>"
+            },
+            {
+              "knowledge_point": "<此处填写知识点>"
+            },
+            {
+              "knowledge_point": "<此处填写知识点>"
+            }
+          ],
+          "time_allocation": "<此处填写小章节学时分配>"
+        },
+        {
+          "subUnitNumber": "<此处填写课程小章节序号>",
+          "content": "<此处填写课程小章节内容>",
+          "knowledge_point": [
+            {
+              "knowledge_point": "<此处填写知识点>"
+            },
+            {
+              "knowledge_point": "<此处填写知识点>"
+            },
+            {
+              "knowledge_point": "<此处填写知识点>"
+            }
+          ],
+          "time_allocation": "<此处填写小章节学时分配>"
+        }
+      ]
+    }
+  ]
+}
