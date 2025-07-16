@@ -1,8 +1,8 @@
 package com.java_web.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Entity.LectureRequest;
-import com.java_web.backend.Entity.LectureRequest.LectureSection;
+import com.java_web.backend.Common.DTO.LectureRequest;
+import com.java_web.backend.Common.DTO.LectureRequest.LectureSection;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +16,6 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.java_web.backend.Service.LLMLectureService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
