@@ -1,12 +1,11 @@
 package com.java_web.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Controller.LLMController;
-import com.java_web.backend.Entity.IntroductionAndTargetRequest;
-import com.java_web.backend.Entity.IntroductionAndTargetResponse;
-import com.java_web.backend.Service.LLMIntroductionAndTargetService;
-import com.java_web.backend.Service.LLMSyllabusService;
-import com.java_web.backend.Service.LLMLectureService;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetRequest;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetResponse;
+import com.java_web.backend.Common.Service.LLMIntroductionAndTargetService;
+import com.java_web.backend.Common.Service.LLMSyllabusService;
+import com.java_web.backend.Common.Service.LLMLectureService;
 import com.java_web.backend.utils.TestResultWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,10 +25,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@WebMvcTest(LLMController.class)
+@WebMvcTest(com.java_web.backend.Teacher.Controller.LLMController.class)
 @Import(LLMControllerTest.TestCorsConfig.class)
 public class LLMControllerTest {
-    
     // 测试专用的CORS配置
     public static class TestCorsConfig implements WebMvcConfigurer {
         @Override
@@ -42,10 +40,10 @@ public class LLMControllerTest {
                     .maxAge(168000);
         }
     }
-    
+
     @Autowired
     private MockMvc mockMvc;
-    
+
     @Autowired
     private ObjectMapper objectMapper;
 

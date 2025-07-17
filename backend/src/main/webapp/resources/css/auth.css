@@ -1,0 +1,328 @@
+:root {
+  --primary-color: #3498db;
+  --text-color: rgba(0, 0, 0, 0.8);
+  --notification-error-bg: rgba(244, 67, 54, 0.1);
+  --notification-error-color: #f44336;
+  --notification-info-bg: rgba(33, 150, 243, 0.1);
+  --notification-info-color: #2196f3;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  background: linear-gradient(135deg, #67B26F 0%, #4ca2cd 100%);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2), 0 4px 8px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  position: relative;
+  z-index: 1;
+  background-clip: padding-box;
+}
+
+/* 添加动态边框效果 */
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1), rgba(52, 152, 219, 0.3), rgba(255, 255, 255, 0.2));
+  z-index: -1;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+/* 确保表单元素在玻璃背景上清晰可见 */
+.auth-header,
+.auth-form,
+.auth-footer,
+.message-container {
+  position: relative;
+  z-index: 2;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-logo {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(52, 152, 219, 0.1);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
+  margin: 0 auto;
+}
+
+.auth-logo svg {
+  width: 100%;
+  height: 100%;
+}
+
+.auth-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 16px 0 8px;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: var(--text-color);
+  opacity: 0.7;
+  margin-bottom: 0;
+}
+
+.auth-form {
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(0, 0, 0, 0.7);
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease;
+  box-shadow:
+    0 4px 10px rgba(31, 38, 135, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5);
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+input.with-icon {
+  padding-left: 40px;
+}
+
+input:focus {
+  outline: none;
+  border-color: rgba(52, 152, 219, 0.8);
+  box-shadow:
+    0 4px 12px rgba(52, 152, 219, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  opacity: 0.8;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(52, 152, 219, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 4px 15px rgba(52, 152, 219, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.submit-button:hover {
+  background: rgba(52, 152, 219, 0.85);
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 20px rgba(52, 152, 219, 0.4),
+    inset 0 1px 3px rgba(255, 255, 255, 0.6);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+  box-shadow:
+    0 2px 10px rgba(52, 152, 219, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+.button-icon {
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-button.loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.auth-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.auth-footer p {
+  font-size: 14px;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.auth-footer a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+.message-container {
+  margin-top: 20px;
+}
+
+.error-message,
+.success-message {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-message {
+  background-color: var(--notification-error-bg);
+  color: var(--notification-error-color);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.success-message {
+  background-color: var(--notification-info-bg);
+  color: var(--notification-info-color);
+  border: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+.message-icon {
+  margin-right: 6px;
+}
+
+/* 响应式布局 */
+@media (max-width: 480px) {
+  .auth-card {
+    max-width: 90%;
+    padding: 20px;
+  }
+
+  .auth-title {
+    font-size: 20px;
+  }
+
+  input {
+    padding: 10px 10px 10px 36px;
+    font-size: 14px;
+  }
+}
