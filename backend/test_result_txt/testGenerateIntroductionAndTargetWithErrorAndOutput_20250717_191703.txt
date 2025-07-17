@@ -1,0 +1,7 @@
+测试名称: testGenerateIntroductionAndTargetWithErrorAndOutput
+生成时间: 2025-07-17 19:17:03
+==================================================
+测试方法: testGenerateIntroductionAndTargetWithErrorAndOutput
+输入参数: CS101, 计算机科学导论, 用户需求测试
+大模型返回内容: not a json string
+异常信息: JSON解析失败

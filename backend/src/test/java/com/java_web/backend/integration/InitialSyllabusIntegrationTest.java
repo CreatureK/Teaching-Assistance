@@ -1,13 +1,14 @@
 package com.java_web.backend.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Controller.InitialSyllabusController;
-import com.java_web.backend.Entity.InitialSyllabusRequest;
-import com.java_web.backend.Service.LLMInitialSyllabusService;
+import com.java_web.backend.Teacher.Controller.InitialSyllabusController;
+import com.java_web.backend.Common.DTO.InitialSyllabusRequest;
+import com.java_web.backend.Common.Service.LLMInitialSyllabusService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -23,17 +24,32 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = InitialSyllabusController.class)
-@ActiveProfiles("test")
-@TestPropertySource(properties = {
-    "spring.autoconfigure.exclude=com.java_web.backend.Config.CorsConfig"
-})
+@Import({InitialSyllabusIntegrationTest.TestConfig.class, InitialSyllabusController.class})
 public class InitialSyllabusIntegrationTest {
+    
+    // 测试配置类，禁用拦截器
+    @org.springframework.context.annotation.Configuration
+    public static class TestConfig implements org.springframework.web.servlet.config.annotation.WebMvcConfigurer {
+        @Override
+        public void addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry registry) {
+            // 不注册任何拦截器，测试环境下禁用所有拦截器
+        }
+        @org.springframework.context.annotation.Bean
+        public com.fasterxml.jackson.databind.ObjectMapper objectMapper() {
+            return new com.fasterxml.jackson.databind.ObjectMapper();
+        }
+    }
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private LLMInitialSyllabusService initialSyllabusService;
+
+    @MockBean
+    private com.java_web.backend.Common.Service.JWTService jwtService;
+
+
 
     @Autowired
     private ObjectMapper objectMapper;

@@ -1,0 +1,4 @@
+测试名称: Controller_IntroductionAndTarget_Request
+生成时间: 2025-07-17 20:34:02
+==================================================
+{"courseId":"1","courseTitle":"高等数学","request":"请结合工程实际，突出应用能力培养"}

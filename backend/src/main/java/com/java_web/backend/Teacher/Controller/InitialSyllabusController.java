@@ -1,7 +1,7 @@
-package com.java_web.backend.Controller;
+package com.java_web.backend.Teacher.Controller;
 
-import com.java_web.backend.Entity.InitialSyllabusRequest;
-import com.java_web.backend.Service.LLMInitialSyllabusService;
+import com.java_web.backend.Common.DTO.InitialSyllabusRequest;
+import com.java_web.backend.Common.Service.LLMInitialSyllabusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

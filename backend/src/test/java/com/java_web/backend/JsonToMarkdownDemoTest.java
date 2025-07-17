@@ -1,11 +1,14 @@
 package com.java_web.backend;
 
-import com.java_web.backend.Entity.JsonToMarkdownRequest;
-import com.java_web.backend.Service.LLMJsonToMarkdownService;
+import com.java_web.backend.Common.DTO.JsonToMarkdownRequest;
+import com.java_web.backend.Common.Service.LLMJsonToMarkdownService;
 import com.java_web.backend.utils.TestResultWriter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import com.java_web.backend.Teacher.Controller.JsonToMarkdownController;
 
 import java.util.Map;
 
@@ -13,12 +16,22 @@ import java.util.Map;
  * JSON转Markdown功能演示测试类
  */
 @SpringBootTest
+@Import(JsonToMarkdownController.class)
 public class JsonToMarkdownDemoTest {
 
-    @Autowired
+    @MockBean
     private LLMJsonToMarkdownService jsonToMarkdownService;
 
     private TestResultWriter testResultWriter = new TestResultWriter();
+
+    // 测试配置类，禁用拦截器
+    @org.springframework.context.annotation.Configuration
+    public static class TestConfig implements org.springframework.web.servlet.config.annotation.WebMvcConfigurer {
+        @Override
+        public void addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry registry) {
+            // 不注册任何拦截器，测试环境下禁用所有拦截器
+        }
+    }
 
     @Test
     void testCourseInfoJsonToMarkdown() {

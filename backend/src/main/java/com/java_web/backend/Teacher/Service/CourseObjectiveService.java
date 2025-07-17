@@ -48,7 +48,8 @@ public class CourseObjectiveService {
         request.setRequest(prompt);
 
         // 调用LLM服务生成内容
-        return llmService.generateIntroductionAndTarget(request);
+        var response = llmService.generateIntroductionAndTarget(request);
+        return response.getTeachingTarget();
     }
     
     /**

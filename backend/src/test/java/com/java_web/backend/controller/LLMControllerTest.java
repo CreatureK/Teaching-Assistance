@@ -26,18 +26,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(com.java_web.backend.Teacher.Controller.LLMController.class)
-@Import(LLMControllerTest.TestCorsConfig.class)
+@Import({LLMControllerTest.TestCorsConfig.class, com.java_web.backend.Teacher.Controller.LLMController.class})
 public class LLMControllerTest {
     // 测试专用的CORS配置
-    public static class TestCorsConfig implements WebMvcConfigurer {
+    @org.springframework.context.annotation.Configuration
+    public static class TestCorsConfig implements org.springframework.web.servlet.config.annotation.WebMvcConfigurer {
         @Override
-        public void addCorsMappings(CorsRegistry registry) {
+        public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
             registry.addMapping("/**")
                     .allowedOriginPatterns("*")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(false)  // 测试环境中设置为false避免CORS错误
                     .maxAge(168000);
+        }
+        
+        // 禁用拦截器
+        @Override
+        public void addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry registry) {
+            // 不添加任何拦截器，禁用所有拦截器
         }
     }
 
@@ -55,6 +62,11 @@ public class LLMControllerTest {
 
     @MockBean
     private LLMLectureService llmLectureService;
+
+    @MockBean
+    private com.java_web.backend.Common.Service.JWTService jwtService;
+
+
 
     private TestResultWriter testResultWriter;
 
