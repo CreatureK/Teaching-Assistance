@@ -150,7 +150,7 @@ public class InitialSyllabusControllerTest {
     @Test
     void testGenerateInitialSyllabusWithError() throws Exception {
         when(initialSyllabusService.generateInitialSyllabus(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
-                .thenThrow(new IOException("生成教学大纲时发生错误"));
+                .thenThrow(new RuntimeException("生成教学大纲时发生错误"));
 
         mockMvc.perform(post("/api/initial-syllabus/generate")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -170,7 +170,7 @@ public class InitialSyllabusControllerTest {
                         .content(objectMapper.writeValueAsString(testRequest)))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.message").value("系统错误: 系统错误"));
+                .andExpect(jsonPath("$.message").value("生成教学大纲时发生错误: 系统错误"));
     }
 
     @Test

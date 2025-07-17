@@ -161,7 +161,7 @@ public class InitialSyllabusIntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.message").value("系统错误: 系统错误"));
+                .andExpect(jsonPath("$.message").value("生成教学大纲时发生错误: 系统错误"));
     }
 
     @Test

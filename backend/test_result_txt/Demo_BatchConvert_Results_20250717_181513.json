@@ -1,0 +1,22 @@
+// 测试名称: Demo_BatchConvert_Results
+// 生成时间: 2025-07-17 18:15:13
+{
+  "summary" : {
+    "total" : 3,
+    "successRate" : "0.0%",
+    "success" : 0,
+    "error" : 3
+  },
+  "item_2" : {
+    "error" : "java.lang.RuntimeException: java.lang.IllegalArgumentException: Illegal character(s) in message header value: [{role=system, content=你是一个专业的JSON转Markdown专家，擅长将JSON数据转换为结构化的Markdown文档。}, {role=user, content=<prompt>\r\n你需要将用户给定的 json 格式的内容转换为 markdown 格式的内容\r\n\r\n<requirements>\r\n    <requirement>\r\n        你的输出内容只需要包含由json转换出的内容\r\n        不应该包含其他无关的提示内容，例如:\r\n        ```好的，我将会将 json 内容转换为 markdown 并返回给用户```\r\n        ```以上是我根据用户提供的 json 内容转换的 markdown 内容，如果还有其他需求请继续提问```\r\n    </requirements>\r\n    <requirement>\r\n        对于 json 内容中的\"数组+对象\"，应当优先考虑转为 markdown 表格\r\n        对于只出现一次的内容，则只需要考虑层级问题\r\n    </requirement>\r\n</requirements>\r\n\r\n</prompt>}]",
+    "status" : "error"
+  },
+  "item_1" : {
+    "error" : "java.lang.RuntimeException: java.lang.IllegalArgumentException: Illegal character(s) in message header value: [{role=system, content=你是一个专业的JSON转Markdown专家，擅长将JSON数据转换为结构化的Markdown文档。}, {role=user, content=<prompt>\r\n你需要将用户给定的 json 格式的内容转换为 markdown 格式的内容\r\n\r\n<requirements>\r\n    <requirement>\r\n        你的输出内容只需要包含由json转换出的内容\r\n        不应该包含其他无关的提示内容，例如:\r\n        ```好的，我将会将 json 内容转换为 markdown 并返回给用户```\r\n        ```以上是我根据用户提供的 json 内容转换的 markdown 内容，如果还有其他需求请继续提问```\r\n    </requirements>\r\n    <requirement>\r\n        对于 json 内容中的\"数组+对象\"，应当优先考虑转为 markdown 表格\r\n        对于只出现一次的内容，则只需要考虑层级问题\r\n    </requirement>\r\n</requirements>\r\n\r\n</prompt>}]",
+    "status" : "error"
+  },
+  "item_0" : {
+    "error" : "java.lang.RuntimeException: java.lang.IllegalArgumentException: Illegal character(s) in message header value: [{role=system, content=你是一个专业的JSON转Markdown专家，擅长将JSON数据转换为结构化的Markdown文档。}, {role=user, content=<prompt>\r\n你需要将用户给定的 json 格式的内容转换为 markdown 格式的内容\r\n\r\n<requirements>\r\n    <requirement>\r\n        你的输出内容只需要包含由json转换出的内容\r\n        不应该包含其他无关的提示内容，例如:\r\n        ```好的，我将会将 json 内容转换为 markdown 并返回给用户```\r\n        ```以上是我根据用户提供的 json 内容转换的 markdown 内容，如果还有其他需求请继续提问```\r\n    </requirements>\r\n    <requirement>\r\n        对于 json 内容中的\"数组+对象\"，应当优先考虑转为 markdown 表格\r\n        对于只出现一次的内容，则只需要考虑层级问题\r\n    </requirement>\r\n</requirements>\r\n\r\n</prompt>}]",
+    "status" : "error"
+  }
+}
