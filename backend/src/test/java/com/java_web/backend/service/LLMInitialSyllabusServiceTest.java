@@ -79,42 +79,34 @@ public class LLMInitialSyllabusServiceTest {
 
     @Test
     void testGenerateInitialSyllabusWithError() {
-        try {
-            doReturn("Computer Science")
-                    .doThrow(new RuntimeException("大模型异常"))
-                    .when(spyService).callLLM(anyString());
-            assertThrows(IOException.class, () -> {
-                spyService.generateInitialSyllabus(
-                        "CS001", "CS101", "计算机科学导论", "中文", "计算机学院",
-                        "专业必修", "李老师", "王老师", "3", "48",
-                        "计算机科学基础课程", "掌握计算机科学基础知识", "考试",
-                        "否", "理论", "百分制", "希望课程内容生动有趣"
-                );
-            });
-        } catch (Exception e) {
-            fail("不应抛出异常: " + e.getMessage());
-        }
+        doReturn("Computer Science")
+                .doThrow(new RuntimeException("大模型异常"))
+                .when(spyService).callLLM(anyString());
+        assertThrows(Exception.class, () -> {
+            spyService.generateInitialSyllabus(
+                    "CS001", "CS101", "计算机科学导论", "中文", "计算机学院",
+                    "专业必修", "李老师", "王老师", "3", "48",
+                    "计算机科学基础课程", "掌握计算机科学基础知识", "考试",
+                    "否", "理论", "百分制", "希望课程内容生动有趣"
+            );
+        });
     }
 
     @Test
     void testGenerateInitialSyllabusWithInvalidResponse() {
-        try {
-            doReturn("Computer Science")
-                    .doReturn("not a json string")
-                    .doReturn("not a json string")
-                    .doReturn("not a json string")
-                    .doReturn("not a json string")
-                    .when(spyService).callLLM(anyString());
-            assertThrows(IOException.class, () -> {
-                spyService.generateInitialSyllabus(
-                        "CS001", "CS101", "计算机科学导论", "中文", "计算机学院",
-                        "专业必修", "李老师", "王老师", "3", "48",
-                        "计算机科学基础课程", "掌握计算机科学基础知识", "考试",
-                        "否", "理论", "百分制", "希望课程内容生动有趣"
-                );
-            });
-        } catch (Exception e) {
-            fail("不应抛出异常: " + e.getMessage());
-        }
+        doReturn("Computer Science")
+                .doReturn("not a json string")
+                .doReturn("not a json string")
+                .doReturn("not a json string")
+                .doReturn("not a json string")
+                .when(spyService).callLLM(anyString());
+        assertThrows(Exception.class, () -> {
+            spyService.generateInitialSyllabus(
+                    "CS001", "CS101", "计算机科学导论", "中文", "计算机学院",
+                    "专业必修", "李老师", "王老师", "3", "48",
+                    "计算机科学基础课程", "掌握计算机科学基础知识", "考试",
+                    "否", "理论", "百分制", "希望课程内容生动有趣"
+            );
+        });
     }
 } 

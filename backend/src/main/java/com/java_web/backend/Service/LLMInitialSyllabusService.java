@@ -55,7 +55,7 @@ public class LLMInitialSyllabusService {
             String responsibleCollege, String courseCategory, String principle, String verifier,
             String credit, String courseHour, String courseIntroduction, String teachingTarget,
             String evaluationMode, String whetherTechnicalCourse, String assessmentType,
-            String gradeRecording, String request) throws IOException {
+            String gradeRecording, String request) {
 
         // 并行生成各个部分
         ExecutorService executor = Executors.newFixedThreadPool(4);
@@ -63,7 +63,7 @@ public class LLMInitialSyllabusService {
         CompletableFuture<String> englishNameFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return generateEnglishName(courseTitle);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }, executor);
@@ -71,7 +71,7 @@ public class LLMInitialSyllabusService {
         CompletableFuture<Map<String, Object>> detailedTargetFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return generateDetailedCourseTarget(courseTitle, request);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }, executor);
@@ -79,7 +79,7 @@ public class LLMInitialSyllabusService {
         CompletableFuture<Map<String, Object>> teachingContentFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return generateTeachingContent(courseTitle, courseHour, request);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }, executor);
@@ -87,7 +87,7 @@ public class LLMInitialSyllabusService {
         CompletableFuture<Map<String, Object>> experimentalProjectsFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return generateExperimentalProjects(courseTitle, request);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }, executor);
@@ -95,7 +95,7 @@ public class LLMInitialSyllabusService {
         CompletableFuture<Map<String, Object>> textbooksFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return generateTextbooksAndReferenceBooks(courseTitle, courseHour, request);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }, executor);
@@ -117,9 +117,9 @@ public class LLMInitialSyllabusService {
             response.put("textbooks_and_reference_books", textbooksFuture.get());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new IOException("任务被中断", e);
+            throw new RuntimeException("任务被中断", e);
         } catch (java.util.concurrent.ExecutionException e) {
-            throw new IOException("任务执行异常: " + e.getMessage(), e);
+            throw new RuntimeException("任务执行异常: " + e.getMessage(), e);
         }
         response.put("teaching_language", teachingLanguage);
         response.put("responsible_college", responsibleCollege);
@@ -142,7 +142,7 @@ public class LLMInitialSyllabusService {
     /**
      * 生成课程英文名
      */
-    private String generateEnglishName(String courseTitle) throws IOException {
+    private String generateEnglishName(String courseTitle) {
         String prompt = "你是一位资深大学教授，你知道各个学科对应的中文名和英文名分别是什么。\n" +
                        "用户会给你一个课程的中文名，你需要将其翻译成英文，并且返回给用户。注意，你返回的内容应该有且仅有课程的英文名，并且是一个字符串，而不要有其他任何多余的内容\n" +
                        "课程的中文名是" + courseTitle + "，请给出它的英文名。";
@@ -154,7 +154,7 @@ public class LLMInitialSyllabusService {
     /**
      * 生成详细课程目标
      */
-    private Map<String, Object> generateDetailedCourseTarget(String courseTitle, String request) throws IOException {
+    private Map<String, Object> generateDetailedCourseTarget(String courseTitle, String request) {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_detailed_course_target.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 detailed_course_target，其json模版内容后续会指定。\n" +
@@ -164,13 +164,17 @@ public class LLMInitialSyllabusService {
                        "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>";
 
         String response = callLLM(prompt);
-        return objectMapper.readValue(response, Map.class);
+        try {
+            return objectMapper.readValue(response, Map.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * 生成教学内容
      */
-    private Map<String, Object> generateTeachingContent(String courseTitle, String courseHour, String request) throws IOException {
+    private Map<String, Object> generateTeachingContent(String courseTitle, String courseHour, String request) {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_teaching_content.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 teaching_content，其json模版内容后续会指定。\n" +
@@ -181,13 +185,17 @@ public class LLMInitialSyllabusService {
                        "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>";
 
         String response = callLLM(prompt);
-        return objectMapper.readValue(response, Map.class);
+        try {
+            return objectMapper.readValue(response, Map.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * 生成实验项目
      */
-    private Map<String, Object> generateExperimentalProjects(String courseTitle, String request) throws IOException {
+    private Map<String, Object> generateExperimentalProjects(String courseTitle, String request) {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_experimental_projects.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 experimental_projects，其json模版内容后续会指定。\n" +
@@ -197,13 +205,17 @@ public class LLMInitialSyllabusService {
                        "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>";
 
         String response = callLLM(prompt);
-        return objectMapper.readValue(response, Map.class);
+        try {
+            return objectMapper.readValue(response, Map.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * 生成教材和参考书
      */
-    private Map<String, Object> generateTextbooksAndReferenceBooks(String courseTitle, String courseHour, String request) throws IOException {
+    private Map<String, Object> generateTextbooksAndReferenceBooks(String courseTitle, String courseHour, String request) {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_textbooks_and_reference_books.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 textbooks_and_reference_books，其json模版内容后续会指定。\n" +
@@ -214,13 +226,17 @@ public class LLMInitialSyllabusService {
                        "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>";
 
         String response = callLLM(prompt);
-        return objectMapper.readValue(response, Map.class);
+        try {
+            return objectMapper.readValue(response, Map.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * 调用大模型
      */
-    public String callLLM(String prompt) throws IOException {
+    public String callLLM(String prompt) {
         // 构建请求参数
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", openAIConfig.getModelName());
@@ -249,15 +265,18 @@ public class LLMInitialSyllabusService {
         );
 
         // 解析响应
-        JsonNode responseNode = objectMapper.readTree(response);
-        if (responseNode.has("choices") && responseNode.get("choices").isArray() && responseNode.get("choices").size() > 0) {
-            JsonNode choice = responseNode.get("choices").get(0);
-            if (choice.has("message") && choice.get("message").has("content")) {
-                return choice.get("message").get("content").asText();
+        try {
+            JsonNode responseNode = objectMapper.readTree(response);
+            if (responseNode.has("choices") && responseNode.get("choices").isArray() && responseNode.get("choices").size() > 0) {
+                JsonNode choice = responseNode.get("choices").get(0);
+                if (choice.has("message") && choice.get("message").has("content")) {
+                    return choice.get("message").get("content").asText();
+                }
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        throw new IOException("大模型响应格式错误");
+        throw new RuntimeException("大模型响应格式错误");
     }
 
     /**
@@ -267,7 +286,7 @@ public class LLMInitialSyllabusService {
         try {
             ClassPathResource resource = new ClassPathResource(filePath);
             return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return "";
         }
     }

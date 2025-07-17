@@ -210,4 +210,52 @@ public class InitialSyllabusRequest {
                 ", request='" + request + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        
+        InitialSyllabusRequest that = (InitialSyllabusRequest) o;
+        
+        if (courseId != null ? !courseId.equals(that.courseId) : that.courseId != null) return false;
+        if (courseCode != null ? !courseCode.equals(that.courseCode) : that.courseCode != null) return false;
+        if (courseTitle != null ? !courseTitle.equals(that.courseTitle) : that.courseTitle != null) return false;
+        if (teachingLanguage != null ? !teachingLanguage.equals(that.teachingLanguage) : that.teachingLanguage != null) return false;
+        if (responsibleCollege != null ? !responsibleCollege.equals(that.responsibleCollege) : that.responsibleCollege != null) return false;
+        if (courseCategory != null ? !courseCategory.equals(that.courseCategory) : that.courseCategory != null) return false;
+        if (principle != null ? !principle.equals(that.principle) : that.principle != null) return false;
+        if (verifier != null ? !verifier.equals(that.verifier) : that.verifier != null) return false;
+        if (credit != null ? !credit.equals(that.credit) : that.credit != null) return false;
+        if (courseHour != null ? !courseHour.equals(that.courseHour) : that.courseHour != null) return false;
+        if (courseIntroduction != null ? !courseIntroduction.equals(that.courseIntroduction) : that.courseIntroduction != null) return false;
+        if (teachingTarget != null ? !teachingTarget.equals(that.teachingTarget) : that.teachingTarget != null) return false;
+        if (evaluationMode != null ? !evaluationMode.equals(that.evaluationMode) : that.evaluationMode != null) return false;
+        if (whetherTechnicalCourse != null ? !whetherTechnicalCourse.equals(that.whetherTechnicalCourse) : that.whetherTechnicalCourse != null) return false;
+        if (assessmentType != null ? !assessmentType.equals(that.assessmentType) : that.assessmentType != null) return false;
+        if (gradeRecording != null ? !gradeRecording.equals(that.gradeRecording) : that.gradeRecording != null) return false;
+        return request != null ? request.equals(that.request) : that.request == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = courseId != null ? courseId.hashCode() : 0;
+        result = 31 * result + (courseCode != null ? courseCode.hashCode() : 0);
+        result = 31 * result + (courseTitle != null ? courseTitle.hashCode() : 0);
+        result = 31 * result + (teachingLanguage != null ? teachingLanguage.hashCode() : 0);
+        result = 31 * result + (responsibleCollege != null ? responsibleCollege.hashCode() : 0);
+        result = 31 * result + (courseCategory != null ? courseCategory.hashCode() : 0);
+        result = 31 * result + (principle != null ? principle.hashCode() : 0);
+        result = 31 * result + (verifier != null ? verifier.hashCode() : 0);
+        result = 31 * result + (credit != null ? credit.hashCode() : 0);
+        result = 31 * result + (courseHour != null ? courseHour.hashCode() : 0);
+        result = 31 * result + (courseIntroduction != null ? courseIntroduction.hashCode() : 0);
+        result = 31 * result + (teachingTarget != null ? teachingTarget.hashCode() : 0);
+        result = 31 * result + (evaluationMode != null ? evaluationMode.hashCode() : 0);
+        result = 31 * result + (whetherTechnicalCourse != null ? whetherTechnicalCourse.hashCode() : 0);
+        result = 31 * result + (assessmentType != null ? assessmentType.hashCode() : 0);
+        result = 31 * result + (gradeRecording != null ? gradeRecording.hashCode() : 0);
+        result = 31 * result + (request != null ? request.hashCode() : 0);
+        return result;
+    }
 } 

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +14,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/initial-syllabus")
-@CrossOrigin(origins = "*")
+@CrossOrigin(originPatterns = "*")
 public class InitialSyllabusController {
 
     @Autowired
@@ -56,7 +55,7 @@ public class InitialSyllabusController {
             response.put("data", result);
 
             return ResponseEntity.ok(response);
-        } catch (IOException e) {
+        } catch (RuntimeException e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
             errorResponse.put("message", "生成教学大纲时发生错误: " + e.getMessage());

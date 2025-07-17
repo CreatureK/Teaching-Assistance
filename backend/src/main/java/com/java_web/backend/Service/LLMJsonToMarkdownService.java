@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JSON转Markdown服务类
@@ -33,46 +35,57 @@ public class LLMJsonToMarkdownService {
      * @param customStyle 自定义样式要求
      * @return 转换后的Markdown内容
      */
-    public String convertJsonToMarkdown(String jsonContent, String outputFormat, String customStyle) throws IOException {
-        // 验证JSON格式
-        if (!isValidJson(jsonContent)) {
-            throw new IllegalArgumentException("JSON格式不正确");
+    public String convertJsonToMarkdown(String jsonContent, String outputFormat, String customStyle) {
+        try {
+            // 验证JSON格式
+            if (!isValidJson(jsonContent)) {
+                throw new IllegalArgumentException("JSON格式不正确");
+            }
+            
+            // 解析JSON结构信息
+            Map<String, Object> structureInfo = parseJsonStructure(jsonContent);
+            
+            // 构建prompt
+            String prompt = buildPrompt(jsonContent, structureInfo, outputFormat, customStyle);
+            
+            // 调用大模型
+            String response = callLLM(prompt);
+            
+            return response;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        // 解析JSON结构
-        JsonNode jsonNode = objectMapper.readTree(jsonContent);
-        Map<String, Object> structureInfo = parseJsonStructure(jsonNode);
-
-        // 构建prompt
-        String prompt = buildPrompt(jsonContent, structureInfo, outputFormat, customStyle);
-
-        // 调用大模型
-        String response = callLLM(prompt);
-
-        return response;
     }
 
     /**
      * 带自定义样式的JSON转换（兼容旧测试代码）
      */
-    public String convertJsonToMarkdownWithCustomStyle(String jsonContent, String customStyle) throws IOException {
-        return convertJsonToMarkdown(jsonContent, "markdown", customStyle);
+    public String convertJsonToMarkdownWithCustomStyle(String jsonContent, String customStyle) {
+        try {
+            return convertJsonToMarkdown(jsonContent, "markdown", customStyle);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * 批量转换JSON文件（兼容旧测试代码）
      */
-    public Map<String, String> batchConvertJsonToMarkdown(Map<String, String> jsonContents) throws IOException {
-        Map<String, String> results = new HashMap<>();
-        for (Map.Entry<String, String> entry : jsonContents.entrySet()) {
-            try {
-                String result = convertJsonToMarkdown(entry.getValue(), "markdown", "默认样式");
-                results.put(entry.getKey(), result);
-            } catch (Exception e) {
-                results.put(entry.getKey(), "转换失败: " + e.getMessage());
+    public Map<String, String> batchConvertJsonToMarkdown(Map<String, String> jsonContents) {
+        try {
+            Map<String, String> results = new HashMap<>();
+            for (Map.Entry<String, String> entry : jsonContents.entrySet()) {
+                try {
+                    String result = convertJsonToMarkdown(entry.getValue(), "markdown", "默认样式");
+                    results.put(entry.getKey(), result);
+                } catch (Exception e) {
+                    results.put(entry.getKey(), "转换失败: " + e.getMessage());
+                }
             }
+            return results;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return results;
     }
 
     /**
@@ -90,30 +103,35 @@ public class LLMJsonToMarkdownService {
     /**
      * 解析JSON结构
      */
-    private Map<String, Object> parseJsonStructure(JsonNode jsonNode) {
-        Map<String, Object> structureInfo = new HashMap<>();
-        
-        if (jsonNode.isObject()) {
-            structureInfo.put("type", "object");
-            java.util.Iterator<String> it = jsonNode.fieldNames();
-            java.util.List<String> keys = new java.util.ArrayList<>();
-            while (it.hasNext()) {
-                keys.add(it.next());
+    private Map<String, Object> parseJsonStructure(String jsonContent) {
+        try {
+            JsonNode jsonNode = objectMapper.readTree(jsonContent);
+            Map<String, Object> structureInfo = new HashMap<>();
+            
+            if (jsonNode.isObject()) {
+                structureInfo.put("type", "object");
+                java.util.Iterator<String> it = jsonNode.fieldNames();
+                java.util.List<String> keys = new java.util.ArrayList<>();
+                while (it.hasNext()) {
+                    keys.add(it.next());
+                }
+                structureInfo.put("keys", keys);
+                structureInfo.put("length", jsonNode.size());
+                structureInfo.put("hasNested", hasNestedStructure(jsonNode, 0, 3));
+            } else if (jsonNode.isArray()) {
+                structureInfo.put("type", "array");
+                structureInfo.put("length", jsonNode.size());
+                structureInfo.put("hasNested", hasNestedStructure(jsonNode, 0, 3));
+            } else {
+                structureInfo.put("type", "primitive");
+                structureInfo.put("length", 1);
+                structureInfo.put("hasNested", false);
             }
-            structureInfo.put("keys", keys);
-            structureInfo.put("length", jsonNode.size());
-            structureInfo.put("hasNested", hasNestedStructure(jsonNode, 0, 3));
-        } else if (jsonNode.isArray()) {
-            structureInfo.put("type", "array");
-            structureInfo.put("length", jsonNode.size());
-            structureInfo.put("hasNested", hasNestedStructure(jsonNode, 0, 3));
-        } else {
-            structureInfo.put("type", "primitive");
-            structureInfo.put("length", 1);
-            structureInfo.put("hasNested", false);
+            
+            return structureInfo;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        
-        return structureInfo;
     }
 
     /**
@@ -144,98 +162,65 @@ public class LLMJsonToMarkdownService {
     /**
      * 构建prompt
      */
-    private String buildPrompt(String jsonContent, Map<String, Object> structureInfo, String outputFormat, String customStyle) throws IOException {
-        StringBuilder prompt = new StringBuilder();
-        
-        // 基础prompt
-        String basePrompt = loadPromptFromFile("prompt/json_to_markdown/prompt_for_json_to_markdown.txt");
-        if (basePrompt == null) {
-            basePrompt = getDefaultPrompt();
+    private String buildPrompt(String jsonContent, Map<String, Object> structureInfo, String outputFormat, String customStyle) {
+        try {
+            String promptTemplate = loadPromptFromFile("prompt/json_to_markdown/json_to_markdown_prompt.txt");
+            String template = loadPromptFromFile("templates/json_to_markdown/json_to_markdown.json");
+            
+            return String.format(promptTemplate, jsonContent, structureInfo, outputFormat, customStyle, template);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        
-        prompt.append("请将以下JSON内容转换为").append(outputFormat.toUpperCase()).append("格式的文档：\n\n");
-        prompt.append("JSON内容：\n```json\n").append(jsonContent).append("\n```\n\n");
-        
-        // 结构信息
-        prompt.append("JSON结构信息：\n");
-        prompt.append("- 数据类型: ").append(structureInfo.get("type")).append("\n");
-        if (structureInfo.get("keys") != null) {
-            @SuppressWarnings("unchecked")
-            java.util.List<String> keys = (java.util.List<String>) structureInfo.get("keys");
-            prompt.append("- 主要键: ").append(String.join(", ", keys)).append("\n");
-        }
-        prompt.append("- 数据长度: ").append(structureInfo.get("length")).append("\n");
-        prompt.append("- 包含嵌套结构: ").append(structureInfo.get("hasNested")).append("\n\n");
-        
-        prompt.append("输出格式要求: ").append(outputFormat.toUpperCase()).append("\n");
-        
-        // 自定义样式
-        if (customStyle != null && !customStyle.trim().isEmpty()) {
-            prompt.append("\n自定义样式要求:\n").append(customStyle).append("\n");
-        }
-        
-        // 样式定制指导
-        String stylePrompt = loadPromptFromFile("prompt/json_to_markdown/prompt_for_custom_style.txt");
-        if (stylePrompt != null) {
-            prompt.append("\n样式定制指导:\n").append(stylePrompt).append("\n");
-        }
-        
-        prompt.append("\n请确保：\n");
-        prompt.append("1. 保持数据的完整性和准确性\n");
-        prompt.append("2. 使用合适的文档结构\n");
-        prompt.append("3. 保持良好的可读性和格式\n");
-        prompt.append("4. 根据内容类型选择合适的展示方式\n");
-        
-        return prompt.toString();
     }
 
     /**
      * 调用大模型
      */
-    public String callLLM(String prompt) throws IOException {
-        // 构建请求参数
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", openAIConfig.getModelName());
+    public String callLLM(String prompt) {
+        try {
+            // 构建请求参数
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("model", openAIConfig.getModelName());
 
-        // 修正：使用List<Map<String, Object>>
-        java.util.List<Map<String, Object>> messages = new java.util.ArrayList<>();
+            List<Map<String, Object>> messages = new ArrayList<>();
 
-        Map<String, Object> systemMsg1 = new HashMap<>();
-        systemMsg1.put("role", "system");
-        systemMsg1.put("content", "你是一个专业的文档转换专家，擅长将JSON格式的内容转换为结构化的Markdown文档。");
-        messages.add(systemMsg1);
+            Map<String, Object> systemMsg = new HashMap<>();
+            systemMsg.put("role", "system");
+            systemMsg.put("content", "你是一个专业的JSON转Markdown专家，擅长将JSON数据转换为结构化的Markdown文档。");
+            messages.add(systemMsg);
 
-        Map<String, Object> systemMsg2 = new HashMap<>();
-        systemMsg2.put("role", "system");
-        systemMsg2.put("content", getDefaultPrompt());
-        messages.add(systemMsg2);
+            Map<String, Object> userMsg = new HashMap<>();
+            userMsg.put("role", "user");
+            userMsg.put("content", prompt);
+            messages.add(userMsg);
 
-        Map<String, Object> userMsg = new HashMap<>();
-        userMsg.put("role", "user");
-        userMsg.put("content", prompt);
-        messages.add(userMsg);
+            requestBody.put("messages", messages);
+            requestBody.put("temperature", 0.3);
+            requestBody.put("max_tokens", 8000);
 
-        requestBody.put("messages", messages);
-        requestBody.put("temperature", 0.3);
-        requestBody.put("max_tokens", 8000);
+            // 发送请求
+            String response = HttpUtil.postJson(
+                openAIConfig.getApiUrl(),
+                openAIConfig.getApiKey(),
+                requestBody
+            );
 
-        // 发送请求
-        String response = HttpUtil.postJson(
-            openAIConfig.getApiUrl(),
-            openAIConfig.getApiKey(),
-            requestBody
-        );
-
-        // 解析响应
-        JsonNode responseNode = objectMapper.readTree(response);
-        if (responseNode.has("choices") && responseNode.get("choices").isArray() && responseNode.get("choices").size() > 0) {
-            JsonNode choice = responseNode.get("choices").get(0);
-            if (choice.has("message") && choice.get("message").has("content")) {
-                return choice.get("message").get("content").asText();
+            // 解析响应
+            try {
+                JsonNode responseNode = objectMapper.readTree(response);
+                if (responseNode.has("choices") && responseNode.get("choices").isArray() && responseNode.get("choices").size() > 0) {
+                    JsonNode choice = responseNode.get("choices").get(0);
+                    if (choice.has("message") && choice.get("message").has("content")) {
+                        return choice.get("message").get("content").asText();
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
+            throw new RuntimeException("大模型响应格式错误");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        throw new IOException("大模型响应格式错误");
     }
 
     /**

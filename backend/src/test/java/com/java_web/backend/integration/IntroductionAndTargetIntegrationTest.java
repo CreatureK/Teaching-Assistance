@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -31,7 +31,7 @@ public class IntroductionAndTargetIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Mock
+    @MockBean
     private LLMIntroductionAndTargetService llmIntroductionAndTargetService;
 
     private TestResultWriter testResultWriter;
@@ -208,15 +208,20 @@ public class IntroductionAndTargetIntegrationTest {
 
     @Test
     void testIntroductionAndTargetEndpoint_LongRequest() throws Exception {
-        // 测试长请求内容
+        // 准备测试数据 - 长请求内容
+        StringBuilder longRequest = new StringBuilder();
+        for (int i = 0; i < 1000; i++) {
+            longRequest.append("这是一个很长的请求内容，用于测试系统对长文本的处理能力。");
+        }
+
         IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
-        request.setCourseId("100");
-        request.setCourseTitle("复杂系统建模");
-        request.setRequest("请结合工程实际，突出应用能力培养，注重理论与实践的结合，强调数学建模在解决实际问题中的应用，培养学生的创新思维和解决复杂问题的能力，同时关注学科前沿发展动态");
+        request.setCourseId("5");
+        request.setCourseTitle("数据结构");
+        request.setRequest(longRequest.toString());
 
         // 模拟Service返回
         IntroductionAndTargetResponse mockResponse = new IntroductionAndTargetResponse();
-        mockResponse.setCourseId("100");
+        mockResponse.setCourseId("5");
         mockResponse.setCourseIntroduction("课程介绍");
         mockResponse.setTeachingTarget("教学目标");
         
@@ -227,22 +232,22 @@ public class IntroductionAndTargetIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.courseId").value("100"))
+                .andExpect(jsonPath("$.courseId").value("5"))
                 .andExpect(jsonPath("$.courseIntroduction").exists())
                 .andExpect(jsonPath("$.teachingTarget").exists());
     }
 
     @Test
     void testIntroductionAndTargetEndpoint_SpecialCharacters() throws Exception {
-        // 测试包含特殊字符的请求
+        // 准备测试数据 - 特殊字符
         IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
-        request.setCourseId("101");
+        request.setCourseId("6");
         request.setCourseTitle("C++程序设计");
-        request.setRequest("请结合工程实际，突出应用能力培养，包含C++、Java、Python等编程语言");
+        request.setRequest("请包含特殊字符：!@#$%^&*()_+-=[]{}|;':\",./<>?`~");
 
         // 模拟Service返回
         IntroductionAndTargetResponse mockResponse = new IntroductionAndTargetResponse();
-        mockResponse.setCourseId("101");
+        mockResponse.setCourseId("6");
         mockResponse.setCourseIntroduction("课程介绍");
         mockResponse.setTeachingTarget("教学目标");
         
@@ -253,7 +258,7 @@ public class IntroductionAndTargetIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.courseId").value("101"))
+                .andExpect(jsonPath("$.courseId").value("6"))
                 .andExpect(jsonPath("$.courseIntroduction").exists())
                 .andExpect(jsonPath("$.teachingTarget").exists());
     }

@@ -1,18 +1,17 @@
 package com.java_web.backend.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.java_web.backend.Controller.InitialSyllabusController;
 import com.java_web.backend.Entity.InitialSyllabusRequest;
 import com.java_web.backend.Service.LLMInitialSyllabusService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.mockito.Mock;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,15 +22,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureWebMvc
+@WebMvcTest(controllers = InitialSyllabusController.class)
 @ActiveProfiles("test")
+@TestPropertySource(properties = {
+    "spring.autoconfigure.exclude=com.java_web.backend.Config.CorsConfig"
+})
 public class InitialSyllabusIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private LLMInitialSyllabusService initialSyllabusService;
 
     @Autowired
