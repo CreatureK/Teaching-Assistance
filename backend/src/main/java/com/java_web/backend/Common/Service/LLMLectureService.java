@@ -36,7 +36,7 @@ public class LLMLectureService {
             "example_exercises_essential",
             "example_exercises_advanced"
     };
-    private Map<String, String> templateSections;
+    private Map<String, Object> templateSections;
 
     private void parseLectureTemplate(String templateContent) {
         // 提取<command>部分
@@ -87,13 +87,13 @@ public class LLMLectureService {
                 allContent.append("# ").append(i + 1).append(". ").append(topic).append("\n\n");
 
                 // 并发生成各部分内容
-                Future<String> overviewFuture = executor.submit(() -> callLLM("概述", templateSections.getOrDefault("overview", ""), req, tools));
-                Future<String> coreBasicFuture = executor.submit(() -> callLLM("核心内容（基础）", templateSections.getOrDefault("core_content_basic", ""), req, tools));
-                Future<String> coreEssentialFuture = executor.submit(() -> callLLM("核心内容（必备）", templateSections.getOrDefault("core_content_essential", ""), req, tools));
-                Future<String> coreAdvancedFuture = executor.submit(() -> callLLM("核心内容（进阶）", templateSections.getOrDefault("core_content_advanced", ""), req, tools));
-                Future<String> exBasicFuture = executor.submit(() -> callLLM("例题选讲（基础）", templateSections.getOrDefault("example_exercises_basic", ""), req, tools));
-                Future<String> exEssentialFuture = executor.submit(() -> callLLM("例题选讲（必备）", templateSections.getOrDefault("example_exercises_essential", ""), req, tools));
-                Future<String> exAdvancedFuture = executor.submit(() -> callLLM("例题选讲（进阶）", templateSections.getOrDefault("example_exercises_advanced", ""), req, tools));
+                Future<String> overviewFuture = executor.submit(() -> callLLM("概述", templateSections.getOrDefault("overview", "").toString(), req, tools));
+                Future<String> coreBasicFuture = executor.submit(() -> callLLM("核心内容（基础）", templateSections.getOrDefault("core_content_basic", "").toString(), req, tools));
+                Future<String> coreEssentialFuture = executor.submit(() -> callLLM("核心内容（必备）", templateSections.getOrDefault("core_content_essential", "").toString(), req, tools));
+                Future<String> coreAdvancedFuture = executor.submit(() -> callLLM("核心内容（进阶）", templateSections.getOrDefault("core_content_advanced", "").toString(), req, tools));
+                Future<String> exBasicFuture = executor.submit(() -> callLLM("例题选讲（基础）", templateSections.getOrDefault("example_exercises_basic", "").toString(), req, tools));
+                Future<String> exEssentialFuture = executor.submit(() -> callLLM("例题选讲（必备）", templateSections.getOrDefault("example_exercises_essential", "").toString(), req, tools));
+                Future<String> exAdvancedFuture = executor.submit(() -> callLLM("例题选讲（进阶）", templateSections.getOrDefault("example_exercises_advanced", "").toString(), req, tools));
 
                 String overview = getOrDefault(overviewFuture);
                 String coreBasic = getOrDefault(coreBasicFuture);
@@ -135,11 +135,10 @@ public class LLMLectureService {
             messages.put(new JSONObject().put("role", "system").put("content", "<command>" + commandInstructions + "</command>"));
         }
         body.put("messages", messages);
-        Map<String, String> headers = Map.of(
-                "Authorization", "Bearer " + openAIConfig.getApiKey(),
-                "Content-Type", "application/json"
-        );
+        Map<String, Object> headers = new java.util.HashMap<>();
         try {
+            headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
+            headers.put("Content-Type", "application/json");
             String response = HttpUtil.postJson(openAIConfig.getApiUrl(), body.toString(), headers);
             System.out.println("【" + sectionName + "】大模型原始输出：\n" + response); // 打印大模型输出
             return response != null && !response.isEmpty() ? response : "内容生成失败";

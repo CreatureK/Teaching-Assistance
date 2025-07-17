@@ -1,0 +1,25 @@
+{
+  "unitNumber": "<此处填写章节号x>",
+  "unitName": "<大章节>",
+  "unitGoal": "<此处填写大章节的总教学目标>",
+  "subChapters": [
+    {
+      "subNumber": "<小章节序号x.1>",
+      "subName": "<小章节>",
+      "subContent": "<此处填写小章节的教学内容>",
+      "subGoal": "<此处填写小章节的教学目标>"
+    },
+    {
+      "subNumber": "<小章节序号x.2>",
+      "subName": "<小章节>",
+      "subContent": "<此处填写小章节的教学内容>",
+      "subGoal": "<此处填写小章节的教学目标>"
+    },
+    {
+      "subNumber": "<小章节序号x.3>",
+      "subName": "<小章节>",
+      "subContent": "<此处填写小章节的教学内容>",
+      "subGoal": "<此处填写小章节的教学目标>"
+    }
+  ]
+}

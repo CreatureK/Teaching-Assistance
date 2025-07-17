@@ -1,0 +1,17 @@
+<prompt>
+你需要将用户给定的 json 格式的内容转换为 markdown 格式的内容
+
+<requirements>
+    <requirement>
+        你的输出内容只需要包含由json转换出的内容
+        不应该包含其他无关的提示内容，例如:
+        ```好的，我将会将 json 内容转换为 markdown 并返回给用户```
+        ```以上是我根据用户提供的 json 内容转换的 markdown 内容，如果还有其他需求请继续提问```
+    </requirements>
+    <requirement>
+        对于 json 内容中的"数组+对象"，应当优先考虑转为 markdown 表格
+        对于只出现一次的内容，则只需要考虑层级问题
+    </requirement>
+</requirements>
+
+</prompt>

@@ -1,0 +1,22 @@
+// 测试名称: Demo_BatchConvert_Results
+// 生成时间: 2025-07-16 18:46:33
+{
+  "summary" : {
+    "total" : 3,
+    "successRate" : "0.0%",
+    "success" : 0,
+    "error" : 3
+  },
+  "item_2" : {
+    "error" : "Illegal character(s) in message header value: [{role=system, content=你是一个专业的文档转换专家，擅长将JSON格式的内容转换为结构化的Markdown文档。}, {role=system, content=你是一个专业的文档转换专家，擅长将JSON格式的内容转换为结构化的Markdown文档。\n\n转换要求：\n1. 保持JSON数据的完整性和准确性\n2. 使用合适的Markdown语法结构\n3. 根据内容类型选择合适的标题层级\n4. 对于列表数据，使用适当的列表格式\n5. 对于表格数据，使用Markdown表格格式\n6. 保持内容的逻辑层次和可读性\n7. 添加适当的空行和分隔符以提高可读性\n\n请将提供的JSON内容转换为格式良好的Markdown文档。}, {role=user, content=请将以下JSON内容转换为MARKDOWN格式的文档：\n\nJSON内容：\n```json\n{\"product\": \"智能手机\", \"brand\": \"华为\", \"price\": 3999, \"features\": [\"5G\", \"AI摄影\", \"快充\"]}\n```\n\nJSON结构信息：\n- 数据类型: object\n- 主要键: product, brand, price, features\n- 数据长度: 4\n- 包含嵌套结构: false\n\n输出格式要求: MARKDOWN\n\n自定义样式要求:\n使用简洁的格式展示信息\n\n请确保：\n1. 保持数据的完整性和准确性\n2. 使用合适的文档结构\n3. 保持良好的可读性和格式\n4. 根据内容类型选择合适的展示方式\n}]",
+    "status" : "error"
+  },
+  "item_1" : {
+    "error" : "Illegal character(s) in message header value: [{role=system, content=你是一个专业的文档转换专家，擅长将JSON格式的内容转换为结构化的Markdown文档。}, {role=system, content=你是一个专业的文档转换专家，擅长将JSON格式的内容转换为结构化的Markdown文档。\n\n转换要求：\n1. 保持JSON数据的完整性和准确性\n2. 使用合适的Markdown语法结构\n3. 根据内容类型选择合适的标题层级\n4. 对于列表数据，使用适当的列表格式\n5. 对于表格数据，使用Markdown表格格式\n6. 保持内容的逻辑层次和可读性\n7. 添加适当的空行和分隔符以提高可读性\n\n请将提供的JSON内容转换为格式良好的Markdown文档。}, {role=user, content=请将以下JSON内容转换为MARKDOWN格式的文档：\n\nJSON内容：\n```json\n{\"course\": \"Java程序设计\", \"instructor\": \"李教授\", \"students\": 45}\n```\n\nJSON结构信息：\n- 数据类型: object\n- 主要键: course, instructor, students\n- 数据长度: 3\n- 包含嵌套结构: false\n\n输出格式要求: MARKDOWN\n\n自定义样式要求:\n使用简洁的格式展示信息\n\n请确保：\n1. 保持数据的完整性和准确性\n2. 使用合适的文档结构\n3. 保持良好的可读性和格式\n4. 根据内容类型选择合适的展示方式\n}]",
+    "status" : "error"
+  },
+  "item_0" : {
+    "error" : "Illegal character(s) in message header value: [{role=system, content=你是一个专业的文档转换专家，擅长将JSON格式的内容转换为结构化的Markdown文档。}, {role=system, content=你是一个专业的文档转换专家，擅长将JSON格式的内容转换为结构化的Markdown文档。\n\n转换要求：\n1. 保持JSON数据的完整性和准确性\n2. 使用合适的Markdown语法结构\n3. 根据内容类型选择合适的标题层级\n4. 对于列表数据，使用适当的列表格式\n5. 对于表格数据，使用Markdown表格格式\n6. 保持内容的逻辑层次和可读性\n7. 添加适当的空行和分隔符以提高可读性\n\n请将提供的JSON内容转换为格式良好的Markdown文档。}, {role=user, content=请将以下JSON内容转换为MARKDOWN格式的文档：\n\nJSON内容：\n```json\n{\"name\": \"张三\", \"age\": 25, \"city\": \"北京\"}\n```\n\nJSON结构信息：\n- 数据类型: object\n- 主要键: name, age, city\n- 数据长度: 3\n- 包含嵌套结构: false\n\n输出格式要求: MARKDOWN\n\n自定义样式要求:\n使用简洁的格式展示信息\n\n请确保：\n1. 保持数据的完整性和准确性\n2. 使用合适的文档结构\n3. 保持良好的可读性和格式\n4. 根据内容类型选择合适的展示方式\n}]",
+    "status" : "error"
+  }
+}

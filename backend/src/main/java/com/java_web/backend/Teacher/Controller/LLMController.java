@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 /**
  * LLMController 控制器
  * 提供与大模型内容生成相关的接口，包括课程介绍与目标、初版教学大纲的生成。
@@ -32,8 +30,8 @@ public class LLMController {
      * @return 由大模型生成的课程介绍和教学目标内容
      */
     @PostMapping("/introduction_and_target")
-    public ResponseEntity<String> generateIntroductionAndTarget(@RequestBody IntroductionAndTargetRequest req) throws IOException {
-        String result = introductionService.generateIntroductionAndTarget(req);
+    public ResponseEntity<?> generateIntroductionAndTarget(@RequestBody IntroductionAndTargetRequest req) {
+        var result = introductionService.generateIntroductionAndTarget(req);
         return ResponseEntity.ok(result);
     }
 
@@ -48,8 +46,8 @@ public class LLMController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("lecture")
-    public ResponseEntity<String> generateLecture(@RequestBody LectureRequest req) throws IOException {
+    @PostMapping("/lecture")
+    public ResponseEntity<String> generateLecture(@RequestBody LectureRequest req) {
         String result = lectureService.generateLecture(req);
         return ResponseEntity.ok(result);
     }
