@@ -1,6 +1,6 @@
 package com.java_web.backend.entity;
 
-import com.java_web.backend.Entity.IntroductionAndTargetRequest;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

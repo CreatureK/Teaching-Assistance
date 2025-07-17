@@ -1,7 +1,7 @@
 package com.java_web.backend.service;
 
-import com.java_web.backend.Config.OpenAIConfig;
-import com.java_web.backend.Service.LLMJsonToMarkdownService;
+import com.java_web.backend.Common.Config.OpenAIConfig;
+import com.java_web.backend.Common.Service.LLMJsonToMarkdownService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

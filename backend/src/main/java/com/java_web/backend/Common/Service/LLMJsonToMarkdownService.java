@@ -1,9 +1,9 @@
-package com.java_web.backend.Service;
+package com.java_web.backend.Common.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Config.OpenAIConfig;
-import com.java_web.backend.Utils.HttpUtil;
+import com.java_web.backend.Common.Config.OpenAIConfig;
+import com.java_web.backend.Common.Utils.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;

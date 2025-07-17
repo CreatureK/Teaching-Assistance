@@ -66,7 +66,7 @@ public class LLMLectureService {
         }
     }
 
-    public String generateLecture(LectureRequest req) throws IOException {
+    public String generateLecture(LectureRequest req) {
         // 读取lecture模板
         String templateContent = LLMIntroductionAndTargetService.PromptUtil.readPrompt("prompt/lecture/prompt_for_lecture_generation.txt");
         parseLectureTemplate(templateContent);

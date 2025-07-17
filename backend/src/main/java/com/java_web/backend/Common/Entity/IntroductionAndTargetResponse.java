@@ -1,4 +1,4 @@
-package com.java_web.backend.Entity;
+package com.java_web.backend.Common.DTO;
 
 public class IntroductionAndTargetResponse {
     private String courseId;

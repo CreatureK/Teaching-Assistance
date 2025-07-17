@@ -1,10 +1,11 @@
 package com.java_web.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Controller.JsonToMarkdownController;
-import com.java_web.backend.Entity.JsonToMarkdownRequest;
-import com.java_web.backend.Entity.JsonToMarkdownResponse;
-import com.java_web.backend.Service.LLMJsonToMarkdownService;
+import com.java_web.backend.Teacher.Controller.JsonToMarkdownController;
+import com.java_web.backend.Common.DTO.JsonToMarkdownRequest;
+import com.java_web.backend.Common.DTO.JsonToMarkdownResponse;
+import com.java_web.backend.Common.Service.LLMJsonToMarkdownService;
+import com.java_web.backend.Common.Service.JWTService;
 import com.java_web.backend.utils.TestResultWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,19 +36,26 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @WebMvcTest(JsonToMarkdownController.class)
-@Import(JsonToMarkdownControllerTest.TestCorsConfig.class)
+@Import({JsonToMarkdownControllerTest.TestCorsConfig.class, JsonToMarkdownController.class})
 public class JsonToMarkdownControllerTest {
 
     // 测试专用的CORS配置
-    public static class TestCorsConfig implements WebMvcConfigurer {
+    @org.springframework.context.annotation.Configuration
+    public static class TestCorsConfig implements org.springframework.web.servlet.config.annotation.WebMvcConfigurer {
         @Override
-        public void addCorsMappings(CorsRegistry registry) {
+        public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
             registry.addMapping("/**")
                     .allowedOriginPatterns("*")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(false)  // 测试环境中设置为false避免CORS错误
                     .maxAge(168000);
+        }
+        
+        // 禁用拦截器
+        @Override
+        public void addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry registry) {
+            // 不添加任何拦截器，禁用所有拦截器
         }
     }
 
@@ -59,6 +67,11 @@ public class JsonToMarkdownControllerTest {
 
     @MockBean
     private LLMJsonToMarkdownService jsonToMarkdownService;
+
+    @MockBean
+    private com.java_web.backend.Common.Service.JWTService jwtService;
+
+
 
     private TestResultWriter testResultWriter;
 

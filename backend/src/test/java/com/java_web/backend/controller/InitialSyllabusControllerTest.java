@@ -1,9 +1,10 @@
 package com.java_web.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Entity.InitialSyllabusRequest;
-import com.java_web.backend.Service.LLMInitialSyllabusService;
-import com.java_web.backend.Controller.InitialSyllabusController;
+import com.java_web.backend.Common.DTO.InitialSyllabusRequest;
+import com.java_web.backend.Common.Service.LLMInitialSyllabusService;
+import com.java_web.backend.Common.Service.JWTService;
+import com.java_web.backend.Teacher.Controller.InitialSyllabusController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +27,26 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(InitialSyllabusController.class)
-@Import(InitialSyllabusControllerTest.TestCorsConfig.class)
+@Import({InitialSyllabusControllerTest.TestCorsConfig.class, InitialSyllabusController.class})
 public class InitialSyllabusControllerTest {
     
-    // 测试专用的CORS配置
-    public static class TestCorsConfig implements WebMvcConfigurer {
+    // 测试专用的配置，覆盖WebConfig
+    @org.springframework.context.annotation.Configuration
+    public static class TestCorsConfig implements org.springframework.web.servlet.config.annotation.WebMvcConfigurer {
         @Override
-        public void addCorsMappings(CorsRegistry registry) {
+        public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
             registry.addMapping("/**")
                     .allowedOriginPatterns("*")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(false)  // 测试环境中设置为false避免CORS错误
                     .maxAge(168000);
+        }
+        
+        // 禁用拦截器 - 覆盖WebConfig中的拦截器配置
+        @Override
+        public void addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry registry) {
+            // 不添加任何拦截器，禁用所有拦截器
         }
     }
 
@@ -47,6 +55,11 @@ public class InitialSyllabusControllerTest {
 
     @MockBean
     private LLMInitialSyllabusService initialSyllabusService;
+
+    @MockBean
+    private com.java_web.backend.Common.Service.JWTService jwtService;
+
+
 
     @Autowired
     private ObjectMapper objectMapper;
