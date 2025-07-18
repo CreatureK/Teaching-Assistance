@@ -1,10 +1,8 @@
 package com.java_web.backend;
 
-import com.java_web.backend.Common.DTO.JsonToMarkdownRequest;
 import com.java_web.backend.Common.Service.LLMJsonToMarkdownService;
 import com.java_web.backend.utils.TestResultWriter;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.boot.test.mock.mockito.MockBean;

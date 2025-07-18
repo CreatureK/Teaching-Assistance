@@ -1,13 +1,13 @@
-package com.java_web.backend.common.dto;
+package com.java_web.backend.Common.DTO;
 
 import java.util.Objects;
 
-public class JsonToMarkdownResponse {
+public class JsonToMarkdownResponseDTO {
     private String markdownContent;
 
-    public JsonToMarkdownResponse() {}
+    public JsonToMarkdownResponseDTO() {}
 
-    public JsonToMarkdownResponse(String markdownContent) {
+    public JsonToMarkdownResponseDTO(String markdownContent) {
         this.markdownContent = markdownContent;
     }
 
@@ -18,7 +18,7 @@ public class JsonToMarkdownResponse {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JsonToMarkdownResponse that = (JsonToMarkdownResponse) o;
+        JsonToMarkdownResponseDTO that = (JsonToMarkdownResponseDTO) o;
         return Objects.equals(markdownContent, that.markdownContent);
     }
 

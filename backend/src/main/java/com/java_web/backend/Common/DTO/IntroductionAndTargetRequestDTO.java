@@ -1,6 +1,6 @@
 package com.java_web.backend.Common.DTO;
 
-public class IntroductionAndTargetRequest {
+public class IntroductionAndTargetRequestDTO {
     private String courseId;
     private String courseTitle;
     private String request;

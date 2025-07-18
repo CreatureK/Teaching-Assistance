@@ -1,8 +1,8 @@
 package com.java_web.backend.Common.Service;
 
 import com.java_web.backend.Common.Config.OpenAIConfig;
-import com.java_web.backend.Common.DTO.IntroductionAndTargetRequest;
-import com.java_web.backend.Common.DTO.IntroductionAndTargetResponse;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetRequestDTO;
+import com.java_web.backend.Common.Entity.IntroductionAndTargetResponse;
 import com.java_web.backend.Common.Utils.HttpUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,7 +18,7 @@ public class LLMIntroductionAndTargetService {
     @Autowired
     private OpenAIConfig openAIConfig;
 
-    public IntroductionAndTargetResponse generateIntroductionAndTarget(IntroductionAndTargetRequest req) {
+    public IntroductionAndTargetResponse generateIntroductionAndTarget(IntroductionAndTargetRequestDTO req) {
         try {
             // 读取prompt和模板文件
             String prompt = PromptUtil.readPrompt("prompt/introduction_and_target/prompt_for_introduction_and_target.txt");
@@ -90,7 +90,7 @@ public class LLMIntroductionAndTargetService {
             String courseId, String courseTitle, String credit, String courseHour, 
             String responsibleCollege, String courseCategory) {
         
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseId(courseId);
         request.setCourseTitle(courseTitle);
         request.setRequest("生成详细的教学内容和目标");

@@ -1,8 +1,8 @@
 package com.java_web.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Common.DTO.LectureRequest;
-import com.java_web.backend.Common.DTO.LectureRequest.LectureSection;
+import com.java_web.backend.Common.DTO.LectureRequestDTO;
+import com.java_web.backend.Common.DTO.LectureRequestDTO.LectureSection;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +22,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-
-import java.util.Date;
 
 @SpringBootTest(classes = com.java_web.backend.BackendApplication.class)
 @AutoConfigureMockMvc
@@ -136,7 +133,7 @@ public class LLMLectureControllerTest {
 
     @Test
     public void testGenerateLecture() throws Exception {
-        LectureRequest req = new LectureRequest();
+        LectureRequestDTO req = new LectureRequestDTO();
         req.setCourseId("C001");
         req.setCourseTitle("线性代数");
         req.setUnitTitle("矩阵与线性方程组");

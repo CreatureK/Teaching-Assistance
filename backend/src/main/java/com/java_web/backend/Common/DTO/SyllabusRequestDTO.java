@@ -1,6 +1,6 @@
 package com.java_web.backend.Common.DTO;
 
-public class SyllabusRequest {
+public class SyllabusRequestDTO {
     private String courseId;
     private String courseTitle;
     private String creditHours;

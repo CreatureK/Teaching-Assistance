@@ -1,6 +1,6 @@
 package com.java_web.backend.Teacher.Service;
 
-import com.java_web.backend.Common.DTO.LectureRequest;
+import com.java_web.backend.Common.DTO.LectureRequestDTO;
 import com.java_web.backend.Common.Entity.Course;
 import com.java_web.backend.Common.Entity.Material;
 import com.java_web.backend.Common.Entity.Syllabus;
@@ -54,7 +54,7 @@ public class MaterialService {
         }
         
         // 创建请求对象
-        LectureRequest request = new LectureRequest();
+        LectureRequestDTO request = new LectureRequestDTO();
         request.setCourseTitle(course.getName());
         request.setRequest(prompt);
         

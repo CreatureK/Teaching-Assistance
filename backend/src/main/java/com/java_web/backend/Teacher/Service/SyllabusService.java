@@ -1,6 +1,6 @@
 package com.java_web.backend.Teacher.Service;
 
-import com.java_web.backend.Common.DTO.SyllabusRequest;
+import com.java_web.backend.Common.DTO.SyllabusRequestDTO;
 import com.java_web.backend.Common.Entity.Course;
 import com.java_web.backend.Common.Entity.CourseObjective;
 import com.java_web.backend.Common.Entity.Syllabus;
@@ -53,7 +53,7 @@ public class SyllabusService {
         }
         
         // 创建请求对象
-        SyllabusRequest request = new SyllabusRequest();
+        SyllabusRequestDTO request = new SyllabusRequestDTO();
         request.setCourseTitle(course.getName());
         request.setRequest(prompt);
         
