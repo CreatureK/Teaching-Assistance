@@ -1,0 +1,4 @@
+测试名称: Controller_JsonToMarkdown_Request
+生成时间: 2025-07-18 14:21:39
+==================================================
+{"jsonContent":"{\"name\": \"张三\", \"age\": 25}","outputFormat":"markdown","customStyle":"使用表格格式展示"}
