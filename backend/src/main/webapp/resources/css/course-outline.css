@@ -1,0 +1,343 @@
+/* Course Outline Styles */
+.course-outline-container {
+    display: flex;
+    min-height: calc(100vh - 60px);
+    padding: 20px;
+    background-color: #f5f7fa;
+}
+
+.sidebar {
+    width: 280px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-right: 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.toolbar {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e6e6e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.editor-container {
+    flex: 1;
+    position: relative;
+    height: calc(100vh - 200px);
+    overflow: hidden;
+}
+
+#outlineEditor {
+    width: 100%;
+    height: 100%;
+}
+
+/* Chapter List Styles */
+.chapter-list {
+    padding: 10px 0;
+}
+
+.chapter-item {
+    margin-bottom: 10px;
+    border: 1px solid #ebeef5;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.chapter-header {
+    padding: 10px 15px;
+    background-color: #f5f7fa;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+.chapter-header:hover {
+    background-color: #ecf5ff;
+}
+
+.chapter-title {
+    font-weight: 500;
+    color: #303133;
+}
+
+.chapter-duration {
+    font-size: 12px;
+    color: #909399;
+    background: #f0f2f5;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.chapter-content {
+    padding: 10px 15px;
+    background-color: #fff;
+    border-top: 1px solid #ebeef5;
+}
+
+.learning-objectives {
+    padding-left: 15px;
+}
+
+.objective-item {
+    padding: 5px 0;
+    color: #606266;
+    position: relative;
+    padding-left: 15px;
+}
+
+.objective-item:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #409eff;
+}
+
+.no-objectives {
+    color: #909399;
+    font-size: 13px;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.empty-tip {
+    text-align: center;
+    padding: 20px 0;
+    color: #909399;
+}
+
+/* AI Dialog Styles */
+.ai-dialog {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.ai-dialog-content {
+    width: 50%;
+    min-width: 500px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.ai-dialog-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e6e6e6;
+    font-size: 16px;
+    font-weight: 500;
+    color: #303133;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ai-dialog-close {
+    cursor: pointer;
+    color: #909399;
+    font-size: 18px;
+}
+
+.ai-dialog-close:hover {
+    color: #409eff;
+}
+
+.ai-dialog-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #606266;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #606266;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #409eff;
+    outline: none;
+}
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.ai-dialog-footer {
+    padding: 10px 20px 20px;
+    text-align: right;
+}
+
+.btn {
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #dcdfe6;
+    color: #606266;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    outline: none;
+    margin: 0;
+    transition: .1s;
+    font-weight: 500;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #409eff;
+    border-color: #409eff;
+}
+
+.btn-primary:hover {
+    background: #66b1ff;
+    border-color: #66b1ff;
+    color: #fff;
+}
+
+.btn-default:hover {
+    color: #409eff;
+    border-color: #c6e2ff;
+    background-color: #ecf5ff;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 3000;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #409eff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: #606266;
+    margin-top: 10px;
+}
+
+/* Message Container */
+.message-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 4000;
+}
+
+.message {
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    color: #fff;
+    opacity: 1;
+    transition: opacity 0.3s;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.message.success {
+    background-color: #67c23a;
+}
+
+.message.error {
+    background-color: #f56c6c;
+}
+
+.message.info {
+    background-color: #909399;
+}
+
+.message.warning {
+    background-color: #e6a23c;
+}
+
+/* Back Button */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 15px;
+    background-color: #f4f4f5;
+    color: #606266;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.back-button:hover {
+    color: #409eff;
+    border-color: #c6e2ff;
+    background-color: #ecf5ff;
+}
+
+.back-button:before {
+    content: "←";
+    margin-right: 5px;
+    font-size: 16px;
+}
