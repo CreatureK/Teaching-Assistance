@@ -104,4 +104,14 @@ public class SyllabusService {
         
         return course;
     }
+    
+    /**
+     * 获取课程大纲的Markdown内容
+     * @param courseId 课程ID
+     * @return 大纲的Markdown内容，如果不存在则返回null
+     */
+    public String getCourseOutlineContent(Integer courseId) {
+        Syllabus syllabus = syllabusMapper.selectById(courseId);
+        return syllabus != null ? syllabus.getContent() : null;
+    }
 }
