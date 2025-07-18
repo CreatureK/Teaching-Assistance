@@ -2,7 +2,7 @@ package com.java_web.backend.Common.DTO;
 
 import java.util.List;
 
-public class LectureRequest {
+public class LectureRequestDTO {
     private String courseId;
     private String courseTitle;
     private String unitTitle;

@@ -1,6 +1,5 @@
 package com.java_web.backend.Common.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.java_web.backend.Common.Config.OpenAIConfig;
-import com.java_web.backend.Common.DTO.LectureRequest;
-import com.java_web.backend.Common.DTO.LectureRequest.LectureSection;
+import com.java_web.backend.Common.DTO.LectureRequestDTO;
+import com.java_web.backend.Common.DTO.LectureRequestDTO.LectureSection;
 import com.java_web.backend.Common.Utils.HttpUtil;
 
 @Service
@@ -66,7 +65,7 @@ public class LLMLectureService {
         }
     }
 
-    public String generateLecture(LectureRequest req) {
+    public String generateLecture(LectureRequestDTO req) {
         // 读取lecture模板
         String templateContent = LLMIntroductionAndTargetService.PromptUtil.readPrompt("prompt/lecture/prompt_for_lecture_generation.txt");
         parseLectureTemplate(templateContent);
@@ -117,7 +116,7 @@ public class LLMLectureService {
         return allContent.toString();
     }
 
-    private String callLLM(String sectionName, String promptContent, LectureRequest req, String tools) {
+    private String callLLM(String sectionName, String promptContent, LectureRequestDTO req, String tools) {
         if (promptContent == null || promptContent.isEmpty() || "无".equals(promptContent) || "未提供".equals(promptContent)) {
             return "无数据";
         }

@@ -1,6 +1,6 @@
 package com.java_web.backend.entity;
 
-import com.java_web.backend.Common.DTO.InitialSyllabusRequest;
+import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

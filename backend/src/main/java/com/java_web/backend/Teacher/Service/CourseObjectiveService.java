@@ -1,6 +1,6 @@
 package com.java_web.backend.Teacher.Service;
 
-import com.java_web.backend.Common.DTO.IntroductionAndTargetRequest;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetRequestDTO;
 import com.java_web.backend.Common.Entity.Course;
 import com.java_web.backend.Common.Entity.CourseObjective;
 import com.java_web.backend.Common.Mapper.CourseMapper;
@@ -43,7 +43,7 @@ public class CourseObjectiveService {
         Course course = verifyTeacherCourseAccess(courseId, teacherId);
 
         // 创建请求对象
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseTitle(course.getName());
         request.setRequest(prompt);
 

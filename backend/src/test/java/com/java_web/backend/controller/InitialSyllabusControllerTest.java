@@ -1,9 +1,9 @@
 package com.java_web.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Common.DTO.InitialSyllabusRequest;
 import com.java_web.backend.Common.Service.LLMInitialSyllabusService;
 import com.java_web.backend.Common.Service.JWTService;
+import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
 import com.java_web.backend.Teacher.Controller.InitialSyllabusController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

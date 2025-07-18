@@ -1,8 +1,9 @@
 package com.java_web.backend.service;
 
 import com.java_web.backend.Common.Config.OpenAIConfig;
-import com.java_web.backend.Common.DTO.IntroductionAndTargetRequest;
-import com.java_web.backend.Common.DTO.IntroductionAndTargetResponse;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetRequestDTO;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetResponseDTO;
+import com.java_web.backend.Common.Entity.IntroductionAndTargetResponse;
 import com.java_web.backend.Common.Service.LLMIntroductionAndTargetService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,13 +25,13 @@ public class LLMIntroductionAndTargetServiceTest {
 
     @Test
     void testGenerateIntroductionAndTarget() {
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseId("CS101");
         request.setCourseTitle("计算机科学导论");
         request.setRequest("用户需求测试");
         
         IntroductionAndTargetResponse expectedResponse = new IntroductionAndTargetResponse("CS101", "intro", "target");
-        when(service.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class))).thenReturn(expectedResponse);
+        when(service.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class))).thenReturn(expectedResponse);
         
         IntroductionAndTargetResponse result = service.generateIntroductionAndTarget(request);
         
@@ -57,12 +58,12 @@ public class LLMIntroductionAndTargetServiceTest {
 
     @Test
     void testGenerateIntroductionAndTargetWithError() {
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseId("CS101");
         request.setCourseTitle("计算机科学导论");
         request.setRequest("用户需求测试");
         
-        when(service.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class)))
+        when(service.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class)))
                 .thenThrow(new RuntimeException("大模型异常"));
         
         assertThrows(RuntimeException.class, () -> service.generateIntroductionAndTarget(request));
@@ -82,12 +83,12 @@ public class LLMIntroductionAndTargetServiceTest {
 
     @Test
     void testGenerateIntroductionAndTargetWithInvalidResponse() {
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseId("CS101");
         request.setCourseTitle("计算机科学导论");
         request.setRequest("用户需求测试");
         
-        when(service.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class)))
+        when(service.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class)))
                 .thenThrow(new RuntimeException("JSON解析失败"));
         
         assertThrows(RuntimeException.class, () -> service.generateIntroductionAndTarget(request));

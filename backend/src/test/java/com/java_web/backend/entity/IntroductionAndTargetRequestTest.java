@@ -1,6 +1,6 @@
 package com.java_web.backend.entity;
 
-import com.java_web.backend.Common.DTO.IntroductionAndTargetRequest;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,11 +8,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class IntroductionAndTargetRequestTest {
 
-    private IntroductionAndTargetRequest request;
+    private IntroductionAndTargetRequestDTO request;
 
     @BeforeEach
     void setUp() {
-        request = new IntroductionAndTargetRequest();
+        request = new IntroductionAndTargetRequestDTO();
     }
 
     @Test

@@ -1,9 +1,9 @@
 package com.java_web.backend.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Teacher.Controller.LLMController;
-import com.java_web.backend.Common.DTO.IntroductionAndTargetRequest;
-import com.java_web.backend.Common.DTO.IntroductionAndTargetResponse;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetRequestDTO;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetResponseDTO;
+import com.java_web.backend.Common.Entity.IntroductionAndTargetResponse;
 import com.java_web.backend.Common.Service.LLMIntroductionAndTargetService;
 import com.java_web.backend.utils.TestResultWriter;
 import org.junit.jupiter.api.BeforeEach;
@@ -140,7 +140,7 @@ public class IntroductionAndTargetIntegrationTest {
     @Test
     void testIntroductionAndTargetEndpoint_Success() throws Exception {
         // 准备测试数据
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseId("1");
         request.setCourseTitle("高等数学");
         request.setRequest("请结合工程实际，突出应用能力培养");
@@ -151,7 +151,7 @@ public class IntroductionAndTargetIntegrationTest {
         mockResponse.setCourseIntroduction("本课程是面向工程类专业本科生的高等数学课程");
         mockResponse.setTeachingTarget("通过本课程的学习，学生应掌握高等数学的基本理论");
         
-        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class)))
+        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class)))
                 .thenReturn(mockResponse);
 
         // 执行API调用
@@ -187,7 +187,7 @@ public class IntroductionAndTargetIntegrationTest {
     @Test
     void testIntroductionAndTargetEndpoint_EmptyCourseTitle() throws Exception {
         // 准备测试数据 - 空课程标题
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseId("2");
         request.setCourseTitle("");
         request.setRequest("测试请求");
@@ -198,7 +198,7 @@ public class IntroductionAndTargetIntegrationTest {
         mockResponse.setCourseIntroduction("课程介绍");
         mockResponse.setTeachingTarget("教学目标");
         
-        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class)))
+        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class)))
                 .thenReturn(mockResponse);
 
         // 执行API调用
@@ -215,7 +215,7 @@ public class IntroductionAndTargetIntegrationTest {
     @Test
     void testIntroductionAndTargetEndpoint_NullRequest() throws Exception {
         // 准备测试数据 - 空请求字段
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseId("3");
         request.setCourseTitle("线性代数");
         request.setRequest(null);
@@ -226,7 +226,7 @@ public class IntroductionAndTargetIntegrationTest {
         mockResponse.setCourseIntroduction("课程介绍");
         mockResponse.setTeachingTarget("教学目标");
         
-        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class)))
+        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class)))
                 .thenReturn(mockResponse);
 
         // 执行API调用
@@ -267,7 +267,7 @@ public class IntroductionAndTargetIntegrationTest {
         mockResponse.setCourseIntroduction("课程介绍");
         mockResponse.setTeachingTarget("教学目标");
         
-        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class)))
+        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class)))
                 .thenReturn(mockResponse);
 
         // 执行API调用
@@ -282,7 +282,7 @@ public class IntroductionAndTargetIntegrationTest {
     @Test
     void testIntroductionAndTargetEndpoint_DifferentCourseTypes() throws Exception {
         // 准备测试数据 - 不同类型的课程
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseId("5");
         request.setCourseTitle("计算机程序设计");
         request.setRequest("请结合编程实践，注重动手能力培养");
@@ -293,7 +293,7 @@ public class IntroductionAndTargetIntegrationTest {
         mockResponse.setCourseIntroduction("本课程是计算机科学与技术专业的核心课程");
         mockResponse.setTeachingTarget("通过本课程的学习，学生应掌握程序设计的基本方法");
         
-        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class)))
+        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class)))
                 .thenReturn(mockResponse);
 
         // 执行API调用
@@ -310,7 +310,7 @@ public class IntroductionAndTargetIntegrationTest {
     @Test
     void testIntroductionAndTargetEndpoint_LongRequest() throws Exception {
         // 准备测试数据 - 长请求内容
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseId("6");
         request.setCourseTitle("数据结构与算法");
         request.setRequest("请详细说明课程的教学目标，包括理论知识的掌握、实践技能的培养、创新思维的训练，以及对学生未来职业发展的指导意义。要求内容全面、具体、可操作，能够为教学实施提供明确的指导方向。");
@@ -321,7 +321,7 @@ public class IntroductionAndTargetIntegrationTest {
         mockResponse.setCourseIntroduction("本课程是计算机专业的核心基础课程");
         mockResponse.setTeachingTarget("通过本课程的学习，学生应掌握数据结构与算法的基本理论");
         
-        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class)))
+        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class)))
                 .thenReturn(mockResponse);
 
         // 执行API调用
@@ -338,7 +338,7 @@ public class IntroductionAndTargetIntegrationTest {
     @Test
     void testIntroductionAndTargetEndpoint_SpecialCharacters() throws Exception {
         // 准备测试数据 - 包含特殊字符
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseId("7");
         request.setCourseTitle("C++程序设计");
         request.setRequest("请包含C++、STL、模板等专业术语，以及数学符号如∑、∫等");
@@ -349,7 +349,7 @@ public class IntroductionAndTargetIntegrationTest {
         mockResponse.setCourseIntroduction("本课程是C++程序设计的专业课程");
         mockResponse.setTeachingTarget("通过本课程的学习，学生应掌握C++、STL、模板等");
         
-        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class)))
+        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class)))
                 .thenReturn(mockResponse);
 
         // 执行API调用

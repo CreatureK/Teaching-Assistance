@@ -1,8 +1,9 @@
 package com.java_web.backend.service;
 
 import com.java_web.backend.Common.Config.OpenAIConfig;
-import com.java_web.backend.Common.DTO.IntroductionAndTargetRequest;
-import com.java_web.backend.Common.DTO.IntroductionAndTargetResponse;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetRequestDTO;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetResponseDTO;
+import com.java_web.backend.Common.Entity.IntroductionAndTargetResponse;
 import com.java_web.backend.Common.Service.LLMIntroductionAndTargetService;
 import com.java_web.backend.utils.TestResultOutputUtil;
 import org.junit.jupiter.api.Test;
@@ -26,13 +27,13 @@ public class TestResultOutputDemoTest {
     @Test
     void testGenerateIntroductionAndTargetWithOutput() {
         String expectedResponse = "{\"course_introduction\":\"intro\",\"teaching_target\":\"target\"}";
-        IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
         request.setCourseId("CS101");
         request.setCourseTitle("计算机科学导论");
         request.setRequest("用户需求测试");
         
         IntroductionAndTargetResponse mockResult = new IntroductionAndTargetResponse("CS101", "intro", "target");
-        when(service.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class))).thenReturn(mockResult);
+        when(service.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class))).thenReturn(mockResult);
         
         IntroductionAndTargetResponse result = service.generateIntroductionAndTarget(request);
         
@@ -72,11 +73,11 @@ public class TestResultOutputDemoTest {
 
     @Test
     void testGenerateIntroductionAndTargetWithErrorAndOutput() {
-        when(service.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class)))
+        when(service.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class)))
                 .thenThrow(new RuntimeException("JSON解析失败"));
         
         try {
-            IntroductionAndTargetRequest request = new IntroductionAndTargetRequest();
+            IntroductionAndTargetRequestDTO request = new IntroductionAndTargetRequestDTO();
             request.setCourseId("CS101");
             request.setCourseTitle("计算机科学导论");
             request.setRequest("用户需求测试");

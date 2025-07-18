@@ -2,10 +2,9 @@ package com.java_web.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java_web.backend.Teacher.Controller.JsonToMarkdownController;
-import com.java_web.backend.Common.DTO.JsonToMarkdownRequest;
-import com.java_web.backend.Common.DTO.JsonToMarkdownResponse;
+import com.java_web.backend.Common.DTO.JsonToMarkdownRequestDTO;
+import com.java_web.backend.Common.Entity.JsonToMarkdownRequest;
 import com.java_web.backend.Common.Service.LLMJsonToMarkdownService;
-import com.java_web.backend.Common.Service.JWTService;
 import com.java_web.backend.utils.TestResultWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,8 +15,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -262,7 +259,7 @@ public class JsonToMarkdownControllerTest {
     @Test
     public void testConvertJsonToMarkdown_DefaultFormat() throws Exception {
         // 准备测试数据（不指定输出格式）
-        JsonToMarkdownRequest request = new JsonToMarkdownRequest();
+        JsonToMarkdownRequestDTO request = new JsonToMarkdownRequestDTO();
         request.setJsonContent("{\"name\": \"张三\", \"age\": 25}");
         // 不设置outputFormat，应该使用默认值
 

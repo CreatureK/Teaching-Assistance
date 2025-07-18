@@ -1,4 +1,4 @@
-package com.java_web.backend.Common.DTO;
+package com.java_web.backend.Common.Entity;
 
 /**
  * JSON转Markdown请求实体类

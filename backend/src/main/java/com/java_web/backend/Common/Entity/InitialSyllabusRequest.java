@@ -1,4 +1,4 @@
-package com.java_web.backend.Common.DTO;
+package com.java_web.backend.Common.Entity;
 
 /**
  * 初始教学大纲生成请求实体类

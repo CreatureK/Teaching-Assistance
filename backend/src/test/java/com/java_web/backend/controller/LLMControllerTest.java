@@ -1,11 +1,12 @@
 package com.java_web.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Common.DTO.IntroductionAndTargetRequest;
-import com.java_web.backend.Common.DTO.IntroductionAndTargetResponse;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetRequestDTO;
+import com.java_web.backend.Common.DTO.IntroductionAndTargetResponseDTO;
 import com.java_web.backend.Common.Service.LLMIntroductionAndTargetService;
 import com.java_web.backend.Common.Service.LLMSyllabusService;
 import com.java_web.backend.Common.Service.LLMLectureService;
+import com.java_web.backend.Common.Entity.IntroductionAndTargetResponse;
 import com.java_web.backend.utils.TestResultWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -78,7 +77,7 @@ public class LLMControllerTest {
     @Test
     public void testGenerateIntroductionAndTarget() throws Exception {
         // 准备测试数据
-        IntroductionAndTargetRequest req = new IntroductionAndTargetRequest();
+        IntroductionAndTargetRequestDTO req = new IntroductionAndTargetRequestDTO();
         req.setCourseId("1");
         req.setCourseTitle("高等数学");
         req.setRequest("请结合工程实际，突出应用能力培养");
@@ -89,7 +88,7 @@ public class LLMControllerTest {
         mockResponse.setCourseIntroduction("本课程是面向工程类专业本科生的高等数学课程");
         mockResponse.setTeachingTarget("通过本课程的学习，学生应掌握高等数学的基本理论");
         
-        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequest.class)))
+        when(llmIntroductionAndTargetService.generateIntroductionAndTarget(any(IntroductionAndTargetRequestDTO.class)))
                 .thenReturn(mockResponse);
 
         // 执行测试

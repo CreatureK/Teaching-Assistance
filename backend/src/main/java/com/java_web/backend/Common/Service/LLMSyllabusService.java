@@ -1,7 +1,7 @@
 package com.java_web.backend.Common.Service;
 
 import com.java_web.backend.Common.Config.OpenAIConfig;
-import com.java_web.backend.Common.DTO.SyllabusRequest;
+import com.java_web.backend.Common.DTO.SyllabusRequestDTO;
 import com.java_web.backend.Common.Utils.HttpUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,7 +14,7 @@ public class LLMSyllabusService {
     @Autowired
     private OpenAIConfig openAIConfig;
 
-    public String generateInitialSyllabus(SyllabusRequest req) {
+    public String generateInitialSyllabus(SyllabusRequestDTO req) {
         String prompt = "你是一位资深大学教授，擅长课程大纲制定。请根据以下信息生成初版教学大纲。";
         JSONObject body = new JSONObject();
         body.put("model", openAIConfig.getModelName());

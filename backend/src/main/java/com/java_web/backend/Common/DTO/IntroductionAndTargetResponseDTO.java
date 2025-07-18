@@ -1,14 +1,14 @@
-package com.java_web.backend.common.dto;
+package com.java_web.backend.Common.DTO;
 
 import java.util.Objects;
 
-public class IntroductionAndTargetResponse {
+public class IntroductionAndTargetResponseDTO {
     private String introduction;
     private String target;
 
-    public IntroductionAndTargetResponse() {}
+    public IntroductionAndTargetResponseDTO() {}
 
-    public IntroductionAndTargetResponse(String introduction, String target) {
+    public IntroductionAndTargetResponseDTO(String introduction, String target) {
         this.introduction = introduction;
         this.target = target;
     }
@@ -22,7 +22,7 @@ public class IntroductionAndTargetResponse {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        IntroductionAndTargetResponse that = (IntroductionAndTargetResponse) o;
+        IntroductionAndTargetResponseDTO that = (IntroductionAndTargetResponseDTO) o;
         return Objects.equals(introduction, that.introduction) &&
                 Objects.equals(target, that.target);
     }

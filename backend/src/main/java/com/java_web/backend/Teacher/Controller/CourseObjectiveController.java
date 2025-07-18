@@ -1,13 +1,11 @@
 package com.java_web.backend.Teacher.Controller;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.java_web.backend.Common.DTO.IntroductionAndTargetRequest;
 import com.java_web.backend.Common.Entity.CourseObjective;
 import com.java_web.backend.Teacher.Service.CourseObjectiveService;
 

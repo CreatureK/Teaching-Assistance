@@ -2,7 +2,7 @@ package com.java_web.backend.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java_web.backend.Teacher.Controller.InitialSyllabusController;
-import com.java_web.backend.Common.DTO.InitialSyllabusRequest;
+import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
 import com.java_web.backend.Common.Service.LLMInitialSyllabusService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

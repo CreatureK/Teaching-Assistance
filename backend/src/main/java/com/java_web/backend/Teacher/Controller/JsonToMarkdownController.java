@@ -1,7 +1,9 @@
 package com.java_web.backend.Teacher.Controller;
 
-import com.java_web.backend.Common.DTO.JsonToMarkdownRequest;
-import com.java_web.backend.Common.DTO.JsonToMarkdownResponse;
+import com.java_web.backend.Common.DTO.JsonToMarkdownRequestDTO;
+import com.java_web.backend.Common.DTO.JsonToMarkdownResponseDTO;
+import com.java_web.backend.Common.Entity.JsonToMarkdownRequest;
+import com.java_web.backend.Common.Entity.JsonToMarkdownResponse;
 import com.java_web.backend.Common.Service.LLMJsonToMarkdownService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
