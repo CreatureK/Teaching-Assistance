@@ -16,12 +16,12 @@ public class JWTService {
     private static final String SECRET_KEY = "yourSecretKey"; // 实际应从配置文件读取
     private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24小时
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-    
+
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", user.getId());
         claims.put("role", user.getRole());
-        
+
         return Jwts.builder()
                 .claims(claims)
                 .subject(user.getUsername())
@@ -30,7 +30,7 @@ public class JWTService {
                 .signWith(key)
                 .compact();
     }
-    
+
     public Claims parseToken(String token) {
         return Jwts.parser()
                 .verifyWith(key)
