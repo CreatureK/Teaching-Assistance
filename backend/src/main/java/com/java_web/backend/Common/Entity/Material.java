@@ -8,6 +8,7 @@ public class Material {
     @TableId
     private Integer courseId;      // 课程ID
     private String content;        // 讲义内容
+    
     private Date createdAt;        // 创建时间
     private Date updatedAt;        // 更新时间
 

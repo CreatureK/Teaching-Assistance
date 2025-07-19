@@ -11,6 +11,7 @@
   "dependencies": {
     "@toast-ui/editor": "^3.2.2",
     "@toast-ui/editor-plugin-uml": "^3.0.1",
+    "axios": "^1.10.0",
     "element-plus": "^2.10.4",
     "katex": "^0.16.22",
     "mathjax": "3",

@@ -48,11 +48,11 @@ export const getToken = async (credentials: { username: string; password: string
 }
 
 // 模拟注册API
-export const signin = async (userData: { username: string; password: string; email: string }) => {
+export const signin = async (userData: { username: string; password: string; email: string; role?: string }) => {
   // 模拟网络延迟
   await new Promise(resolve => setTimeout(resolve, 1000))
 
-  console.log('注册用户:', userData.username, '邮箱:', userData.email)
+  console.log('注册用户:', userData.username, '邮箱:', userData.email, '角色:', userData.role || 'teacher')
 
   // 简单模拟注册成功
   return {

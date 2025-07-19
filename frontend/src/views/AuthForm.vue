@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import * as authApi from '@/hooks/api/auth'
+import * as authApi from '@/api/auth'  // 更改导入路径，使用真实后端接口
 
 const router = useRouter()
 
@@ -9,6 +9,7 @@ const isRegister = ref(false)
 const username = ref('')
 const password = ref('')
 const email = ref('')
+const role = ref('teacher') // 添加角色选择，默认为教师
 const errorMessage = ref('')
 const successMessage = ref('')
 const isLoading = ref(false)
@@ -73,6 +74,17 @@ const toggleMode = () => {
   isRegister.value = !isRegister.value
   errorMessage.value = ''
   successMessage.value = ''
+  
+  // 切换模式时清空所有字段
+  if (isRegister.value) {
+    // 切换到注册模式，保留邮箱
+    username.value = ''
+    password.value = ''
+  } else {
+    // 切换到登录模式，保留邮箱
+    username.value = ''
+    password.value = ''
+  }
 }
 
 const togglePasswordVisibility = () => {
@@ -82,6 +94,13 @@ const togglePasswordVisibility = () => {
 const submit = async () => {
   errorMessage.value = ''
   successMessage.value = ''
+  
+  // 表单验证
+  if (!isRegister.value && !email.value) {
+    errorMessage.value = '请输入邮箱'
+    return
+  }
+  
   isLoading.value = true
   
   console.log('表单提交开始:', isRegister.value ? '注册' : '登录')
@@ -92,18 +111,20 @@ const submit = async () => {
       console.log('开始注册，数据:', {
         username: username.value,
         password: password.value,
-        email: email.value
+        email: email.value,
+        role: role.value
       })
       
-      const response = await authApi.signin({
-        username: username.value,
-        password: password.value,
-        email: email.value
-      })
+      const response = await authApi.register(
+        username.value,
+        password.value,
+        email.value,
+        role.value
+      )
       
       console.log('注册响应:', response)
       
-      if (response.code === 200) {
+      if (response.success) {
         successMessage.value = '注册成功'
         console.log('注册成功')
         // 注册成功后清空表单，切换到登录状态
@@ -115,24 +136,24 @@ const submit = async () => {
           successMessage.value = ''
         }, 1500)
       } else {
-        errorMessage.value = '注册失败，请重试'
+        errorMessage.value = response.message || '注册失败，请重试'
         console.error('注册失败:', response)
       }
     } else {
       // 登录
       console.log('开始登录，数据:', {
-        username: username.value,
+        email: email.value || username.value, // 使用email字段，如果为空则使用username
         password: password.value
       })
       
-      const response = await authApi.getToken({
-        username: username.value,
-        password: password.value
-      })
+      const response = await authApi.login(
+        email.value || username.value, // 使用email字段，如果为空则使用username
+        password.value
+      )
       
       console.log('登录响应:', response)
       
-      if (response.code === 200 && response.data?.data) {
+      if (response.success && response.data) {
         // 登录成功，令牌存储在auth.ts中已完成
         successMessage.value = '登录成功'
         
@@ -145,7 +166,7 @@ const submit = async () => {
           router.push('/')
         }, 500)
       } else {
-        errorMessage.value = '登录失败，请检查用户名和密码'
+        errorMessage.value = response.message || '登录失败，请检查邮箱和密码'
         console.error('登录失败:', response)
       }
     }
@@ -185,10 +206,32 @@ const submit = async () => {
               id="username" 
               v-model="username" 
               type="text" 
-              required 
+              :required="isRegister" 
               autocomplete="username"
               :disabled="isLoading"
               placeholder="请输入用户名"
+              class="with-icon"
+            />
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">邮箱</label>
+          <div class="input-wrapper">
+            <span class="input-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </span>
+            <input 
+              id="email" 
+              v-model="email" 
+              type="email" 
+              required 
+              autocomplete="email"
+              :disabled="isLoading"
+              placeholder="请输入邮箱地址"
               class="with-icon"
             />
           </div>
@@ -227,24 +270,26 @@ const submit = async () => {
         </div>
         
         <div v-if="isRegister" class="form-group">
-          <label for="email">邮箱</label>
-          <div class="input-wrapper">
-            <span class="input-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
-            </span>
-            <input 
-              id="email" 
-              v-model="email" 
-              type="email" 
-              required 
-              autocomplete="email"
-              :disabled="isLoading"
-              placeholder="请输入邮箱地址"
-              class="with-icon"
-            />
+          <label>身份选择</label>
+          <div class="role-selector">
+            <label class="role-option">
+              <input 
+                type="radio" 
+                v-model="role" 
+                value="teacher"
+                :disabled="isLoading"
+              />
+              <span class="role-name">教师</span>
+            </label>
+            <label class="role-option">
+              <input 
+                type="radio" 
+                v-model="role" 
+                value="admin"
+                :disabled="isLoading"
+              />
+              <span class="role-name">管理员</span>
+            </label>
           </div>
         </div>
         
@@ -603,5 +648,28 @@ input:focus {
     padding: 10px 10px 10px 36px;
     font-size: 14px;
   }
+}
+
+/* 添加身份选择器样式 */
+.role-selector {
+  display: flex;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.role-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.role-option input[type="radio"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+.role-name {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
 }
 </style>

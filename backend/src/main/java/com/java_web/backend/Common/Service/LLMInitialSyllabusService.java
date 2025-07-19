@@ -7,11 +7,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java_web.backend.Common.Config.OpenAIConfig;
@@ -259,11 +259,6 @@ public class LLMInitialSyllabusService {
         requestBody.put("max_tokens", 8000);
 
         // 发送请求
-        Map<String, Object> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
-
-        String jsonBody = new ObjectMapper().writeValueAsString(requestBody); // 确保是 JSON 字符串
-
         String response = HttpUtil.postJson(
             openAIConfig.getApiUrl(),
             jsonBody,
