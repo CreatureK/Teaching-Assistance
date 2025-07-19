@@ -1,5 +1,6 @@
 package com.java_web.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.java_web.backend.Common.Config.OpenAIConfig;
 import com.java_web.backend.Common.Service.LLMInitialSyllabusService;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,7 +79,7 @@ public class LLMInitialSyllabusServiceTest {
     }
 
     @Test
-    void testGenerateInitialSyllabusWithError() {
+    void testGenerateInitialSyllabusWithError() throws JsonProcessingException {
         doReturn("Computer Science")
                 .doThrow(new RuntimeException("大模型异常"))
                 .when(spyService).callLLM(anyString());
@@ -93,7 +94,7 @@ public class LLMInitialSyllabusServiceTest {
     }
 
     @Test
-    void testGenerateInitialSyllabusWithInvalidResponse() {
+    void testGenerateInitialSyllabusWithInvalidResponse() throws JsonProcessingException {
         doReturn("Computer Science")
                 .doReturn("not a json string")
                 .doReturn("not a json string")

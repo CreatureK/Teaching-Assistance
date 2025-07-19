@@ -1,20 +1,21 @@
 package com.java_web.backend.Common.Service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Common.Config.OpenAIConfig;
-import com.java_web.backend.Common.Utils.HttpUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.java_web.backend.Common.Config.OpenAIConfig;
+import com.java_web.backend.Common.Utils.HttpUtil;
 
 /**
  * 初始教学大纲生成服务类
@@ -104,15 +105,17 @@ public class LLMInitialSyllabusService {
         CompletableFuture.allOf(englishNameFuture, detailedTargetFuture, teachingContentFuture, 
                                experimentalProjectsFuture, textbooksFuture).join();
 
-        // 整合结果 - 按照initial_syllabus.json的顺序组装
-        Map<String, Object> response = new java.util.LinkedHashMap<>();
-        
-        // 1. 基本信息字段
+        // 整合结果
+        Map<String, Object> response = new HashMap<>();
         response.put("course_id", courseId);
         response.put("course_code", courseCode);
         response.put("course_Chinese_name", courseTitle);
         try {
             response.put("course_English_name", englishNameFuture.get());
+            response.put("detailed_course_target", detailedTargetFuture.get());
+            response.put("teaching_content", teachingContentFuture.get());
+            response.put("experimental_projects", experimentalProjectsFuture.get());
+            response.put("textbooks_and_reference_books", textbooksFuture.get());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("任务被中断", e);
@@ -131,49 +134,7 @@ public class LLMInitialSyllabusService {
         response.put("grade_recording", gradeRecording);
         response.put("course_introduction", courseIntroduction);
         response.put("course_target", teachingTarget);
-        
-        // 2. 详细课程目标
-        try {
-            response.put("detailed_course_target", detailedTargetFuture.get());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("任务被中断", e);
-        } catch (java.util.concurrent.ExecutionException e) {
-            throw new RuntimeException("任务执行异常: " + e.getMessage(), e);
-        }
-        
-        // 3. 评价模式（使用传入的参数）
         response.put("evaluation_mode", evaluationMode);
-        
-        // 4. 教学内容
-        try {
-            response.put("teaching_content", teachingContentFuture.get());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("任务被中断", e);
-        } catch (java.util.concurrent.ExecutionException e) {
-            throw new RuntimeException("任务执行异常: " + e.getMessage(), e);
-        }
-        
-        // 5. 实验项目
-        try {
-            response.put("experimental_projects", experimentalProjectsFuture.get());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("任务被中断", e);
-        } catch (java.util.concurrent.ExecutionException e) {
-            throw new RuntimeException("任务执行异常: " + e.getMessage(), e);
-        }
-        
-        // 6. 教材和参考书
-        try {
-            response.put("textbooks_and_reference_books", textbooksFuture.get());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("任务被中断", e);
-        } catch (java.util.concurrent.ExecutionException e) {
-            throw new RuntimeException("任务执行异常: " + e.getMessage(), e);
-        }
 
         executor.shutdown();
         return response;
@@ -182,10 +143,10 @@ public class LLMInitialSyllabusService {
     /**
      * 生成课程英文名
      */
-    private String generateEnglishName(String courseTitle) {
+    private String generateEnglishName(String courseTitle) throws JsonProcessingException {
         String prompt = "你是一位资深大学教授，你知道各个学科对应的中文名和英文名分别是什么。\n" +
                        "用户会给你一个课程的中文名，你需要将其翻译成英文，并且返回给用户。注意，你返回的内容应该有且仅有课程的英文名，并且是一个字符串，而不要有其他任何多余的内容\n" +
-                       "课程的中文名是" + courseTitle + "，请给出它的英文名。";
+                       "课程的中文名是" + courseTitle + "，请给出它的英文名。并且，你的返回值只允许生成json格式的数据，绝对不能是markdown!!!";
 
         String response = callLLM(prompt);
         return response.trim();
@@ -194,7 +155,7 @@ public class LLMInitialSyllabusService {
     /**
      * 生成详细课程目标
      */
-    private Map<String, Object> generateDetailedCourseTarget(String courseTitle, String request) {
+    private Map<String, Object> generateDetailedCourseTarget(String courseTitle, String request) throws JsonProcessingException {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_detailed_course_target.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 detailed_course_target，其json模版内容后续会指定。\n" +
@@ -214,7 +175,7 @@ public class LLMInitialSyllabusService {
     /**
      * 生成教学内容
      */
-    private Map<String, Object> generateTeachingContent(String courseTitle, String courseHour, String request) {
+    private Map<String, Object> generateTeachingContent(String courseTitle, String courseHour, String request) throws JsonProcessingException {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_teaching_content.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 teaching_content，其json模版内容后续会指定。\n" +
@@ -235,7 +196,7 @@ public class LLMInitialSyllabusService {
     /**
      * 生成实验项目
      */
-    private Map<String, Object> generateExperimentalProjects(String courseTitle, String request) {
+    private Map<String, Object> generateExperimentalProjects(String courseTitle, String request) throws JsonProcessingException {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_experimental_projects.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 experimental_projects，其json模版内容后续会指定。\n" +
@@ -255,7 +216,7 @@ public class LLMInitialSyllabusService {
     /**
      * 生成教材和参考书
      */
-    private Map<String, Object> generateTextbooksAndReferenceBooks(String courseTitle, String courseHour, String request) {
+    private Map<String, Object> generateTextbooksAndReferenceBooks(String courseTitle, String courseHour, String request) throws JsonProcessingException {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_textbooks_and_reference_books.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 textbooks_and_reference_books，其json模版内容后续会指定。\n" +
@@ -276,7 +237,7 @@ public class LLMInitialSyllabusService {
     /**
      * 调用大模型
      */
-    public String callLLM(String prompt) {
+    public String callLLM(String prompt) throws JsonProcessingException {
         // 构建请求参数
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", openAIConfig.getModelName());
@@ -298,10 +259,14 @@ public class LLMInitialSyllabusService {
         requestBody.put("max_tokens", 8000);
 
         // 发送请求
-        String response = HttpUtil.postJsonWithApiKey(
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
+        String jsonBody = new ObjectMapper().writeValueAsString(requestBody);
+
+        String response = HttpUtil.postJson(
             openAIConfig.getApiUrl(),
-            openAIConfig.getApiKey(),
-            requestBody
+            jsonBody,
+            headers
         );
 
         // 解析响应

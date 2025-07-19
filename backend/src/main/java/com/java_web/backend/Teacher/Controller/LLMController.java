@@ -1,14 +1,17 @@
 package com.java_web.backend.Teacher.Controller;
 
+import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
+import com.java_web.backend.Teacher.Service.MaterialService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import com.java_web.backend.Common.DTO.IntroductionAndTargetRequestDTO;
 import com.java_web.backend.Common.DTO.LectureRequestDTO;
 import com.java_web.backend.Common.DTO.SyllabusRequestDTO;
 import com.java_web.backend.Common.Service.LLMIntroductionAndTargetService;
 import com.java_web.backend.Common.Service.LLMLectureService;
 import com.java_web.backend.Common.Service.LLMSyllabusService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 /**
  * LLMController 控制器
@@ -23,6 +26,8 @@ public class LLMController {
     private LLMSyllabusService syllabusService;
     @Autowired
     private LLMLectureService lectureService;
+    @Autowired
+    private MaterialService materialService;
 
     /**
      * 生成课程介绍和教学目标
@@ -47,8 +52,9 @@ public class LLMController {
     }
 
     @PostMapping("/lecture")
-    public ResponseEntity<String> generateLecture(@RequestBody LectureRequestDTO req) {
-        String result = lectureService.generateLecture(req);
+    public ResponseEntity<String> generateMaterial(@RequestBody InitialSyllabusRequest req,
+                                                   @RequestParam Integer teacherId) {
+        String result = materialService.generateMaterialContent(req, teacherId);
         return ResponseEntity.ok(result);
     }
 } 

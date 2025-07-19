@@ -24,7 +24,7 @@ public class SyllabusController {
     private SyllabusService syllabusService;
 
     // 获取课程教学大纲
-    @GetMapping("/course/{courseId}/syllabus")
+    @GetMapping("{courseId}")
     public ResponseEntity<?> getSyllabus(@PathVariable int courseId, HttpServletRequest request) {
         Integer teacherId = (Integer) request.getAttribute("userId");
         try {

@@ -1,5 +1,14 @@
 package com.java_web.backend.Teacher.Service;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java_web.backend.Common.DTO.LectureRequestDTO;
 import com.java_web.backend.Common.Entity.Course;
 import com.java_web.backend.Common.Entity.Material;
@@ -8,12 +17,8 @@ import com.java_web.backend.Common.Mapper.CourseMapper;
 import com.java_web.backend.Common.Mapper.MaterialMapper;
 import com.java_web.backend.Common.Mapper.SyllabusMapper;
 import com.java_web.backend.Common.Service.LLMLectureService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.Date;
+import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
+import com.java_web.backend.Common.Service.LLMInitialSyllabusService;
 
 @Service
 public class MaterialService {
@@ -29,6 +34,9 @@ public class MaterialService {
     @Autowired
     private LLMLectureService llmService;
     
+    @Autowired
+    private LLMInitialSyllabusService llmInitialSyllabusService;
+    
     /**
      * 获取课程讲义
      */
@@ -43,23 +51,24 @@ public class MaterialService {
     /**
      * 生成课程讲义内容
      */
-    public String generateMaterialContent(Integer courseId, String prompt, Integer teacherId) throws IOException {
+    public String generateMaterialContent(InitialSyllabusRequest req, Integer teacherId) {
         // 权限验证
-        Course course = verifyTeacherCourseAccess(courseId, teacherId);
-        
-        // 检查是否已完成教学大纲阶段
-        Syllabus syllabus = syllabusMapper.selectById(courseId);
-        if (syllabus == null || syllabus.getContent() == null) {
-            throw new RuntimeException("请先完成教学大纲的生成");
-        }
-        
-        // 创建请求对象
-        LectureRequestDTO request = new LectureRequestDTO();
-        request.setCourseTitle(course.getName());
-        request.setRequest(prompt);
-        
-        // 调用LLM服务生成讲义内容
-        return llmService.generateLecture(request);
+        Course course = verifyTeacherCourseAccess(Integer.valueOf(req.getCourseId()), teacherId);
+
+        // 1. 生成大纲
+        Map<String, Object> syllabusMap = llmInitialSyllabusService.generateInitialSyllabus(
+            req.getCourseId(), req.getCourseCode(), req.getCourseTitle(), req.getTeachingLanguage(),
+            req.getResponsibleCollege(), req.getCourseCategory(), req.getPrinciple(), req.getVerifier(),
+            req.getCredit(), req.getCourseHour(), req.getCourseIntroduction(), req.getTeachingTarget(),
+            req.getEvaluationMode(), req.getWhetherTechnicalCourse(), req.getAssessmentType(),
+            req.getGradeRecording(), req.getRequest()
+        );
+
+        // 2. 转为JsonNode并取data节点
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode syllabusJson = mapper.valueToTree(syllabusMap);
+        // 直接传 syllabusJson
+        return llmService.generateLecture(syllabusJson);
     }
     
     /**

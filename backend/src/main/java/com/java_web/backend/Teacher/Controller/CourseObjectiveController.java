@@ -33,6 +33,7 @@ public class CourseObjectiveController {
      * AI生成课程介绍和教学目标
      */
     @PostMapping("/{courseId}/generate")
+    @ResponseBody
     public ResponseEntity<?> generateObjective(@PathVariable Integer courseId,
                                              @RequestBody Map<String, String> prompt,
                                              @RequestHeader("userId") Integer teacherId) {

@@ -1,5 +1,7 @@
 package com.java_web.backend.Common.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,14 +12,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.java_web.backend.Common.Config.OpenAIConfig;
-import com.java_web.backend.Common.DTO.LectureRequestDTO;
-import com.java_web.backend.Common.DTO.LectureRequestDTO.LectureSection;
 import com.java_web.backend.Common.Utils.HttpUtil;
 
 @Service
@@ -65,85 +64,94 @@ public class LLMLectureService {
         }
     }
 
-    public String generateLecture(LectureRequestDTO req) {
-        // 读取lecture模板
-        String templateContent = LLMIntroductionAndTargetService.PromptUtil.readPrompt("prompt/lecture/prompt_for_lecture_generation.txt");
-        parseLectureTemplate(templateContent);
-        // 读取tools
-        String tools = LLMIntroductionAndTargetService.PromptUtil.readPrompt("prompt/lecture/lecture_generate_tools.txt");
-
-        List<LectureSection> sections = req.getSections();
-        if (sections == null || sections.isEmpty()) {
-            return "未提供章节内容";
+    /**
+     * 根据大纲JSON生成详细讲义内容（多线程并发调用大模型）
+     */
+    public String generateLecture(JsonNode syllabusData) {
+        JsonNode teachingContentNode = syllabusData.get("teaching_content").get("teaching_content");
+        if (teachingContentNode == null || !teachingContentNode.isArray()) {
+            return "未找到教学内容";
         }
-
-        StringBuilder allContent = new StringBuilder();
+        List<String> unitNumbers = new ArrayList<>();
+        List<String> contents = new ArrayList<>();
+        List<String> ideologicals = new ArrayList<>();
+        List<String> timeAllocations = new ArrayList<>();
+        for (JsonNode unit : teachingContentNode) {
+            unitNumbers.add(unit.get("unit_number").asText());
+            contents.add(unit.get("content").asText());
+            ideologicals.add(unit.get("ideological_and_political_integration").asText());
+            timeAllocations.add(unit.get("time_allocation").asText());
+        }
         ExecutorService executor = Executors.newFixedThreadPool(5);
+        List<Future<String>> futures = new ArrayList<>();
+        for (int i = 0; i < unitNumbers.size(); i++) {
+            final int idx = i;
+            futures.add(executor.submit(() -> {
+                String prompt = String.format(
+                    "单元编号: %s\n单元内容: %s\n思政目标: %s\n学时分配: %s\n请为该单元生成详细讲义内容，分为概述、基础内容、必备内容、进阶内容、基础习题、必备习题、进阶习题。",
+                    unitNumbers.get(idx), contents.get(idx), ideologicals.get(idx), timeAllocations.get(idx)
+                );
+                return callLLM(prompt);
+            }));
+        }
+        StringBuilder finalContent = new StringBuilder();
         try {
-            for (int i = 0; i < sections.size(); i++) {
-                LectureSection section = sections.get(i);
-                String topic = section.getTopic();
-                allContent.append("# ").append(i + 1).append(". ").append(topic).append("\n\n");
-
-                // 并发生成各部分内容
-                Future<String> overviewFuture = executor.submit(() -> callLLM("概述", templateSections.getOrDefault("overview", "").toString(), req, tools));
-                Future<String> coreBasicFuture = executor.submit(() -> callLLM("核心内容（基础）", templateSections.getOrDefault("core_content_basic", "").toString(), req, tools));
-                Future<String> coreEssentialFuture = executor.submit(() -> callLLM("核心内容（必备）", templateSections.getOrDefault("core_content_essential", "").toString(), req, tools));
-                Future<String> coreAdvancedFuture = executor.submit(() -> callLLM("核心内容（进阶）", templateSections.getOrDefault("core_content_advanced", "").toString(), req, tools));
-                Future<String> exBasicFuture = executor.submit(() -> callLLM("例题选讲（基础）", templateSections.getOrDefault("example_exercises_basic", "").toString(), req, tools));
-                Future<String> exEssentialFuture = executor.submit(() -> callLLM("例题选讲（必备）", templateSections.getOrDefault("example_exercises_essential", "").toString(), req, tools));
-                Future<String> exAdvancedFuture = executor.submit(() -> callLLM("例题选讲（进阶）", templateSections.getOrDefault("example_exercises_advanced", "").toString(), req, tools));
-
-                String overview = getOrDefault(overviewFuture);
-                String coreBasic = getOrDefault(coreBasicFuture);
-                String coreEssential = getOrDefault(coreEssentialFuture);
-                String coreAdvanced = getOrDefault(coreAdvancedFuture);
-                String exBasic = getOrDefault(exBasicFuture);
-                String exEssential = getOrDefault(exEssentialFuture);
-                String exAdvanced = getOrDefault(exAdvancedFuture);
-
-                allContent.append("## 概述\n").append(overview).append("\n\n");
-                allContent.append("## 核心内容（基础）\n").append(coreBasic).append("\n\n");
-                allContent.append("## 核心内容（必备）\n").append(coreEssential).append("\n\n");
-                allContent.append("## 核心内容（进阶）\n").append(coreAdvanced).append("\n\n");
-                allContent.append("## 例题选讲（基础）\n").append(exBasic).append("\n\n");
-                allContent.append("## 例题选讲（必备）\n").append(exEssential).append("\n\n");
-                allContent.append("## 例题选讲（进阶）\n").append(exAdvanced).append("\n\n");
+            for (int i = 0; i < futures.size(); i++) {
+                finalContent.append("# 单元 ").append(unitNumbers.get(i)).append(": ").append(contents.get(i)).append("\n");
+                finalContent.append(futures.get(i).get()).append("\n\n");
             }
+        } catch (Exception e) {
+            return "生成讲义内容时发生错误: " + e.getMessage();
         } finally {
             executor.shutdown();
         }
-        return allContent.toString();
+        return finalContent.toString();
     }
 
-    private String callLLM(String sectionName, String promptContent, LectureRequestDTO req, String tools) {
-        if (promptContent == null || promptContent.isEmpty() || "无".equals(promptContent) || "未提供".equals(promptContent)) {
-            return "无数据";
-        }
-        JSONObject body = new JSONObject();
-        body.put("model", openAIConfig.getModelName());
-        JSONArray messages = new JSONArray();
-        String systemContent = "你是一名课程设计专家，下面是你要设计的课程内容: " + sectionName;
-        if (req.getRequest() != null && !req.getRequest().isEmpty()) {
-            systemContent += "\n\n<用户特别要求>\n" + req.getRequest();
-        }
-        messages.put(new JSONObject().put("role", "system").put("content", systemContent));
-        messages.put(new JSONObject().put("role", "user").put("content", "<设计要求> " + promptContent));
-        messages.put(new JSONObject().put("role", "system").put("content", "<工具> " + tools));
-        if (commandInstructions != null && !commandInstructions.isEmpty()) {
-            messages.put(new JSONObject().put("role", "system").put("content", "<command>" + commandInstructions + "</command>"));
-        }
-        body.put("messages", messages);
-        Map<String, Object> headers = new java.util.HashMap<>();
+    // 修改callLLM函数，只接收prompt参数
+    private String callLLM(String prompt) {
+        // 构建请求参数
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("model", openAIConfig.getModelName());
+        List<Map<String, Object>> messages = new ArrayList<>();
+        Map<String, Object> systemMsg = new HashMap<>();
+        systemMsg.put("role", "system");
+        systemMsg.put("content", "你是一名课程讲义内容生成专家。请根据用户提供的单元信息和要求，生成结构化、详细的讲义内容。");
+        messages.add(systemMsg);
+        Map<String, Object> userMsg = new HashMap<>();
+        userMsg.put("role", "user");
+        userMsg.put("content", prompt);
+        messages.add(userMsg);
+        requestBody.put("messages", messages);
+        // 可选参数
+        requestBody.put("temperature", 0.3);
+        requestBody.put("max_tokens", 4000);
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
+        String jsonBody;
         try {
-            headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
-            headers.put("Content-Type", "application/json");
-            String response = HttpUtil.postJson(openAIConfig.getApiUrl(), body.toString(), headers);
-            System.out.println("【" + sectionName + "】大模型原始输出：\n" + response); // 打印大模型输出
-            return response != null && !response.isEmpty() ? response : "内容生成失败";
+            jsonBody = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(requestBody);
         } catch (Exception e) {
-            return "内容生成失败: " + e.getMessage();
+            return "请求体序列化失败: " + e.getMessage();
         }
+        String response = HttpUtil.postJson(
+            openAIConfig.getApiUrl(),
+            jsonBody,
+            headers
+        );
+        // 解析响应
+        try {
+            com.fasterxml.jackson.databind.JsonNode responseNode = new com.fasterxml.jackson.databind.ObjectMapper().readTree(response);
+            if (responseNode.has("choices") && responseNode.get("choices").isArray() && responseNode.get("choices").size() > 0) {
+                com.fasterxml.jackson.databind.JsonNode choice = responseNode.get("choices").get(0);
+                if (choice.has("message") && choice.get("message").has("content")) {
+                    return choice.get("message").get("content").asText();
+                }
+            }
+        } catch (Exception e) {
+            return "大模型响应解析失败: " + e.getMessage();
+        }
+        return "大模型响应格式错误";
     }
 
     private String getOrDefault(Future<String> future) {
