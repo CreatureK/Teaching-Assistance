@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: IntelliJ IDEA
+Built-By: K
+Build-Jdk: Oracle OpenJDK 23
+Implementation-Title: backend
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.java_web
+Main-Class: ${start-class}
+
