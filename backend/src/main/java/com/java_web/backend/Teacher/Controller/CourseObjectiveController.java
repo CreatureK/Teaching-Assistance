@@ -18,7 +18,7 @@ public class CourseObjectiveController {
     private CourseObjectiveService objectiveService;
 
     // 获取课程教学目标
-    @GetMapping("/course/{courseId}/objective")
+    @GetMapping("/{courseId}")
     public ResponseEntity<?> getObjective(@PathVariable int courseId, HttpServletRequest request) {
         Integer teacherId = (Integer) request.getAttribute("userId");
         try {

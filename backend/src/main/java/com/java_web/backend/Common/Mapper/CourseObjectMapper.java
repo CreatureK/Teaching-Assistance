@@ -1,10 +1,6 @@
 package com.java_web.backend.Common.Mapper;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.java_web.backend.Common.Entity.CourseObjective;
@@ -13,7 +9,7 @@ import com.java_web.backend.Common.Entity.CourseObjective;
 public interface CourseObjectMapper extends BaseMapper<CourseObjective> {
     // 保留原有的函数
     @Select("select * from course_objective where course_id = #{courseId}")
-    CourseObjective selectObjectiveById(Integer courseId);
+    CourseObjective selectObjectiveById(@Param("courseId") Integer courseId);
     
     // 添加新的关联查询函数
     @Results({
