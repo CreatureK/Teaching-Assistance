@@ -1,8 +1,12 @@
 package com.java_web.backend.Common.Utils;
 
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
 import java.util.Map;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 public class HttpUtil {
     public static String postJson(String url, String json, Map<String, Object> headers) {

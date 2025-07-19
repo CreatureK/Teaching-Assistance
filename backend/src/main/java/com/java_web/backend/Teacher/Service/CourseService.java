@@ -60,10 +60,14 @@ public class CourseService {
         }
         
         // 查询关联的教学目标、大纲和讲义
-        CourseObjective objective = objectiveMapper.selectObjectiveById(courseId);
+        CourseObjective objective = objectiveMapper.getObjectiveWithCourse(courseId);
         Syllabus syllabus = syllabusMapper.getSyllabusByCourseId(courseId);
         Material material = materialMapper.selectByCourseId(courseId);
-        
+
+        System.out.println("Objective: " + (objective != null));
+        System.out.println("Syllabus: " + (syllabus != null));
+        System.out.println("Material: " + (material != null));
+
         // 组装返回数据
         Map<String, Object> result = new HashMap<>();
         result.put("course", course);

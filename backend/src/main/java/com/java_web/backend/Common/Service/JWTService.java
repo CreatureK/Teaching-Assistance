@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Service
 public class JWTService {
-    private static final String SECRET_KEY = "yourSecretKey"; // 实际应从配置文件读取
+    private static final String SECRET_KEY = "yourSuperSecretKeyThatIsAtLeast32BytesLong!"; // 实际应从配置文件读取
     private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24小时
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
