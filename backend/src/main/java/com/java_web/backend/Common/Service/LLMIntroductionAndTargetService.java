@@ -49,6 +49,8 @@ public class LLMIntroductionAndTargetService {
             body.put("messages", messages);
             
             Map<String, Object> headers = new java.util.HashMap<>();
+            headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
+            headers.put("Content-Type", "application/json");
             
             String response = HttpUtil.postJson(openAIConfig.getApiUrl(), body.toString(), headers);
             
@@ -114,6 +116,8 @@ public class LLMIntroductionAndTargetService {
             body.put("messages", messages);
             
             Map<String, Object> headers = new java.util.HashMap<>();
+            headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
+            headers.put("Content-Type", "application/json");
             String response = HttpUtil.postJson(openAIConfig.getApiUrl(), body.toString(), headers);
             
             return response;
