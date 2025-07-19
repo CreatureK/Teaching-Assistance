@@ -3,7 +3,7 @@
     <div class="header">
       <button class="back-button" @click="$emit('back')">←</button>
       <div class="header-right">
-        <button class="ai-btn">
+        <button class="ai-btn" @click="showPrompt = true">
           <span class="ai-icon">✨</span>
           AI生成
         </button>
@@ -32,15 +32,26 @@
       />
     </div>
 
-    
+    <Prompt
+      :is-visible="showPrompt"
+      title="AI生成"
+      description="请输入您想要AI生成的内容描述或指令"
+      placeholder="例如：生成一个关于人工智能基础的课程介绍"
+      @close="showPrompt = false"
+      @confirm="handlePromptConfirm"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
+import { ref } from 'vue';
 import Markdown from './markdown.vue';
+import Prompt from './Prompt.vue';
 
 defineEmits(['back']);
+
+// 控制Prompt组件显示
+const showPrompt = ref(false);
 
 // 示例课程简介内容
 const courseIntroduction = ref(`本课程是一门综合性学科课程，旨在帮助学习者掌握该领域的基础理论和实践技能。通过系统化的学习，学员将能够理解核心概念，并具备解决实际问题的能力。`);
@@ -50,6 +61,13 @@ const courseContent = ref(`1. 基础理论篇：核心概念与原理
 2. 实践应用篇：案例分析与项目实战
 3. 进阶提升篇：前沿技术与发展趋势
 4. 综合评估篇：项目实践与成果展示`);
+
+// 处理Prompt提交事件
+const handlePromptConfirm = (content: string) => {
+  console.log('用户提交的内容:', content);
+  // 这里可以添加处理AI生成的逻辑，比如发送请求到后端
+  showPrompt.value = false;
+};
 </script>
 
 <style scoped>

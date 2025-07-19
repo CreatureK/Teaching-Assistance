@@ -4,7 +4,7 @@
       <button class="back-button" @click="$emit('back')">←</button>
       <h3 class="section-title">课程大纲</h3>
       <div class="header-right">
-        <button class="ai-btn">
+        <button class="ai-btn" @click="showPrompt = true">
           <span class="ai-icon">✨</span>
           AI生成
         </button>
@@ -22,14 +22,27 @@
         :editable="false" 
       />
     </div>
+    
+    <Prompt
+      :is-visible="showPrompt"
+      title="AI生成课程大纲"
+      description="请输入您想要生成的课程大纲的相关描述或关键词"
+      placeholder="例如：计算机网络基础、面向对象程序设计、人工智能导论等"
+      @close="showPrompt = false"
+      @confirm="handlePromptConfirm"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, defineEmits, onMounted, onUnmounted } from 'vue';
 import Markdown from './markdown.vue';
+import Prompt from './Prompt.vue';
 
 defineEmits(['back']);
+
+// 控制Prompt组件显示
+const showPrompt = ref(false);
 
 // 示例课程大纲内容
 const courseOutline = ref(`1. 基础理论篇：核心概念与原理
@@ -46,6 +59,13 @@ const editorHeight = ref('calc(100vh - 200px)');
 const updateEditorHeight = () => {
   const calculatedHeight = Math.min(window.innerHeight - 200, 1800);
   editorHeight.value = `${calculatedHeight}px`;
+};
+
+// 处理Prompt提交事件
+const handlePromptConfirm = (content: string) => {
+  console.log('用户提交的大纲生成内容:', content);
+  // 这里可以添加处理AI生成的逻辑，比如发送请求到后端
+  showPrompt.value = false;
 };
 
 onMounted(() => {

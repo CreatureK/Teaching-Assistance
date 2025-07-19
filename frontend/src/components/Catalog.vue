@@ -124,6 +124,13 @@ watch(() => props.activeHeading, (newValue) => {
     }
   }
 })
+
+// 添加默认导出
+defineExpose({
+  toggleCatalog,
+  handleItemClick,
+  catalogItems
+});
 </script>
 
 <style scoped>

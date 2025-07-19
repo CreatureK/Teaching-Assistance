@@ -4,7 +4,7 @@
       <button class="back-button" @click="$emit('back')">←</button>
       <h3 class="section-title">教学讲义</h3>
       <div class="header-right">
-        <button class="ai-btn">
+        <button class="ai-btn" @click="showPrompt = true">
           <span class="ai-icon">✨</span>
           AI生成
         </button>
@@ -35,6 +35,15 @@
         />
       </div>
     </div>
+    
+    <Prompt
+      :is-visible="showPrompt"
+      title="AI生成讲义内容"
+      description="请输入您想要AI生成的讲义内容描述或指令"
+      placeholder="例如：生成关于分布式系统CAP理论的讲解，包括概念和应用案例"
+      @close="showPrompt = false"
+      @confirm="handlePromptConfirm"
+    />
   </div>
 </template>
 
@@ -42,8 +51,12 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import Markdown from './markdown.vue';
 import Catalog from './Catalog.vue';
+import Prompt from './Prompt.vue';
 
 const emit = defineEmits(['back', 'save', 'save-draft']);
+
+// 控制Prompt组件显示
+const showPrompt = ref(false);
 
 // 目录展开状态
 const catalogExpanded = ref(true);
@@ -51,6 +64,13 @@ const catalogExpanded = ref(true);
 // 处理目录折叠/展开
 const handleCatalogToggle = (expanded: boolean) => {
   catalogExpanded.value = expanded;
+};
+
+// 处理Prompt提交事件
+const handlePromptConfirm = (content: string) => {
+  console.log('用户提交的讲义生成内容:', content);
+  // 这里可以添加处理AI生成的逻辑，比如发送请求到后端
+  showPrompt.value = false;
 };
 
 // 示例讲义内容

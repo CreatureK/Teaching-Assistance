@@ -21,7 +21,7 @@
     "@stagewise-plugins/vue": "^0.5.2",
     "@stagewise/toolbar-vue": "^0.5.2",
     "@types/mathjax": "^0.0.40",
-    "@types/node": "^24.0.13",
+    "@types/node": "^24.0.15",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/tsconfig": "^0.7.0",
     "typescript": "~5.8.3",
