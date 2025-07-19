@@ -1,3 +1,0 @@
-// 测试名称: Controller_JsonToMarkdown_Batch_WithErrors
-// 生成时间: 2025-07-18 17:57:34
-"{\"summary\":{\"total\":3,\"successRate\":\"66.7%\",\"success\":2,\"error\":1},\"item_2\":{\"content\":\"# 个人信息\\n\\n- **姓名**: 王五\\n- **年龄**: 28\",\"status\":\"success\"},\"item_1\":{\"error\":\"JSON格式不正确\",\"status\":\"error\"},\"item_0\":{\"content\":\"# 个人信息\\n\\n- **姓名**: 张三\\n- **年龄**: 25\",\"status\":\"success\"}}"
