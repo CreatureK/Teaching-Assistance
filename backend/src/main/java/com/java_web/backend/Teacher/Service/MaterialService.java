@@ -1,5 +1,11 @@
 package com.java_web.backend.Teacher.Service;
 
+import java.io.IOException;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.java_web.backend.Common.DTO.LectureRequestDTO;
 import com.java_web.backend.Common.Entity.Course;
 import com.java_web.backend.Common.Entity.Material;
@@ -8,12 +14,6 @@ import com.java_web.backend.Common.Mapper.CourseMapper;
 import com.java_web.backend.Common.Mapper.MaterialMapper;
 import com.java_web.backend.Common.Mapper.SyllabusMapper;
 import com.java_web.backend.Common.Service.LLMLectureService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.Date;
 
 @Service
 public class MaterialService {
@@ -59,7 +59,8 @@ public class MaterialService {
         request.setRequest(prompt);
         
         // 调用LLM服务生成讲义内容
-        return llmService.generateLecture(request);
+//        return llmService.generateLecture(syllabusData);
+        return "";
     }
     
     /**

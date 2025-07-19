@@ -1,20 +1,21 @@
 package com.java_web.backend.Common.Service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Common.Config.OpenAIConfig;
-import com.java_web.backend.Common.Utils.HttpUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.java_web.backend.Common.Config.OpenAIConfig;
+import com.java_web.backend.Common.Utils.HttpUtil;
 
 /**
  * 初始教学大纲生成服务类
@@ -142,7 +143,7 @@ public class LLMInitialSyllabusService {
     /**
      * 生成课程英文名
      */
-    private String generateEnglishName(String courseTitle) {
+    private String generateEnglishName(String courseTitle) throws JsonProcessingException {
         String prompt = "你是一位资深大学教授，你知道各个学科对应的中文名和英文名分别是什么。\n" +
                        "用户会给你一个课程的中文名，你需要将其翻译成英文，并且返回给用户。注意，你返回的内容应该有且仅有课程的英文名，并且是一个字符串，而不要有其他任何多余的内容\n" +
                        "课程的中文名是" + courseTitle + "，请给出它的英文名。";
@@ -154,7 +155,7 @@ public class LLMInitialSyllabusService {
     /**
      * 生成详细课程目标
      */
-    private Map<String, Object> generateDetailedCourseTarget(String courseTitle, String request) {
+    private Map<String, Object> generateDetailedCourseTarget(String courseTitle, String request) throws JsonProcessingException {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_detailed_course_target.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 detailed_course_target，其json模版内容后续会指定。\n" +
@@ -174,7 +175,7 @@ public class LLMInitialSyllabusService {
     /**
      * 生成教学内容
      */
-    private Map<String, Object> generateTeachingContent(String courseTitle, String courseHour, String request) {
+    private Map<String, Object> generateTeachingContent(String courseTitle, String courseHour, String request) throws JsonProcessingException {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_teaching_content.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 teaching_content，其json模版内容后续会指定。\n" +
@@ -195,7 +196,7 @@ public class LLMInitialSyllabusService {
     /**
      * 生成实验项目
      */
-    private Map<String, Object> generateExperimentalProjects(String courseTitle, String request) {
+    private Map<String, Object> generateExperimentalProjects(String courseTitle, String request) throws JsonProcessingException {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_experimental_projects.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 experimental_projects，其json模版内容后续会指定。\n" +
@@ -215,7 +216,7 @@ public class LLMInitialSyllabusService {
     /**
      * 生成教材和参考书
      */
-    private Map<String, Object> generateTextbooksAndReferenceBooks(String courseTitle, String courseHour, String request) {
+    private Map<String, Object> generateTextbooksAndReferenceBooks(String courseTitle, String courseHour, String request) throws JsonProcessingException {
         String promptTemplate = loadPromptFromFile("prompt/syllabus/prompt_for_textbooks_and_reference_books.txt");
         String prompt = "你是一位资深大学教授，尤其擅长" + courseTitle + "学科的教学以及大纲制作，你需要按照模版进行大纲的制作\n" +
                        "在本次生成中，你需要生成的大纲部分是 textbooks_and_reference_books，其json模版内容后续会指定。\n" +
@@ -236,7 +237,7 @@ public class LLMInitialSyllabusService {
     /**
      * 调用大模型
      */
-    public String callLLM(String prompt) {
+    public String callLLM(String prompt) throws JsonProcessingException {
         // 构建请求参数
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", openAIConfig.getModelName());
@@ -258,10 +259,15 @@ public class LLMInitialSyllabusService {
         requestBody.put("max_tokens", 8000);
 
         // 发送请求
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
+
+        String jsonBody = new ObjectMapper().writeValueAsString(requestBody); // 确保是 JSON 字符串
+
         String response = HttpUtil.postJson(
             openAIConfig.getApiUrl(),
-            openAIConfig.getApiKey(),
-            requestBody
+            jsonBody,
+            headers
         );
 
         // 解析响应

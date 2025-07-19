@@ -9,6 +9,7 @@ import com.java_web.backend.Common.Service.LLMSyllabusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * LLMController 控制器
@@ -47,8 +48,8 @@ public class LLMController {
     }
 
     @PostMapping("/lecture")
-    public ResponseEntity<String> generateLecture(@RequestBody LectureRequestDTO req) {
-        String result = lectureService.generateLecture(req);
+    public ResponseEntity<String> generateLecture(@RequestBody JsonNode syllabusData) {
+        String result = lectureService.generateLecture(syllabusData);
         return ResponseEntity.ok(result);
     }
 } 
