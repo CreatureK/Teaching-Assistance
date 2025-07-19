@@ -19,8 +19,18 @@ public class LoginInterceptor implements HandlerInterceptor {
     
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 排除登录接口
         String path = request.getRequestURI();
+
+        // 放行Swagger相关接口
+        if (path.startsWith("/swagger-ui") ||
+            path.equals("/swagger-ui.html") ||
+            path.startsWith("/v3/api-docs") ||
+            path.startsWith("/swagger-resources") ||
+            path.startsWith("/webjars")) {
+            return true;
+        }
+
+        // 排除登录接口
         if (path.equals("/login") || path.equals("/admin/login")) {
             return true;
         }
