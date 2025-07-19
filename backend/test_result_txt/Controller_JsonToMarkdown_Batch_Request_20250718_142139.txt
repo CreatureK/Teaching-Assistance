@@ -1,4 +1,0 @@
-测试名称: Controller_JsonToMarkdown_Batch_Request
-生成时间: 2025-07-18 14:21:39
-==================================================
-{"customStyle":"使用表格格式","jsonContents":["{\"name\": \"张三\", \"age\": 25}","{\"name\": \"李四\", \"age\": 30}","{\"name\": \"王五\", \"age\": 28}"],"outputFormat":"markdown"}
