@@ -104,17 +104,15 @@ public class LLMInitialSyllabusService {
         CompletableFuture.allOf(englishNameFuture, detailedTargetFuture, teachingContentFuture, 
                                experimentalProjectsFuture, textbooksFuture).join();
 
-        // 整合结果
-        Map<String, Object> response = new HashMap<>();
+        // 整合结果 - 按照initial_syllabus.json的顺序组装
+        Map<String, Object> response = new java.util.LinkedHashMap<>();
+        
+        // 1. 基本信息字段
         response.put("course_id", courseId);
         response.put("course_code", courseCode);
         response.put("course_Chinese_name", courseTitle);
         try {
             response.put("course_English_name", englishNameFuture.get());
-            response.put("detailed_course_target", detailedTargetFuture.get());
-            response.put("teaching_content", teachingContentFuture.get());
-            response.put("experimental_projects", experimentalProjectsFuture.get());
-            response.put("textbooks_and_reference_books", textbooksFuture.get());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("任务被中断", e);
@@ -133,7 +131,49 @@ public class LLMInitialSyllabusService {
         response.put("grade_recording", gradeRecording);
         response.put("course_introduction", courseIntroduction);
         response.put("course_target", teachingTarget);
+        
+        // 2. 详细课程目标
+        try {
+            response.put("detailed_course_target", detailedTargetFuture.get());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("任务被中断", e);
+        } catch (java.util.concurrent.ExecutionException e) {
+            throw new RuntimeException("任务执行异常: " + e.getMessage(), e);
+        }
+        
+        // 3. 评价模式（使用传入的参数）
         response.put("evaluation_mode", evaluationMode);
+        
+        // 4. 教学内容
+        try {
+            response.put("teaching_content", teachingContentFuture.get());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("任务被中断", e);
+        } catch (java.util.concurrent.ExecutionException e) {
+            throw new RuntimeException("任务执行异常: " + e.getMessage(), e);
+        }
+        
+        // 5. 实验项目
+        try {
+            response.put("experimental_projects", experimentalProjectsFuture.get());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("任务被中断", e);
+        } catch (java.util.concurrent.ExecutionException e) {
+            throw new RuntimeException("任务执行异常: " + e.getMessage(), e);
+        }
+        
+        // 6. 教材和参考书
+        try {
+            response.put("textbooks_and_reference_books", textbooksFuture.get());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("任务被中断", e);
+        } catch (java.util.concurrent.ExecutionException e) {
+            throw new RuntimeException("任务执行异常: " + e.getMessage(), e);
+        }
 
         executor.shutdown();
         return response;
@@ -258,7 +298,7 @@ public class LLMInitialSyllabusService {
         requestBody.put("max_tokens", 8000);
 
         // 发送请求
-        String response = HttpUtil.postJson(
+        String response = HttpUtil.postJsonWithApiKey(
             openAIConfig.getApiUrl(),
             openAIConfig.getApiKey(),
             requestBody
