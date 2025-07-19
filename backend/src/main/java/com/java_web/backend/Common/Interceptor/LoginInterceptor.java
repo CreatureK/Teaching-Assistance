@@ -16,22 +16,25 @@ import jakarta.servlet.http.HttpServletResponse;
 public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private JWTService jwtService;
-    
+
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         String path = request.getRequestURI();
 
         // 放行Swagger相关接口
         if (path.startsWith("/swagger-ui") ||
-            path.equals("/swagger-ui.html") ||
-            path.startsWith("/v3/api-docs") ||
-            path.startsWith("/swagger-resources") ||
-            path.startsWith("/webjars")) {
+                path.equals("/swagger-ui.html") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/swagger-resources") ||
+                path.startsWith("/webjars")) {
             return true;
         }
 
-        // 排除登录接口
-        if (path.equals("/login") || path.equals("/admin/login")) {
+        // 排除登录和注册相关接口
+        if (path.equals("/login") ||
+                path.equals("/admin/login") ||
+                path.startsWith("/api/signup/")) {
             return true;
         }
 
@@ -72,7 +75,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return false;
         }
     }
-    
+
     private void handleUnauthorized(HttpServletResponse response, String message) throws IOException {
         response.setStatus(401);
         response.setContentType("application/json;charset=UTF-8");

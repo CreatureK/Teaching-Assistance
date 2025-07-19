@@ -15,9 +15,6 @@ public class SignupService {
   @Autowired
   private UserMapper userMapper;
 
-  @Autowired
-  private JWTService jwtService;
-
   /**
    * 用户注册
    * 
@@ -66,13 +63,9 @@ public class SignupService {
       // 保存用户到数据库
       userMapper.insert(user);
 
-      // 生成JWT令牌
-      String token = jwtService.generateToken(user);
-
       // 返回成功结果
       result.put("success", true);
       result.put("message", "注册成功");
-      result.put("token", token);
       result.put("user", user);
 
       return result;
