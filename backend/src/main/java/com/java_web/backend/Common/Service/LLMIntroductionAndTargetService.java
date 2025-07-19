@@ -1,17 +1,19 @@
 package com.java_web.backend.Common.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
+
 import com.java_web.backend.Common.Config.OpenAIConfig;
 import com.java_web.backend.Common.DTO.IntroductionAndTargetRequestDTO;
 import com.java_web.backend.Common.Entity.IntroductionAndTargetResponse;
 import com.java_web.backend.Common.Utils.HttpUtil;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.Map;
-import org.springframework.core.io.ClassPathResource;
-import java.nio.file.Files;
-import java.nio.charset.StandardCharsets;
 
 @Service
 public class LLMIntroductionAndTargetService {

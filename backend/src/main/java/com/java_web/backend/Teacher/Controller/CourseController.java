@@ -13,7 +13,7 @@ import com.java_web.backend.Teacher.Service.CourseService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/teacher/course")
+@RequestMapping("/teacher")
 public class CourseController {
     @Autowired
     private CourseService courseService;
@@ -30,6 +30,7 @@ public class CourseController {
     @GetMapping("/course/{id}")
     public ResponseEntity<?> getCourseById(@PathVariable int id, HttpServletRequest request) {
         Integer teacherId = (Integer) request.getAttribute("userId");
+        System.out.println("teacherId = " + teacherId);  // 检查是否为 null
         try {
             Map<String, Object> courseDetail = courseService.getCourseDetail(id, teacherId);
             return ResponseEntity.ok(courseDetail);
