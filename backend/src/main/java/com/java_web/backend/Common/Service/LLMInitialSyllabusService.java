@@ -146,7 +146,7 @@ public class LLMInitialSyllabusService {
     private String generateEnglishName(String courseTitle) throws JsonProcessingException {
         String prompt = "你是一位资深大学教授，你知道各个学科对应的中文名和英文名分别是什么。\n" +
                        "用户会给你一个课程的中文名，你需要将其翻译成英文，并且返回给用户。注意，你返回的内容应该有且仅有课程的英文名，并且是一个字符串，而不要有其他任何多余的内容\n" +
-                       "课程的中文名是" + courseTitle + "，请给出它的英文名。";
+                       "课程的中文名是" + courseTitle + "，请给出它的英文名。并且，你的返回值只允许生成json格式的数据，绝对不能是markdown!!!";
 
         String response = callLLM(prompt);
         return response.trim();
@@ -259,6 +259,10 @@ public class LLMInitialSyllabusService {
         requestBody.put("max_tokens", 8000);
 
         // 发送请求
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
+        String jsonBody = new ObjectMapper().writeValueAsString(requestBody);
+
         String response = HttpUtil.postJson(
             openAIConfig.getApiUrl(),
             jsonBody,
