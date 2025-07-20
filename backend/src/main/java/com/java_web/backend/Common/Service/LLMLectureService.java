@@ -82,7 +82,7 @@ public class LLMLectureService {
             ideologicals.add(unit.get("ideological_and_political_integration").asText());
             timeAllocations.add(unit.get("time_allocation").asText());
         }
-        ExecutorService executor = Executors.newFixedThreadPool(5);
+        ExecutorService executor = Executors.newFixedThreadPool(7);
         List<Future<String>> futures = new ArrayList<>();
         for (int i = 0; i < unitNumbers.size(); i++) {
             final int idx = i;
