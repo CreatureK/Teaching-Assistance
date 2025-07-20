@@ -13,6 +13,31 @@
       </div>
     </div>
 
+    <div v-if="isLoading" class="status-message loading">
+      <div class="spinner"></div>
+      <span>{{ loadingMessage }}</span>
+    </div>
+
+    <div v-if="isGenerating" class="status-message generating">
+      <div class="spinner"></div>
+      <span>{{ generatingStatus }}</span>
+    </div>
+
+    <div v-if="isSaving" class="status-message saving">
+      <div class="spinner"></div>
+      <span>正在保存...</span>
+    </div>
+
+    <div v-if="showSuccessMessage" class="status-message success">
+      <span class="success-icon">✓</span>
+      <span>{{ successMessage }}</span>
+    </div>
+
+    <div v-if="error" class="status-message error">
+      <span class="error-icon">❌</span>
+      <span>{{ error }}</span>
+    </div>
+
     <div class="content-container">
       <!-- 左侧目录 -->
       <div class="catalog-panel" :class="{ 'collapsed': !catalogExpanded }">
@@ -48,12 +73,48 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch, defineProps } from 'vue';
 import Markdown from './markdown.vue';
 import Catalog from './Catalog.vue';
 import Prompt from './Prompt.vue';
+import { getCourseMaterial, saveCourseMaterial, generateCourseMaterial } from '../api/functions';
+
+// 定义讲义单元的接口
+interface LectureUnit {
+  unit_number: string;
+  unit_title: string;
+  lecture_content: string;
+  ideological_target?: string;
+  time_allocation?: string;
+}
+
+// 定义API响应的接口
+interface MaterialResponse {
+  content?: string;
+  units?: LectureUnit[];
+  message?: string;
+  status?: string;
+}
+
+const props = defineProps({
+  courseId: {
+    type: Number,
+    required: false,
+    default: undefined
+  }
+});
 
 const emit = defineEmits(['back', 'save', 'save-draft']);
+
+// 状态变量
+const isLoading = ref(false);
+const loadingMessage = ref('正在加载讲义内容...');
+const isGenerating = ref(false);
+const generatingStatus = ref('正在生成讲义...');
+const isSaving = ref(false);
+const showSuccessMessage = ref(false);
+const successMessage = ref('');
+const error = ref('');
 
 // 控制Prompt组件显示
 const showPrompt = ref(false);
@@ -67,48 +128,74 @@ const handleCatalogToggle = (expanded: boolean) => {
 };
 
 // 处理Prompt提交事件
-const handlePromptConfirm = (content: string) => {
-  console.log('用户提交的讲义生成内容:', content);
-  // 这里可以添加处理AI生成的逻辑，比如发送请求到后端
+const handlePromptConfirm = async (content: string) => {
+  if (!props.courseId || isNaN(props.courseId)) {
+    error.value = '课程ID无效，无法生成讲义';
+    console.error('无效的课程ID:', props.courseId);
+    showPrompt.value = false;
+    return;
+  }
+  
+  if (!content.trim()) {
+    error.value = '请输入有效的描述内容';
+    return;
+  }
+  
   showPrompt.value = false;
+  isGenerating.value = true;
+  generatingStatus.value = '正在生成讲义内容...';
+  error.value = '';
+  
+  try {
+    // 假设我们使用课程标题作为第二个参数，这里可以修改为实际需求
+    const courseTitle = '课程讲义'; // 可以从props或其他地方获取实际标题
+    const response: MaterialResponse = await generateCourseMaterial(props.courseId, courseTitle, content);
+    
+    if (response && response.content) {
+      markdownContent.value = response.content;
+    } else if (response && response.units) {
+      // 处理新的响应格式，拼接所有单元的讲义内容
+      let combinedContent = '';
+      response.units.forEach((unit: LectureUnit, index: number) => {
+        if (index > 0) {
+          combinedContent += '\n\n---\n\n'; // 单元之间添加分隔线
+        }
+        
+        combinedContent += unit.lecture_content;
+      });
+      
+      console.log('生成的内容长度:', combinedContent.length);
+      markdownContent.value = combinedContent;
+    } else {
+      error.value = '生成的讲义内容为空，请尝试提供更详细的描述';
+      isGenerating.value = false;
+      return;
+    }
+    
+    // 使用ref更新Markdown组件
+    if (markdownEditor.value && markdownEditor.value.setMarkdown) {
+      console.log('准备更新生成的内容到编辑器');
+      setTimeout(() => {
+        markdownEditor.value.setMarkdown(markdownContent.value);
+        console.log('编辑器内容已更新');
+      }, 100); // 添加短暂延时确保渲染正确
+    }
+    
+    showSuccessMessage.value = true;
+    successMessage.value = '生成成功！';
+    setTimeout(() => {
+      showSuccessMessage.value = false;
+    }, 3000);
+  } catch (err) {
+    console.error('生成讲义失败', err);
+    error.value = '生成讲义失败，请稍后重试';
+  } finally {
+    isGenerating.value = false;
+  }
 };
 
 // 示例讲义内容
-const markdownContent = ref(`# 第一章 课程介绍
-
-## 1.1 教学目标
-
-本课程旨在帮助学生掌握基本理论知识和实践技能，培养学生的独立思考能力和创新精神。
-
-### 1.1.1 课程意义
-
-通过本课程的学习，学生将能够理解该领域的核心概念，并能够应用这些知识解决实际问题。
-
-### 1.1.2 学习内容
-
-本课程包括理论学习和实践操作两部分，涵盖基础理论、核心技术和前沿应用。
-
-## 1.2 教学安排
-
-课程共16周，包括课堂讲授、实验实践和项目研讨。
-
-### 1.2.1 课程进度
-
-第1-8周主要学习基础理论，第9-16周进行实践项目和综合应用。
-
-# 第二章 基础知识
-
-## 2.1 关键概念
-
-本章介绍该领域的核心概念和基本原理。
-
-### 2.1.1 定义
-
-对关键术语和基本概念进行定义和解释。
-
-### 2.1.2 实例
-
-通过具体实例帮助理解抽象概念。`);
+const markdownContent = ref('');
 
 // 当前活跃的标题锚点
 const activeHeading = ref('');
@@ -139,6 +226,58 @@ const toggleEditMode = () => {
     if (editor) {
       editor.focus();
     }
+  }
+};
+
+// 获取课程讲义
+const fetchCourseMaterial = async () => {
+  if (!props.courseId || isNaN(props.courseId)) {
+    error.value = '课程ID无效，无法获取讲义';
+    console.error('无效的课程ID:', props.courseId);
+    return;
+  }
+  
+  isLoading.value = true;
+  loadingMessage.value = '正在加载讲义内容...';
+  error.value = '';
+  
+  try {
+    const response: MaterialResponse = await getCourseMaterial(props.courseId);
+    if (response && response.content) {
+      markdownContent.value = response.content;
+    } else if (response && response.units) {
+      // 处理新的响应格式，拼接所有单元的讲义内容
+      let combinedContent = '';
+      response.units.forEach((unit: LectureUnit, index: number) => {
+        if (index > 0) {
+          combinedContent += '\n\n---\n\n'; // 单元之间添加分隔线
+        }
+        combinedContent += `# 单元${unit.unit_number}: ${unit.unit_title}\n\n`;
+        combinedContent += unit.lecture_content;
+      });
+      
+      // 添加日志，查看拼接后的内容长度
+      console.log('拼接后的内容长度:', combinedContent.length);
+      markdownContent.value = combinedContent;
+    } else {
+      // 如果没有内容，使用空字符串
+      markdownContent.value = '';
+      console.log('获取的讲义内容为空');
+    }
+    
+    // 使用ref更新Markdown组件
+    if (markdownEditor.value && markdownEditor.value.setMarkdown) {
+      console.log('准备更新Markdown组件');
+      setTimeout(() => {
+        markdownEditor.value.setMarkdown(markdownContent.value);
+        console.log('Markdown组件已更新');
+      }, 100); // 添加短暂延时确保渲染正确
+    }
+  } catch (err) {
+    console.error('获取课程讲义失败', err);
+    error.value = '获取课程讲义失败，请稍后重试';
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -219,15 +358,39 @@ const handleSaveDraft = () => {
   emit('save-draft', content);
 };
 
-// 保存
-const handleSave = () => {
-  const content = markdownContent.value;
-  emit('save', content);
+// 保存讲义
+const handleSave = async () => {
+  if (!props.courseId || isNaN(props.courseId)) {
+    error.value = '课程ID无效，无法保存讲义';
+    console.error('无效的课程ID:', props.courseId);
+    return;
+  }
+  
+  isSaving.value = true;
+  error.value = '';
+  
+  try {
+    await saveCourseMaterial(props.courseId, {
+      content: markdownContent.value
+    });
+    
+    showSuccessMessage.value = true;
+    successMessage.value = '保存成功！';
+    setTimeout(() => {
+      showSuccessMessage.value = false;
+    }, 3000);
+  } catch (err) {
+    console.error('保存讲义失败', err);
+    error.value = '保存讲义失败，请稍后重试';
+  } finally {
+    isSaving.value = false;
+  }
 };
 
 onMounted(() => {
   updateEditorHeight();
   window.addEventListener('resize', updateEditorHeight);
+  fetchCourseMaterial(); // 加载讲义内容
 });
 
 onUnmounted(() => {
@@ -284,6 +447,68 @@ onUnmounted(() => {
   margin-bottom: 10px;
   text-align: center;
   flex-grow: 1;
+}
+
+.status-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.loading {
+  background-color: rgba(33, 150, 243, 0.1);
+}
+
+.generating {
+  background-color: rgba(255, 193, 7, 0.1);
+}
+
+.saving {
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.success {
+  background-color: rgba(76, 175, 80, 0.2);
+  animation: fadeOut 3s forwards;
+}
+
+.error {
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+.success-icon {
+  color: #4caf50;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.error-icon {
+  color: #f44336;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #2196f3;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .content-container {

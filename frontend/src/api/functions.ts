@@ -174,3 +174,78 @@ export const saveCourseSyllabus = async (courseId: number, syllabus: any) => {
     throw error;
   }
 };
+
+/**
+ * 获取课程讲义
+ * @param courseId 课程ID
+ */
+export const getCourseMaterial = async (courseId: number) => {
+  const token = getToken();
+  const userId = getUserId();
+
+  try {
+    const response = await axios.get(`${API_URL}/teacher/material/${courseId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'userId': userId
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('获取课程讲义失败', error);
+    throw error;
+  }
+};
+
+/**
+ * AI生成完整课程讲义
+ * @param courseId 课程ID
+ * @param courseTitle 课程标题
+ * @param request 用户请求内容
+ */
+export const generateCourseMaterial = async (courseId: number, courseTitle: string, request: string) => {
+  const token = getToken();
+  const userId = getUserId();
+
+  try {
+    const response = await axios.post(`${API_URL}/teacher/material/${courseId}/generate`,
+      { courseTitle, request },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'userId': userId
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('生成课程讲义失败', error);
+    throw error;
+  }
+};
+
+/**
+ * 保存教学讲义
+ * @param courseId 课程ID
+ * @param material 讲义对象
+ */
+export const saveCourseMaterial = async (courseId: number, material: any) => {
+  const token = getToken();
+  const userId = getUserId();
+
+  try {
+    const response = await axios.post(`${API_URL}/teacher/material/${courseId}/save`,
+      material,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'userId': userId
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('保存课程讲义失败', error);
+    throw error;
+  }
+};

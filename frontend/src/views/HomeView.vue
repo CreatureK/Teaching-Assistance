@@ -187,17 +187,6 @@ const backToFunctionSelect = () => {
   showTeachingLecture.value = false
 }
 
-// 保存讲义
-const handleSaveLecture = (content: string) => {
-  console.log('保存讲义内容', content)
-  // 这里实现保存讲义内容的逻辑
-}
-
-// 保存讲义草稿
-const handleSaveLectureDraft = (content: string) => {
-  console.log('保存讲义草稿', content)
-  // 这里实现保存讲义草稿的逻辑
-}
 </script>
 
 <template>
@@ -231,9 +220,8 @@ const handleSaveLectureDraft = (content: string) => {
       />
       <TeachingLecture
         v-else-if="showTeachingLecture"
+        :courseId="selectedCourseId"
         @back="backToFunctionSelect"
-        @save="handleSaveLecture"
-        @save-draft="handleSaveLectureDraft"
       />
     </div>
   </div>
