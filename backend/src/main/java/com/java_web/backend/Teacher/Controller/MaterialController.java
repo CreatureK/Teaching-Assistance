@@ -1,15 +1,18 @@
 package com.java_web.backend.Teacher.Controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
-import com.java_web.backend.Teacher.Service.MaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
 import com.java_web.backend.Common.Entity.Material;
+import com.java_web.backend.Teacher.Service.MaterialService;
 
 
 @RestController
@@ -37,7 +40,7 @@ public class MaterialController {
      */
     @PostMapping("/{courseId}/generate")
     public ResponseEntity<String> generateMaterial(@RequestBody InitialSyllabusRequest req,
-                                                   @RequestParam Integer teacherId) {
+                                                   @RequestHeader("userId") Integer teacherId) {
         String result = materialService.generateMaterialContent(req, teacherId);
         return ResponseEntity.ok(result);
     }

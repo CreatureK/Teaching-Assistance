@@ -48,7 +48,8 @@ public class SyllabusService {
         
         // 检查是否已完成课程目标阶段
         CourseObjective objective = courseObjectMapper.selectById(courseId);
-        if (objective == null || objective.getContent() == null) {
+        if (objective == null || objective.getTeachingTarget() == null ||
+        objective.getCourseContent() != null) {
             throw new RuntimeException("请先完成课程介绍和教学目标的生成");
         }
         

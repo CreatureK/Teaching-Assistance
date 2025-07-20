@@ -94,18 +94,39 @@ public class LLMLectureService {
                 return callLLM(prompt);
             }));
         }
-        StringBuilder finalContent = new StringBuilder();
+        
+        // 构建返回的JSON结构
+        org.json.JSONObject result = new org.json.JSONObject();
+        result.put("status", "success");
+        result.put("message", "讲义生成成功");
+        
+        org.json.JSONArray units = new org.json.JSONArray();
         try {
             for (int i = 0; i < futures.size(); i++) {
-                finalContent.append("# 单元 ").append(unitNumbers.get(i)).append(": ").append(contents.get(i)).append("\n");
-                finalContent.append(futures.get(i).get()).append("\n\n");
+                org.json.JSONObject unit = new org.json.JSONObject();
+                unit.put("unit_number", unitNumbers.get(i));
+                unit.put("unit_title", contents.get(i));
+                unit.put("ideological_target", ideologicals.get(i));
+                unit.put("time_allocation", timeAllocations.get(i));
+                
+                // 直接使用JSON响应，保持原始格式
+                String llmResponse = futures.get(i).get();
+                // 将JSON字符串作为原始字符串存储，避免转义
+                unit.put("lecture_content", llmResponse);
+                
+                units.put(unit);
             }
         } catch (Exception e) {
-            return "生成讲义内容时发生错误: " + e.getMessage();
+            result.put("status", "error");
+            result.put("message", "生成讲义内容时发生错误: " + e.getMessage());
         } finally {
             executor.shutdown();
         }
-        return finalContent.toString();
+        
+        result.put("units", units);
+        
+        // 返回JSON字符串
+        return result.toString();
     }
 
     // 修改callLLM函数，只接收prompt参数
@@ -113,46 +134,62 @@ public class LLMLectureService {
         // 构建请求参数
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", openAIConfig.getModelName());
+
         List<Map<String, Object>> messages = new ArrayList<>();
-        Map<String, Object> systemMsg = new HashMap<>();
-        systemMsg.put("role", "system");
-        systemMsg.put("content", "你是一名课程讲义内容生成专家。请根据用户提供的单元信息和要求，生成结构化、详细的讲义内容。");
-        messages.add(systemMsg);
-        Map<String, Object> userMsg = new HashMap<>();
-        userMsg.put("role", "user");
-        userMsg.put("content", prompt);
-        messages.add(userMsg);
+        messages.add(Map.of("role", "system", "content", "你是一名课程讲义内容生成专家..."));
+        messages.add(Map.of("role", "user", "content", prompt));
         requestBody.put("messages", messages);
-        // 可选参数
-        requestBody.put("temperature", 0.3);
-        requestBody.put("max_tokens", 4000);
-        Map<String, Object> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
+
+        Map<String, Object> headers = Map.of("Authorization", "Bearer " + openAIConfig.getApiKey());
+
         String jsonBody;
         try {
             jsonBody = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(requestBody);
         } catch (Exception e) {
             return "请求体序列化失败: " + e.getMessage();
         }
-        String response = HttpUtil.postJson(
-            openAIConfig.getApiUrl(),
-            jsonBody,
-            headers
-        );
-        // 解析响应
+
+        String response = HttpUtil.postJson(openAIConfig.getApiUrl(), jsonBody, headers);
+
         try {
-            com.fasterxml.jackson.databind.JsonNode responseNode = new com.fasterxml.jackson.databind.ObjectMapper().readTree(response);
-            if (responseNode.has("choices") && responseNode.get("choices").isArray() && responseNode.get("choices").size() > 0) {
-                com.fasterxml.jackson.databind.JsonNode choice = responseNode.get("choices").get(0);
-                if (choice.has("message") && choice.get("message").has("content")) {
-                    return choice.get("message").get("content").asText();
-                }
-            }
+            JsonNode root = new com.fasterxml.jackson.databind.ObjectMapper().readTree(response);
+            return root.get("choices").get(0).get("message").get("content").asText();
         } catch (Exception e) {
-            return "大模型响应解析失败: " + e.getMessage();
+            return "响应解析失败: " + e.getMessage();
         }
-        return "大模型响应格式错误";
     }
+//    private String callLLM(String prompt) {
+//        // 构建请求参数
+//        Map<String, Object> requestBody = new HashMap<>();
+//        requestBody.put("model", openAIConfig.getModelName());
+//        List<Map<String, Object>> messages = new ArrayList<>();
+//        Map<String, Object> systemMsg = new HashMap<>();
+//        systemMsg.put("role", "system");
+//        systemMsg.put("content", "你是一名课程讲义内容生成专家。请根据用户提供的单元信息和要求，生成结构化、详细的讲义内容。");
+//        messages.add(systemMsg);
+//        Map<String, Object> userMsg = new HashMap<>();
+//        userMsg.put("role", "user");
+//        userMsg.put("content", prompt);
+//        messages.add(userMsg);
+//        requestBody.put("messages", messages);
+//        Map<String, Object> headers = new HashMap<>();
+//        headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
+//        String jsonBody;
+//        try {
+//            jsonBody = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(requestBody);
+//        } catch (Exception e) {
+//            return "请求体序列化失败: " + e.getMessage();
+//        }
+//        String response = HttpUtil.postJson(
+//            openAIConfig.getApiUrl(),
+//            jsonBody,
+//            headers
+//        );
+//        // 直接返回JSON响应，让调用方解析
+//        return response;
+//    }
+
+
 
     private String getOrDefault(Future<String> future) {
         try {

@@ -7,15 +7,17 @@ import com.baomidou.mybatisplus.annotation.TableId;
 public class CourseObjective {
     @TableId
     private Integer courseId;      // 课程ID
-    private String content;        // 教学目标内容
+    private String courseContent;  // 课程内容
+    private String teachingTarget; // 教学目标
     private Date createdAt;        // 创建时间
     private Date updatedAt;        // 更新时间
 
     public CourseObjective() {}
 
-    public CourseObjective(Integer courseId, String content, Date createdAt, Date updatedAt) {
+    public CourseObjective(Integer courseId, String courseContent, String teachingTarget, Date createdAt, Date updatedAt) {
         this.courseId = courseId;
-        this.content = content;
+        this.courseContent = courseContent;
+        this.teachingTarget = teachingTarget;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -28,12 +30,20 @@ public class CourseObjective {
         this.courseId = courseId;
     }
 
-    public String getContent() {
-        return content;
+    public String getCourseContent() {
+        return courseContent;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setCourseContent(String courseContent) {
+        this.courseContent = courseContent;
+    }
+
+    public String getTeachingTarget() {
+        return teachingTarget;
+    }
+
+    public void setTeachingTarget(String teachingTarget) {
+        this.teachingTarget = teachingTarget;
     }
 
     public Date getCreatedAt() {
@@ -56,7 +66,8 @@ public class CourseObjective {
     public String toString() {
         return "CourseObjective{" +
                 "courseId=" + courseId +
-                ", content='" + content + '\'' +
+                ", courseContent='" + courseContent + '\'' +
+                ", teachingTarget='" + teachingTarget + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
