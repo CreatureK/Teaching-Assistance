@@ -3,7 +3,6 @@ package com.java_web.backend.Teacher.Service;
 import java.util.Date;
 import java.util.Map;
 
-import com.java_web.backend.Common.Entity.CourseObjective;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java_web.backend.Common.Entity.Course;
+import com.java_web.backend.Common.Entity.CourseObjective;
 import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
 import com.java_web.backend.Common.Entity.Material;
 import com.java_web.backend.Common.Mapper.CourseMapper;
@@ -64,14 +64,18 @@ public class MaterialService {
         String courseIntroduction = courseObjective.getCourseContent();
         String teachingTarget = courseObjective.getTeachingTarget();
 
-        // 1. 生成大纲
-        Map<String, Object> syllabusMap = llmInitialSyllabusService.generateInitialSyllabus(
-            req.getCourseId(), req.getCourseCode(), req.getCourseTitle(), req.getTeachingLanguage(),
-            req.getResponsibleCollege(), req.getCourseCategory(), req.getPrinciple(), req.getVerifier(),
-            req.getCredit(), req.getCourseHour(), courseIntroduction, teachingTarget,
-            req.getEvaluationMode(), req.getWhetherTechnicalCourse(), req.getAssessmentType(),
-            req.getGradeRecording(), req.getRequest()
-        );
+        // 1. 强化生成大纲，失败自动重试
+        Map<String, Object> syllabusMap = null;
+        int retryCount = 0;
+        while (syllabusMap == null) {
+            syllabusMap = llmInitialSyllabusService.generateInitialSyllabus(
+                req.getCourseId(), req.getCourseCode(), req.getCourseTitle(), req.getTeachingLanguage(),
+                req.getResponsibleCollege(), req.getCourseCategory(), req.getPrinciple(), req.getVerifier(),
+                req.getCredit(), req.getCourseHour(), courseIntroduction, teachingTarget,
+                req.getEvaluationMode(), req.getWhetherTechnicalCourse(), req.getAssessmentType(),
+                req.getGradeRecording(), req.getRequest()
+            );
+        }
 
         System.out.println("222");
 
