@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits, onMounted } from 'vue';
+import { getTeacherCourses, createCourse, deleteCourse } from '../api/courseManger';
 
 interface Course {
   id: number;
-  title: string;
-  imageUrl: string;
+  name: string;
+  imageUrl?: string;
   isEditing?: boolean;
   isSelected?: boolean;
 }
@@ -13,43 +14,60 @@ interface Course {
 const emit = defineEmits(['course-selected']);
 
 // 课程数据
-const courses = ref<Course[]>([
-  {
-    id: 1,
-    title: '人工智能导论',
-    imageUrl: 'https://res.cloudinary.com/dm3rouwgn/image/upload/t_media_lib_thumb/zuxomrowewwe5spaci7w',
-    isEditing: false,
-    isSelected: false
-  },
-  {
-    id: 2,
-    title: '移动应用开发技术',
-    imageUrl: 'https://res.cloudinary.com/dm3rouwgn/image/upload/t_media_lib_thumb/zuxomrowewwe5spaci7w',
-    isEditing: false,
-    isSelected: false
-  },
-  {
-    id: 3,
-    title: 'Web前端开发实战',
-    imageUrl: 'https://res.cloudinary.com/dm3rouwgn/image/upload/t_media_lib_thumb/zuxomrowewwe5spaci7w',
-    isEditing: false,
-    isSelected: false
-  }
-]);
+const courses = ref<Course[]>([]);
 
 // 是否处于删除模式
 const isDeleteMode = ref(false);
 
+// 加载状态
+const loading = ref(false);
+
+// 错误信息
+const errorMessage = ref('');
+
+// 获取课程列表
+const fetchCourses = async () => {
+  loading.value = true;
+  errorMessage.value = '';
+  try {
+    const data = await getTeacherCourses();
+    // 转换后端数据格式为组件所需格式
+    courses.value = data.map((course: any) => ({
+      id: course.id,
+      name: course.name,
+      imageUrl: 'https://res.cloudinary.com/dm3rouwgn/image/upload/t_media_lib_thumb/zuxomrowewwe5spaci7w',
+      isEditing: false,
+      isSelected: false
+    }));
+  } catch (error) {
+    console.error('获取课程列表失败:', error);
+    errorMessage.value = '获取课程列表失败，请稍后重试';
+  } finally {
+    loading.value = false;
+  }
+};
+
+// 组件挂载时获取课程列表
+onMounted(fetchCourses);
+
 // 添加新课程
-const addNewCourse = () => {
-  const newId = courses.value.length > 0 ? Math.max(...courses.value.map(c => c.id)) + 1 : 1;
-  courses.value.unshift({
-    id: newId,
-    title: '新课程',
-    imageUrl: 'https://res.cloudinary.com/dm3rouwgn/image/upload/t_media_lib_thumb/zuxomrowewwe5spaci7w',
-    isEditing: false,
-    isSelected: false
-  });
+const addNewCourse = async () => {
+  try {
+    const courseName = '新课程';
+    const response = await createCourse(courseName);
+    
+    // 添加新创建的课程到列表中
+    courses.value.unshift({
+      id: response.id,
+      name: response.name,
+      imageUrl: 'https://res.cloudinary.com/dm3rouwgn/image/upload/t_media_lib_thumb/zuxomrowewwe5spaci7w',
+      isEditing: true, // 创建后立即进入编辑模式
+      isSelected: false
+    });
+  } catch (error) {
+    console.error('创建课程失败:', error);
+    errorMessage.value = '创建课程失败，请稍后重试';
+  }
 };
 
 // 编辑课程名称
@@ -62,8 +80,16 @@ const editTitle = (course: Course) => {
 };
 
 // 完成编辑
-const finishEdit = (course: Course) => {
-  course.isEditing = false;
+const finishEdit = async (course: Course) => {
+  try {
+    // 这里可以调用更新课程名称的API
+    // 如果后端有提供更新课程名称的API，可以在这里调用
+    // 例如：await updateCourseName(course.id, course.name);
+    course.isEditing = false;
+  } catch (error) {
+    console.error('更新课程名称失败:', error);
+    errorMessage.value = '更新课程名称失败，请稍后重试';
+  }
 };
 
 // 切换删除模式
@@ -86,9 +112,18 @@ const toggleCourseSelection = (course: Course) => {
 };
 
 // 删除选中的课程
-const deleteSelectedCourses = () => {
-  courses.value = courses.value.filter(course => !course.isSelected);
-  isDeleteMode.value = false;
+const deleteSelectedCourses = async () => {
+  const selectedCourses = courses.value.filter(course => course.isSelected);
+  const deletePromises = selectedCourses.map(course => deleteCourse(course.id));
+  
+  try {
+    await Promise.all(deletePromises);
+    courses.value = courses.value.filter(course => !course.isSelected);
+    isDeleteMode.value = false;
+  } catch (error) {
+    console.error('删除课程失败:', error);
+    errorMessage.value = '删除课程失败，请稍后重试';
+  }
 };
 
 // 点击课程
@@ -96,7 +131,7 @@ const handleCourseClick = (course: Course) => {
   if (isDeleteMode.value) {
     toggleCourseSelection(course);
   } else {
-    emit('course-selected', course.title);
+    emit('course-selected', course.name);
   }
 };
 
@@ -131,7 +166,17 @@ const vFocus = {
       </div>
     </div>
     
-    <div class="course-grid">
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading-state">
+      正在加载课程，请稍候...
+    </div>
+    
+    <!-- 错误信息 -->
+    <div v-if="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    
+    <div class="course-grid" v-if="!loading">
       <!-- 添加按钮卡片 (放在第一位) -->
       <div class="course-card add-card" @click="addNewCourse">
         <div class="add-icon">
@@ -159,11 +204,11 @@ const vFocus = {
           </div>
         </div>
         <div class="course-info">
-          <h3 v-if="!course.isEditing" @click.stop="editTitle(course)">{{ course.title }}</h3>
+          <h3 v-if="!course.isEditing" @click.stop="editTitle(course)">{{ course.name }}</h3>
           <input 
             v-else 
             type="text" 
-            v-model="course.title" 
+            v-model="course.name" 
             @blur="finishEdit(course)"
             @keyup.enter="finishEdit(course)"
             @click.stop
@@ -358,5 +403,23 @@ const vFocus = {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* 添加样式 */
+.loading-state {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  color: #6870fa;
+}
+
+.error-message {
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  border-radius: 6px;
 }
 </style>

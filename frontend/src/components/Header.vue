@@ -42,25 +42,32 @@ import { ref } from 'vue';
 import { Search, User, SwitchButton, InfoFilled } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
-import * as authApi from '@/hooks/api/auth';
+import { logout } from '@/api/auth';
 
 const router = useRouter();
 const searchQuery = ref('');
 
 // 退出登录功能
-const handleLogout = async () => {
+const handleLogout = () => {
   // 使用API进行登出
-  await authApi.logout();
+  const result = logout();
   
   localStorage.removeItem('showFunctionSelect')
   localStorage.removeItem('showCourseInfo')
   localStorage.removeItem('selectedCourseTitle')
   
   // 显示退出成功提示
-  ElMessage({
-    message: '退出登录成功',
-    type: 'success',
-  });
+  if (result.success) {
+    ElMessage({
+      message: result.message,
+      type: 'success',
+    });
+  } else {
+    ElMessage({
+      message: result.message,
+      type: 'error',
+    });
+  }
   
   // 跳转到登录页
   router.push('/login');

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { removeToken } from './jwt'
 
 // 创建API实例，设置基础URL
 const api = axios.create({
@@ -133,5 +134,26 @@ export const checkEmailAvailable = async (email: string): Promise<boolean> => {
   } catch (error: unknown) {
     console.error('检查邮箱可用性失败:', error)
     return false
+  }
+}
+
+/**
+ * 用户退出登录
+ * 清除localStorage和sessionStorage中的token
+ * @returns 退出结果
+ */
+export const logout = (): { success: boolean; message: string } => {
+  try {
+    removeToken()
+    return {
+      success: true,
+      message: '退出登录成功'
+    }
+  } catch (error) {
+    console.error('退出登录失败:', error)
+    return {
+      success: false,
+      message: '退出登录失败'
+    }
   }
 }
