@@ -3,15 +3,18 @@ package com.java_web.backend.Teacher.Service;
 import java.util.Date;
 import java.util.Map;
 
+import com.java_web.backend.Common.Entity.CourseObjective;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java_web.backend.Common.Entity.Course;
 import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
 import com.java_web.backend.Common.Entity.Material;
 import com.java_web.backend.Common.Mapper.CourseMapper;
+import com.java_web.backend.Common.Mapper.CourseObjectMapper;
 import com.java_web.backend.Common.Mapper.MaterialMapper;
 import com.java_web.backend.Common.Mapper.SyllabusMapper;
 import com.java_web.backend.Common.Service.LLMInitialSyllabusService;
@@ -24,6 +27,9 @@ public class MaterialService {
     
     @Autowired
     private CourseMapper courseMapper;
+    
+    @Autowired
+    private CourseObjectMapper courseObjectMapper;
     
     @Autowired
     private SyllabusMapper syllabusMapper;
@@ -48,23 +54,40 @@ public class MaterialService {
     /**
      * 生成课程讲义内容
      */
-    public String generateMaterialContent(InitialSyllabusRequest req, Integer teacherId) {
+    public String generateMaterialContent(InitialSyllabusRequest req, Integer teacherId) throws JsonProcessingException {
         // 权限验证
         Course course = verifyTeacherCourseAccess(Integer.valueOf(req.getCourseId()), teacherId);
+
+        System.out.println("111");
+
+        CourseObjective courseObjective = new CourseObjective();
+        String courseIntroduction = courseObjective.getCourseContent();
+        String teachingTarget = courseObjective.getTeachingTarget();
 
         // 1. 生成大纲
         Map<String, Object> syllabusMap = llmInitialSyllabusService.generateInitialSyllabus(
             req.getCourseId(), req.getCourseCode(), req.getCourseTitle(), req.getTeachingLanguage(),
             req.getResponsibleCollege(), req.getCourseCategory(), req.getPrinciple(), req.getVerifier(),
-            req.getCredit(), req.getCourseHour(), req.getCourseIntroduction(), req.getTeachingTarget(),
+            req.getCredit(), req.getCourseHour(), courseIntroduction, teachingTarget,
             req.getEvaluationMode(), req.getWhetherTechnicalCourse(), req.getAssessmentType(),
             req.getGradeRecording(), req.getRequest()
         );
 
+        System.out.println("222");
+
         // 2. 转为JsonNode并取data节点
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode syllabusJson = mapper.valueToTree(syllabusMap);
+//        JsonNode syllabusJson = mapper.valueToTree(syllabusMap);
         // 直接传 syllabusJson
+        // 1. 转为 JSON 字符串
+        String rawJson = mapper.writeValueAsString(syllabusMap);
+
+        // 2. 替换掉 markdown 包裹内容（你也可以更精细地处理字段）
+        String cleanedJson = rawJson.replaceAll("```json\\n?", "")
+                .replaceAll("\\n?```", "");
+
+        // 3. 再解析回 JsonNode
+        JsonNode syllabusJson = mapper.readTree(cleanedJson);
         return llmService.generateLecture(syllabusJson);
     }
     
@@ -82,7 +105,17 @@ public class MaterialService {
             throw new RuntimeException("无权操作此课程");
         }
 
-        // 2. 检查是新增还是更新
+        // 2. 处理内容中的转义字符（可选）
+        String processedContent = material.getContent();
+        if (processedContent != null) {
+            // 将 \\n 转换为 \n，\\t 转换为 \t 等
+            processedContent = processedContent.replace("\\\\n", "\n")
+                                             .replace("\\\\t", "\t")
+                                             .replace("\\\\r", "\r");
+            material.setContent(processedContent);
+        }
+
+        // 3. 检查是新增还是更新
         Material existingMaterial = materialMapper.selectById(material.getCourseId());
         if (existingMaterial == null) {
             // 新增

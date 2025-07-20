@@ -111,6 +111,9 @@ public class LLMLectureService {
                 
                 // 直接使用JSON响应，保持原始格式
                 String llmResponse = futures.get(i).get();
+
+                llmResponse = cleanLLMResponse(llmResponse);
+
                 // 将JSON字符串作为原始字符串存储，避免转义
                 unit.put("lecture_content", llmResponse);
                 
@@ -127,6 +130,19 @@ public class LLMLectureService {
         
         // 返回JSON字符串
         return result.toString();
+    }
+
+    private String cleanLLMResponse(String response) {
+        if (response == null) return "";
+
+        response = response.trim();
+        if (response.startsWith("```")) {
+            response = response.replaceFirst("```[a-zA-Z]*\\n?", ""); // 去除 ```json 或 ```
+        }
+        if (response.endsWith("```")) {
+            response = response.substring(0, response.lastIndexOf("```")).trim(); // 去尾部 ```
+        }
+        return response;
     }
 
     // 修改callLLM函数，只接收prompt参数

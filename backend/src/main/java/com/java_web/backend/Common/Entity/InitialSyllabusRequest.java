@@ -33,7 +33,7 @@ public class InitialSyllabusRequest {
         this.verifier = "X老师";
         this.credit = "3";
         this.courseHour = "48";
-        this.courseIntroduction = "本课程介绍的基本概念和方法。";
+        // courseIntroduction 和 teachingTarget 将从数据库获取，不设置默认值
         this.evaluationMode = "考试";
         this.whetherTechnicalCourse = "否";
         this.assessmentType = "理论";
@@ -44,15 +44,13 @@ public class InitialSyllabusRequest {
      * 便捷构造函数，只接收必要参数，其他使用默认值
      */
     public InitialSyllabusRequest(String courseId, String courseTitle, String teachingLanguage, 
-                                 String teachingTarget, String request) {
+                                 String request) {
         this(); // 调用无参构造函数设置默认值
         this.courseId = courseId;
         this.courseTitle = courseTitle;
         this.teachingLanguage = teachingLanguage;
-        this.teachingTarget = teachingTarget;
         this.request = request;
-        // 更新课程介绍
-        this.courseIntroduction = "本课程介绍" + courseTitle + "的基本概念和方法。";
+        // courseIntroduction 和 teachingTarget 将从数据库获取
     }
 
     public InitialSyllabusRequest(String courseId, String courseCode, String courseTitle, 
@@ -104,10 +102,6 @@ public class InitialSyllabusRequest {
 
     public void setCourseTitle(String courseTitle) {
         this.courseTitle = courseTitle;
-        // 如果课程介绍还是默认值，则更新为包含课程标题的介绍
-        if ("本课程介绍的基本概念和方法。".equals(this.courseIntroduction)) {
-            this.courseIntroduction = "本课程介绍" + courseTitle + "的基本概念和方法。";
-        }
     }
 
     public String getTeachingLanguage() {
@@ -233,7 +227,7 @@ public class InitialSyllabusRequest {
         this.verifier = "X老师";
         this.credit = "3";
         this.courseHour = "48";
-        this.courseIntroduction = "本课程介绍" + (this.courseTitle != null ? this.courseTitle : "") + "的基本概念和方法。";
+        // courseIntroduction 和 teachingTarget 不重置，保持从数据库获取的值
         this.evaluationMode = "考试";
         this.whetherTechnicalCourse = "否";
         this.assessmentType = "理论";

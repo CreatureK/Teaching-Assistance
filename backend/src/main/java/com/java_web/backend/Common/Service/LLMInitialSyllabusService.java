@@ -162,7 +162,7 @@ public class LLMInitialSyllabusService {
                        "你需要从下面信息中挑选和本部分生成相关的内容有关联的有效信息，而不是全部纳入考虑范围。\n" +
                        promptTemplate + "\n" +
                        "你需要生成一份教学大纲的部分内容，课程标题为:" + courseTitle + ",请结合相关的知识库内容进行对应大纲部分内容的制作\n" +
-                       "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>";
+                       "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>。并且，你的返回值只允许生成json格式的数据，绝对不能是markdown!!!";
 
         String response = callLLM(prompt);
         try {
@@ -183,7 +183,7 @@ public class LLMInitialSyllabusService {
                        "该门课的总学时为" + courseHour + "，你需要合理分配这些学时\n" +
                        promptTemplate + "\n" +
                        "你需要生成一份教学大纲的部分内容，课程标题为:" + courseTitle + ",请结合相关的知识库内容进行对应大纲部分内容的制作\n" +
-                       "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>";
+                       "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>。并且，你的返回值只允许生成json格式的数据，绝对不能是markdown!!!";
 
         String response = callLLM(prompt);
         try {
