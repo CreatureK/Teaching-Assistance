@@ -226,6 +226,7 @@ const handleSaveLectureDraft = (content: string) => {
       />
       <CourseOutline
         v-else-if="showCourseOutline"
+        :courseId="selectedCourseId"
         @back="backToFunctionSelect"
       />
       <TeachingLecture

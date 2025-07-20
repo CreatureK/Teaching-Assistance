@@ -100,3 +100,77 @@ export const saveCourseObjective = async (courseId: number, objective: any) => {
     throw error;
   }
 };
+
+/**
+ * 获取课程教学大纲
+ * @param courseId 课程ID
+ */
+export const getCourseSyllabus = async (courseId: number) => {
+  const token = getToken();
+  const userId = getUserId();
+
+  try {
+    const response = await axios.get(`${API_URL}/teacher/syllabus/${courseId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'userId': userId
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('获取课程教学大纲失败', error);
+    throw error;
+  }
+};
+
+/**
+ * AI生成教学大纲
+ * @param courseId 课程ID
+ * @param prompt 用户提示
+ */
+export const generateCourseSyllabus = async (courseId: number, prompt: string) => {
+  const token = getToken();
+  const userId = getUserId();
+
+  try {
+    const response = await axios.post(`${API_URL}/teacher/syllabus/${courseId}/generate`,
+      { prompt },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'userId': userId
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('生成教学大纲失败', error);
+    throw error;
+  }
+};
+
+/**
+ * 保存教学大纲
+ * @param courseId 课程ID
+ * @param syllabus 大纲对象
+ */
+export const saveCourseSyllabus = async (courseId: number, syllabus: any) => {
+  const token = getToken();
+  const userId = getUserId();
+
+  try {
+    const response = await axios.post(`${API_URL}/teacher/syllabus/${courseId}/save`,
+      syllabus,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'userId': userId
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('保存教学大纲失败', error);
+    throw error;
+  }
+};

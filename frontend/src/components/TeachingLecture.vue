@@ -8,7 +8,7 @@
           <span class="ai-icon">✨</span>
           AI生成
         </button>
-        <button class="btn btn-secondary" @click="handleSaveDraft">暂存</button>
+        <!-- <button class="btn btn-secondary" @click="handleSaveDraft">暂存</button> -->
         <button class="btn btn-primary" @click="handleSave">保存</button>
       </div>
     </div>
