@@ -1,17 +1,18 @@
 package com.java_web.backend.Teacher.Service;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.java_web.backend.Common.DTO.IntroductionAndTargetRequestDTO;
 import com.java_web.backend.Common.Entity.Course;
 import com.java_web.backend.Common.Entity.CourseObjective;
 import com.java_web.backend.Common.Mapper.CourseMapper;
 import com.java_web.backend.Common.Mapper.CourseObjectMapper;
 import com.java_web.backend.Common.Service.LLMIntroductionAndTargetService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.Date;
 
 @Service
 public class CourseObjectiveService {
@@ -36,9 +37,9 @@ public class CourseObjectiveService {
     }
     
     /**
-     * 生成课程教学目标内容
+     * 生成课程教学内容和目标
      */
-    public String generateObjectiveContent(Integer courseId, String prompt, Integer teacherId) throws IOException {
+    public Map<String, String> generateObjectiveContent(Integer courseId, String prompt, Integer teacherId) throws IOException {
         // 权限验证
         Course course = verifyTeacherCourseAccess(courseId, teacherId);
 
@@ -49,7 +50,13 @@ public class CourseObjectiveService {
 
         // 调用LLM服务生成内容
         var response = llmService.generateIntroductionAndTarget(request);
-        return response.getTeachingTarget();
+        
+        // 返回分离的教学内容和教学目标
+        Map<String, String> result = new java.util.HashMap<>();
+        result.put("courseContent", response.getCourseIntroduction());
+        result.put("teachingTarget", response.getTeachingTarget());
+        
+        return result;
     }
     
     /**
@@ -74,7 +81,8 @@ public class CourseObjectiveService {
             courseObjectMapper.insert(objective);
         } else {
             // 更新
-            existingObj.setContent(objective.getContent());
+            existingObj.setCourseContent(objective.getCourseContent());
+            existingObj.setTeachingTarget(objective.getTeachingTarget());
             existingObj.setUpdatedAt(new Date());
             courseObjectMapper.updateById(existingObj);
         }

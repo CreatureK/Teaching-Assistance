@@ -1,6 +1,5 @@
 package com.java_web.backend.Teacher.Service;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -9,16 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java_web.backend.Common.DTO.LectureRequestDTO;
 import com.java_web.backend.Common.Entity.Course;
+import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
 import com.java_web.backend.Common.Entity.Material;
-import com.java_web.backend.Common.Entity.Syllabus;
 import com.java_web.backend.Common.Mapper.CourseMapper;
 import com.java_web.backend.Common.Mapper.MaterialMapper;
 import com.java_web.backend.Common.Mapper.SyllabusMapper;
-import com.java_web.backend.Common.Service.LLMLectureService;
-import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
 import com.java_web.backend.Common.Service.LLMInitialSyllabusService;
+import com.java_web.backend.Common.Service.LLMLectureService;
 
 @Service
 public class MaterialService {
