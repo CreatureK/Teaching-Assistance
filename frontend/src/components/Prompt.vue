@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
+import { ref, defineProps, defineEmits, watch } from 'vue';
 
 const props = defineProps({
   title: {
@@ -59,6 +59,13 @@ const props = defineProps({
 const emit = defineEmits(['close', 'confirm', 'update:content']);
 
 const inputContent = ref('');
+
+// 监听isVisible属性变化，当显示时重置输入内容
+watch(() => props.isVisible, (newValue) => {
+  if (newValue === true) {
+    inputContent.value = '';
+  }
+}, { immediate: false });
 
 const handleInput = () => {
   emit('update:content', inputContent.value);

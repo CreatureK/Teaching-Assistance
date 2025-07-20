@@ -22,43 +22,43 @@ import com.java_web.backend.Common.Mapper.SyllabusMapper;
 public class CourseService {
     @Autowired
     private CourseMapper courseMapper;
-    
+
     @Autowired
     private CourseObjectMapper objectiveMapper;
-    
+
     @Autowired
     private SyllabusMapper syllabusMapper;
-    
+
     @Autowired
     private MaterialMapper materialMapper;
-    
+
     /**
      * 获取教师创建的课程列表
      */
     public List<Course> getTeacherCourses(Integer teacherId) {
         QueryWrapper<Course> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("teacher_id", teacherId)
-                   .eq("is_deleted", 0);
+                .eq("is_deleted", 0);
         return courseMapper.selectList(queryWrapper);
     }
-    
+
     /**
      * 获取课程详情（包括教学目标、大纲和讲义）
      */
     public Map<String, Object> getCourseDetail(Integer courseId, Integer teacherId) {
         // 查询课程基本信息
         Course course = courseMapper.getCourseWithTeacher(courseId);
-        
+
         // 检查课程是否存在
         if (course == null || course.getIsDeleted() == 1) {
             throw new RuntimeException("课程不存在");
         }
-        
+
         // 检查当前用户是否为该课程的创建者
         if (!course.getTeacherId().equals(teacherId)) {
             throw new RuntimeException("您没有权限查看此课程");
         }
-        
+
         // 查询关联的教学目标、大纲和讲义
         CourseObjective objective = objectiveMapper.getObjectiveWithCourse(courseId);
         Syllabus syllabus = syllabusMapper.getSyllabusByCourseId(courseId);
@@ -74,10 +74,10 @@ public class CourseService {
         result.put("objective", objective);
         result.put("syllabus", syllabus);
         result.put("material", material);
-        
+
         return result;
     }
-    
+
     /**
      * 创建新课程
      */
@@ -86,7 +86,7 @@ public class CourseService {
         if (courseName == null || courseName.trim().isEmpty()) {
             throw new RuntimeException("课程名称不能为空");
         }
-        
+
         // 创建课程对象
         Course course = new Course();
         course.setName(courseName);
@@ -94,36 +94,56 @@ public class CourseService {
         course.setStatus("draft"); // 设置为草稿状态
         course.setIsDeleted(0);
         course.setCreatedAt(new Date());
-        
+
         // 保存课程
         courseMapper.insert(course);
-        
+
         return course;
     }
-    
+
+    /**
+     * 更新课程名称
+     */
+    public Course updateCourseName(Integer courseId, String newCourseName, Integer teacherId) {
+        // 验证课程名称
+        if (newCourseName == null || newCourseName.trim().isEmpty()) {
+            throw new RuntimeException("课程名称不能为空");
+        }
+
+        // 验证课程所有权
+        Course course = validateCourseOwnership(courseId, teacherId);
+
+        // 更新课程名称
+        course.setName(newCourseName);
+        course.setUpdatedAt(new Date());
+        courseMapper.updateById(course);
+
+        return course;
+    }
+
     /**
      * 删除课程（逻辑删除）
      */
     public void deleteCourse(Integer courseId, Integer teacherId) {
         // 查询课程
         Course course = courseMapper.selectById(courseId);
-        
+
         // 检查课程是否存在
         if (course == null || course.getIsDeleted() == 1) {
             throw new RuntimeException("课程不存在");
         }
-        
+
         // 检查当前用户是否为该课程的创建者
         if (!course.getTeacherId().equals(teacherId)) {
             throw new RuntimeException("您没有权限删除此课程");
         }
-        
+
         // 执行逻辑删除
         course.setIsDeleted(1);
         course.setUpdatedAt(new Date());
         courseMapper.updateById(course);
     }
-    
+
     /**
      * 验证课程存在且属于指定教师
      */
@@ -132,11 +152,11 @@ public class CourseService {
         if (course == null || course.getIsDeleted() == 1) {
             throw new RuntimeException("课程不存在");
         }
-        
+
         if (!course.getTeacherId().equals(teacherId)) {
             throw new RuntimeException("您没有权限操作此课程");
         }
-        
+
         return course;
     }
 }

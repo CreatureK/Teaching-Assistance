@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, defineEmits, onMounted } from 'vue';
-import { getTeacherCourses, createCourse, deleteCourse } from '../api/courseManger';
+import { getTeacherCourses, createCourse, deleteCourse, updateCourseName } from '../api/courseManger';
 
 interface Course {
   id: number;
@@ -31,14 +31,14 @@ const fetchCourses = async () => {
   errorMessage.value = '';
   try {
     const data = await getTeacherCourses();
-    // 转换后端数据格式为组件所需格式
+    // 转换后端数据格式为组件所需格式，并按ID降序排序（ID大的排在前面）
     courses.value = data.map((course: any) => ({
       id: course.id,
       name: course.name,
       imageUrl: 'https://res.cloudinary.com/dm3rouwgn/image/upload/t_media_lib_thumb/zuxomrowewwe5spaci7w',
       isEditing: false,
       isSelected: false
-    }));
+    })).sort((a: Course, b: Course) => b.id - a.id);
   } catch (error) {
     console.error('获取课程列表失败:', error);
     errorMessage.value = '获取课程列表失败，请稍后重试';
@@ -57,13 +57,16 @@ const addNewCourse = async () => {
     const response = await createCourse(courseName);
     
     // 添加新创建的课程到列表中
-    courses.value.unshift({
+    courses.value.push({
       id: response.id,
       name: response.name,
       imageUrl: 'https://res.cloudinary.com/dm3rouwgn/image/upload/t_media_lib_thumb/zuxomrowewwe5spaci7w',
       isEditing: true, // 创建后立即进入编辑模式
       isSelected: false
     });
+    
+    // 按ID降序排序，确保ID大的课程显示在前面
+    courses.value.sort((a: Course, b: Course) => b.id - a.id);
   } catch (error) {
     console.error('创建课程失败:', error);
     errorMessage.value = '创建课程失败，请稍后重试';
@@ -82,9 +85,11 @@ const editTitle = (course: Course) => {
 // 完成编辑
 const finishEdit = async (course: Course) => {
   try {
-    // 这里可以调用更新课程名称的API
-    // 如果后端有提供更新课程名称的API，可以在这里调用
-    // 例如：await updateCourseName(course.id, course.name);
+    // 调用更新课程名称的API
+    const updatedCourse = await updateCourseName(course.id, course.name);
+    
+    // 更新本地数据
+    course.name = updatedCourse.name;
     course.isEditing = false;
   } catch (error) {
     console.error('更新课程名称失败:', error);
@@ -131,7 +136,7 @@ const handleCourseClick = (course: Course) => {
   if (isDeleteMode.value) {
     toggleCourseSelection(course);
   } else {
-    emit('course-selected', course.name);
+    emit('course-selected', { id: course.id, name: course.name });
   }
 };
 

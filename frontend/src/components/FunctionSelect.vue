@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
+import { getCourseDetail, updateCourseName } from '../api/courseManger'
 
 // 定义props和emits
 interface Props {
   courseTitle?: string
+  courseId?: number
 }
 const props = defineProps<Props>()
-const emit = defineEmits(['back', 'show-course-info', 'show-module'])
+const emit = defineEmits(['back', 'show-course-info', 'show-module', 'update:courseTitle'])
 
 // 课程标题
 const courseTitle = ref(props.courseTitle || '课程标题')
@@ -32,14 +34,91 @@ interface ModuleConfig {
 
 // 四个模块的状态
 const modules = ref<ModuleConfig[]>([
-  { id: 'basic', title: '课程介绍', icon: 'info', status: 'warning' },
-  { id: 'outline', title: '课程大纲', icon: 'list', status: 'completed' },
-  { id: 'lecture', title: '教学讲义', icon: 'book', status: 'pending' },
+  { id: 'basic', title: '课程介绍', icon: 'info', status: 'empty' },
+  { id: 'outline', title: '课程大纲', icon: 'list', status: 'empty' },
+  { id: 'lecture', title: '教学讲义', icon: 'book', status: 'empty' },
   { id: 'courseware', title: '教学课件', icon: 'presentation', status: 'empty' }
 ])
 
+// 加载课程详情并更新模块状态
+const loadCourseDetail = async () => {
+  if (!props.courseId) return
+  
+  try {
+    const courseDetail = await getCourseDetail(props.courseId)
+    
+    // 根据返回数据更新模块状态
+    if (courseDetail) {
+      // 课程介绍
+      if (courseDetail.introduction && courseDetail.introduction.trim() !== '') {
+        updateModuleStatus('basic', 'completed')
+      }
+      
+      // 课程大纲
+      if (courseDetail.outline && courseDetail.outline.length > 0) {
+        updateModuleStatus('outline', 'completed')
+      }
+      
+      // 教学讲义
+      if (courseDetail.lectures && courseDetail.lectures.length > 0) {
+        updateModuleStatus('lecture', 'completed')
+      }
+      
+      // 教学课件
+      if (courseDetail.courseware && courseDetail.courseware.length > 0) {
+        updateModuleStatus('courseware', 'completed')
+      }
+    }
+  } catch (error) {
+    console.error('获取课程详情失败:', error)
+  }
+}
+
+// 更新模块状态
+const updateModuleStatus = (moduleId: string, status: ModuleStatus) => {
+  const moduleIndex = modules.value.findIndex(m => m.id === moduleId)
+  if (moduleIndex !== -1) {
+    modules.value[moduleIndex].status = status
+  }
+}
+
+// 监听courseId变化，重新加载课程详情
+watch(() => props.courseId, (newId) => {
+  if (newId) {
+    loadCourseDetail()
+  }
+})
+
+// 组件挂载时加载课程详情
+onMounted(() => {
+  loadCourseDetail()
+})
+
 // 切换标题编辑状态
-const toggleTitleEdit = () => {
+const toggleTitleEdit = async () => {
+  if (isEditingTitle.value) {
+    // 保存标题
+    console.log('准备更新课程名称, courseId:', props.courseId, 'title:', courseTitle.value)
+    if (props.courseId !== undefined && props.courseId !== null) {
+      try {
+        // 调用API更新课程名称
+        const result = await updateCourseName(props.courseId, courseTitle.value)
+        console.log('课程名称更新成功:', result)
+        
+        // 通知父组件更新课程名称
+        emit('update:courseTitle', courseTitle.value)
+      } catch (error) {
+        console.error('更新课程名称失败:', error)
+        // 失败时恢复原标题
+        if (props.courseTitle) {
+          courseTitle.value = props.courseTitle
+        }
+      }
+    } else {
+      console.error('无法更新课程名称: courseId不存在')
+    }
+  }
+  
   isEditingTitle.value = !isEditingTitle.value
 }
 
@@ -49,9 +128,9 @@ const goBack = () => {
 }
 
 // 显示课程信息
-const showCourseInfo = () => {
-  emit('show-course-info')
-}
+// const showCourseInfo = () => {
+//   emit('show-course-info')
+// }
 
 // 显示模块内容
 const showModule = (moduleId: string) => {
@@ -126,7 +205,8 @@ const getModuleIcon = (iconName: string) => {
       <button class="edit-button" @click="toggleTitleEdit">
         {{ isEditingTitle ? '保存' : '修改' }}
       </button>
-      <button class="course-info-button" @click="showCourseInfo">课程信息</button>
+      <!-- 临时隐藏课程信息按钮 -->
+      <!-- <button class="course-info-button" @click="showCourseInfo">课程信息</button> -->
     </div>
 
     <!-- 模块列表 -->
@@ -217,6 +297,7 @@ const getModuleIcon = (iconName: string) => {
   box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
 }
 
+/* 临时隐藏课程信息按钮样式
 .course-info-button {
   padding: 8px 16px;
   background-color: rgba(244, 67, 54, 0.2);
@@ -239,6 +320,7 @@ const getModuleIcon = (iconName: string) => {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(244, 67, 54, 0.3);
 }
+*/
 
 .edit-button {
   padding: 5px 15px;

@@ -85,6 +85,27 @@ export const createCourse = async (courseName: string) => {
 };
 
 /**
+ * 更新课程名称
+ * @param courseId 课程ID
+ * @param courseName 新的课程名称
+ * @returns 更新后的课程信息
+ */
+export const updateCourseName = async (courseId: number, courseName: string) => {
+  try {
+    const response = await axios.put(`${API_URL}/teacher/course/${courseId}/name`,
+      { courseName },
+      {
+        headers: getAuthHeaders()
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('更新课程名称失败:', error);
+    throw error;
+  }
+};
+
+/**
  * 删除课程
  * @param courseId 课程ID
  * @returns 删除结果

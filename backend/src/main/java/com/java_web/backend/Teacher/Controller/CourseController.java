@@ -30,7 +30,7 @@ public class CourseController {
     @GetMapping("/course/{id}")
     public ResponseEntity<?> getCourseById(@PathVariable int id, HttpServletRequest request) {
         Integer teacherId = (Integer) request.getAttribute("userId");
-        System.out.println("teacherId = " + teacherId);  // 检查是否为 null
+        System.out.println("teacherId = " + teacherId); // 检查是否为 null
         try {
             Map<String, Object> courseDetail = courseService.getCourseDetail(id, teacherId);
             return ResponseEntity.ok(courseDetail);
@@ -43,13 +43,30 @@ public class CourseController {
      * 创建新课程
      */
     @PostMapping("/create")
-    public ResponseEntity<?> createCourse(@RequestBody Map<String, String> payload, 
-                                        @RequestHeader("userId") Integer teacherId) {
+    public ResponseEntity<?> createCourse(@RequestBody Map<String, String> payload,
+            @RequestHeader("userId") Integer teacherId) {
         try {
             String courseName = payload.get("courseName");
             Course course = courseService.createCourse(courseName, teacherId);
             return ResponseEntity.ok(course);
         } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * 更新课程名称
+     */
+    @PutMapping("/course/{id}/name")
+    public ResponseEntity<?> updateCourseName(@PathVariable int id,
+            @RequestBody Map<String, String> payload,
+            HttpServletRequest request) {
+        Integer teacherId = (Integer) request.getAttribute("userId");
+        try {
+            String newCourseName = payload.get("courseName");
+            Course course = courseService.updateCourseName(id, newCourseName, teacherId);
+            return ResponseEntity.ok(course);
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -65,4 +82,4 @@ public class CourseController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-} 
+}

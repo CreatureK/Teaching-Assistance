@@ -51,6 +51,13 @@ export const login = async (
     if (response.data && response.data.token) {
       localStorage.setItem('access_token', response.data.token)
       sessionStorage.setItem('access_token', response.data.token)
+
+      // 保存用户ID
+      if (response.data.userId) {
+        localStorage.setItem('userId', response.data.userId.toString())
+        sessionStorage.setItem('userId', response.data.userId.toString())
+      }
+
       return {
         success: true,
         data: response.data
@@ -145,6 +152,9 @@ export const checkEmailAvailable = async (email: string): Promise<boolean> => {
 export const logout = (): { success: boolean; message: string } => {
   try {
     removeToken()
+    // 清除用户ID
+    localStorage.removeItem('userId')
+    sessionStorage.removeItem('userId')
     return {
       success: true,
       message: '退出登录成功'

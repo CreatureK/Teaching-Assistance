@@ -19,6 +19,7 @@ const showCourseDescription = ref(false)
 const showCourseOutline = ref(false)
 const showTeachingLecture = ref(false)
 const selectedCourseTitle = ref('')
+const selectedCourseId = ref<number | undefined>(undefined)
 const selectedModuleId = ref('')
 
 // 从本地存储恢复状态
@@ -29,11 +30,15 @@ const restoreState = () => {
   const storedShowCourseOutline = localStorage.getItem('showCourseOutline')
   const storedShowTeachingLecture = localStorage.getItem('showTeachingLecture')
   const storedCourseTitle = localStorage.getItem('selectedCourseTitle')
+  const storedCourseId = localStorage.getItem('selectedCourseId')
   const storedModuleId = localStorage.getItem('selectedModuleId')
   
   if (storedShowFunctionSelect === 'true' && storedCourseTitle) {
     showFunctionSelect.value = true
     selectedCourseTitle.value = storedCourseTitle
+    if (storedCourseId) {
+      selectedCourseId.value = parseInt(storedCourseId)
+    }
   }
   
   if (storedShowCourseInfo === 'true') {
@@ -55,13 +60,16 @@ const restoreState = () => {
 }
 
 // 保存状态到本地存储
-watch([showFunctionSelect, showCourseInfo, showCourseDescription, showCourseOutline, showTeachingLecture, selectedCourseTitle, selectedModuleId], () => {
+watch([showFunctionSelect, showCourseInfo, showCourseDescription, showCourseOutline, showTeachingLecture, selectedCourseTitle, selectedCourseId, selectedModuleId], () => {
   localStorage.setItem('showFunctionSelect', showFunctionSelect.value.toString())
   localStorage.setItem('showCourseInfo', showCourseInfo.value.toString())
   localStorage.setItem('showCourseDescription', showCourseDescription.value.toString())
   localStorage.setItem('showCourseOutline', showCourseOutline.value.toString())
   localStorage.setItem('showTeachingLecture', showTeachingLecture.value.toString())
   localStorage.setItem('selectedCourseTitle', selectedCourseTitle.value)
+  if (selectedCourseId.value !== undefined) {
+    localStorage.setItem('selectedCourseId', selectedCourseId.value.toString())
+  }
   localStorage.setItem('selectedModuleId', selectedModuleId.value)
 })
 
@@ -91,6 +99,27 @@ const checkLoginStatus = () => {
   } else {
     // 显示默认用户名
     username.value = authApi.currentUser.value || '教学用户'
+    
+    // 确保userId被正确存储
+    const userId = sessionStorage.getItem('userId') || localStorage.getItem('userId')
+    
+    if (!userId) {
+      // 如果没有找到userId，尝试从其他地方获取或使用默认值
+      const teacherId = sessionStorage.getItem('teacherId') || localStorage.getItem('teacherId')
+      
+      if (teacherId) {
+        // 如果有teacherId，将其同时保存为userId
+        console.log('从teacherId获取并保存为userId:', teacherId)
+        sessionStorage.setItem('userId', teacherId)
+        localStorage.setItem('userId', teacherId)
+      } else {
+        // 如果也没有teacherId，使用默认值
+        console.warn('未找到用户ID，设置默认值')
+        const defaultId = '2' // 默认教师ID，根据实际情况调整
+        sessionStorage.setItem('userId', defaultId)
+        localStorage.setItem('userId', defaultId)
+      }
+    }
   }
 }
 
@@ -105,8 +134,9 @@ const logout = async () => {
 }
 
 // 打开课程功能选择界面
-const openFunctionSelect = (courseTitle: string) => {
-  selectedCourseTitle.value = courseTitle
+const openFunctionSelect = (course: { name: string, id: number }) => {
+  selectedCourseTitle.value = course.name
+  selectedCourseId.value = course.id
   showFunctionSelect.value = true
   showCourseInfo.value = false
 }
@@ -180,6 +210,7 @@ const handleSaveLectureDraft = (content: string) => {
       <FunctionSelect 
         v-else-if="showFunctionSelect && !showCourseInfo && !showCourseDescription && !showCourseOutline && !showTeachingLecture" 
         :courseTitle="selectedCourseTitle" 
+        :courseId="selectedCourseId"
         @back="backToCourseManage"
         @show-course-info="showCourseInfoPanel"
         @show-module="showModule"
@@ -190,6 +221,7 @@ const handleSaveLectureDraft = (content: string) => {
       />
       <CourseDescription
         v-else-if="showCourseDescription"
+        :courseId="selectedCourseId"
         @back="backToFunctionSelect"
       />
       <CourseOutline
