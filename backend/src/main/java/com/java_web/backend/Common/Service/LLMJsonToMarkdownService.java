@@ -165,11 +165,17 @@ public class LLMJsonToMarkdownService {
     private String buildPrompt(String jsonContent, Map<String, Object> structureInfo, String outputFormat, String customStyle) {
         try {
             String promptTemplate = loadPromptFromFile("prompt/json_to_markdown/json_to_markdown_prompt.txt");
-            String template = loadPromptFromFile("templates/json_to_markdown/json_to_markdown.json");
             
-            return String.format(promptTemplate, jsonContent, structureInfo, outputFormat, customStyle, template);
+            // 如果prompt模板文件不存在，使用默认prompt
+            if (promptTemplate == null) {
+                return getDefaultPrompt() + "\n\nJSON内容：\n" + jsonContent + "\n\n输出格式：" + outputFormat + "\n自定义样式：" + customStyle;
+            }
+            
+            // 简化prompt构建，避免String.format的问题
+            return promptTemplate + "\n\nJSON内容：\n" + jsonContent + "\n\n输出格式：" + outputFormat + "\n自定义样式：" + customStyle;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // 如果出现异常，使用默认prompt
+            return getDefaultPrompt() + "\n\nJSON内容：\n" + jsonContent + "\n\n输出格式：" + outputFormat + "\n自定义样式：" + customStyle;
         }
     }
 
@@ -199,7 +205,7 @@ public class LLMJsonToMarkdownService {
             requestBody.put("max_tokens", 8000);
 
             // 发送请求
-            String response = HttpUtil.postJson(
+            String response = HttpUtil.postJsonWithApiKey(
                 openAIConfig.getApiUrl(),
                 openAIConfig.getApiKey(),
                 requestBody
