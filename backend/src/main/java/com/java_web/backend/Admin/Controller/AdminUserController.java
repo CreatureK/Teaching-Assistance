@@ -15,7 +15,7 @@ import com.java_web.backend.Common.DTO.AdminLoginDTO;
 import com.java_web.backend.Common.Entity.User;
 
 @RestController
-@RequestMapping("/admin/user")
+@RequestMapping("/admin")
 public class AdminUserController {
     @Autowired
     private AdminUserService adminUserService;
@@ -30,12 +30,12 @@ public class AdminUserController {
         return ResponseEntity.ok(adminUserService.listUsers());
     }
     
-    @PostMapping("/add")
+    @PostMapping("user/add")
     public ResponseEntity<?> addUser(@RequestBody User user) {
         return adminUserService.addUser(user);
     }
     
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
         return adminUserService.deleteUser(id);
     }
