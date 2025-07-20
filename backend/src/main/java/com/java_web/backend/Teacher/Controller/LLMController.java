@@ -1,5 +1,6 @@
 package com.java_web.backend.Teacher.Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.java_web.backend.Common.Entity.InitialSyllabusRequest;
 import com.java_web.backend.Teacher.Service.MaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class LLMController {
 
     @PostMapping("/lecture")
     public ResponseEntity<String> generateMaterial(@RequestBody InitialSyllabusRequest req,
-                                                   @RequestParam Integer teacherId) {
+                                                   @RequestParam Integer teacherId) throws JsonProcessingException {
         String result = materialService.generateMaterialContent(req, teacherId);
         return ResponseEntity.ok(result);
     }

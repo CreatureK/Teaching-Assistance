@@ -1,5 +1,7 @@
 package com.java_web.backend.Teacher.Controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,10 +41,22 @@ public class MaterialController {
      * 生成完整课程讲义
      */
     @PostMapping("/{courseId}/generate")
-    public ResponseEntity<String> generateMaterial(@RequestBody InitialSyllabusRequest req,
+    public ResponseEntity<String> generateMaterial(@PathVariable Integer courseId,
+                                                   @RequestBody Map<String, String> request,
                                                    @RequestHeader("userId") Integer teacherId) {
-        String result = materialService.generateMaterialContent(req, teacherId);
-        return ResponseEntity.ok(result);
+        try {
+            // 创建InitialSyllabusRequest对象，只设置必要参数
+            InitialSyllabusRequest req = new InitialSyllabusRequest();
+            req.setCourseId(courseId.toString());
+            req.setCourseTitle(request.get("courseTitle"));
+            req.setRequest(request.get("request"));
+            
+            // 其他字段使用默认值，courseIntroduction和teachingTarget将从数据库获取
+            String result = materialService.generateMaterialContent(req, teacherId);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
     
     /**
