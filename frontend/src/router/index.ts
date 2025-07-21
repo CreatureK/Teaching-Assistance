@@ -13,6 +13,12 @@ const routes = [
     name: 'login',
     component: () => import('../views/AuthForm.vue')
   },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('../views/Admin.vue'),
+    meta: { requiresAuth: true }
+  },
   // 如果访问不存在的路由，重定向到首页
   {
     path: '/:pathMatch(.*)*',

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import * as authApi from '@/api/auth'  // 更改导入路径，使用真实后端接口
+import * as authApi from '@/api/auth'  // 后端接口
+import { adminApi } from '@/api/admin'  // 导入管理员API
 
 const router = useRouter()
 
@@ -140,34 +141,72 @@ const submit = async () => {
         console.error('注册失败:', response)
       }
     } else {
-      // 登录
-      console.log('开始登录，数据:', {
-        email: email.value || username.value, // 使用email字段，如果为空则使用username
-        password: password.value
-      })
+      // 登录 - 检查是否为管理员登录
+      const loginEmail = email.value || username.value
       
-      const response = await authApi.login(
-        email.value || username.value, // 使用email字段，如果为空则使用username
-        password.value
-      )
-      
-      console.log('登录响应:', response)
-      
-      if (response.success && response.data) {
-        // 登录成功，令牌存储在auth.ts中已完成
-        successMessage.value = '登录成功'
+      if (loginEmail === 'admin@admin') {
+        // 管理员登录
+        console.log('开始管理员登录，数据:', {
+          username: username.value,
+          password: password.value
+        })
         
-        // 显示成功信息后，主动触发登录状态更改事件
-        window.dispatchEvent(new Event('login-state-changed'))
-        console.log('已触发登录状态变更事件')
+        const response = await adminApi.login({
+          username: username.value,
+          password: password.value
+        })
         
-        // 短暂延迟以显示成功消息，然后跳转
-        setTimeout(() => {
-          router.push('/')
-        }, 500)
+        console.log('管理员登录响应:', response)
+        
+        if (response.token && response.user) {
+          // 管理员登录成功，保存token
+          localStorage.setItem('access_token', response.token)
+          localStorage.setItem('user_info', JSON.stringify(response.user))
+          
+          successMessage.value = '管理员登录成功'
+          
+          // 主动触发登录状态更改事件
+          window.dispatchEvent(new Event('login-state-changed'))
+          console.log('已触发登录状态变更事件')
+          
+          // 短暂延迟以显示成功消息，然后跳转到管理员页面
+          setTimeout(() => {
+            router.push('/admin')
+          }, 300)
+        } else {
+          errorMessage.value = '管理员登录失败，请检查用户名和密码'
+          console.error('管理员登录失败:', response)
+        }
       } else {
-        errorMessage.value = response.message || '登录失败，请检查邮箱和密码'
-        console.error('登录失败:', response)
+        // 普通用户登录
+        console.log('开始普通用户登录，数据:', {
+          email: loginEmail,
+          password: password.value
+        })
+        
+        const response = await authApi.login(
+          loginEmail,
+          password.value
+        )
+        
+        console.log('登录响应:', response)
+        
+        if (response.success && response.data) {
+          // 登录成功，令牌存储在auth.ts中已完成
+          successMessage.value = '登录成功'
+          
+          // 显示成功信息后，主动触发登录状态更改事件
+          window.dispatchEvent(new Event('login-state-changed'))
+          console.log('已触发登录状态变更事件')
+          
+          // 短暂延迟以显示成功消息，然后跳转
+          setTimeout(() => {
+            router.push('/')
+          }, 300)
+        } else {
+          errorMessage.value = response.message || '登录失败，请检查邮箱和密码'
+          console.error('登录失败:', response)
+        }
       }
     }
   } catch (error: any) {
