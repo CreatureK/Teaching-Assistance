@@ -254,6 +254,7 @@ public class LLMJsonToMarkdownService {
                "5. 对于表格数据，使用Markdown表格格式\n" +
                "6. 保持内容的逻辑层次和可读性\n" +
                "7. 添加适当的空行和分隔符以提高可读性\n\n" +
+               "8. 无论开头还是结尾，都应该没有任何无关的与用户交互的提示内容\n" +
                "请将提供的JSON内容转换为格式良好的Markdown文档。";
     }
 
