@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from '@/components/Header.vue'
 import UserManage from '@/components/UserManage.vue'
+import Statistics from '@/components/Statistics.vue'
 
 const router = useRouter()
 const isLoggedIn = ref(false)
@@ -35,7 +36,9 @@ const handleUserSelected = (user: { id: number, username: string }) => {
     <Header />
     
     <div v-if="isLoggedIn" class="content-area">
+      <Statistics />
       <UserManage @user-selected="handleUserSelected" />
+      
     </div>
   </div>
 </template>
@@ -53,5 +56,11 @@ const handleUserSelected = (user: { id: number, username: string }) => {
   position: relative;
   margin-top: 50px; /* 添加与header高度相等的上边距 */
   min-height: calc(100vh - 50px);
+  padding: 0 20px;
+}
+
+/* 添加组件之间的间距 */
+.content-area > * + * {
+  margin-top: -40px;
 }
 </style>

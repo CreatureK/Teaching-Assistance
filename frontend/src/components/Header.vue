@@ -10,7 +10,7 @@
       </el-col>
       
       <!-- 搜索框 -->
-      <el-col :span="12" class="search-container">
+      <!-- <el-col :span="12" class="search-container">
         <el-input
           v-model="searchQuery"
           placeholder="请输入内容"
@@ -18,7 +18,7 @@
           :prefix-icon="Search"
           clearable
         />
-      </el-col>
+      </el-col> -->
       
       <!-- 用户信息 -->
       <el-col :span="8">

@@ -162,6 +162,7 @@ const submit = async () => {
           // 管理员登录成功，保存token
           localStorage.setItem('access_token', response.token)
           localStorage.setItem('user_info', JSON.stringify(response.user))
+          localStorage.setItem('isAdmin', 'true') // 标记为管理员登录
           
           successMessage.value = '管理员登录成功'
           

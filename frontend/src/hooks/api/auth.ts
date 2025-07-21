@@ -70,8 +70,17 @@ export const checkAuthentication = () => {
 
 // 退出登录
 export const logout = () => {
+  // 清除token
   localStorage.removeItem('access_token')
   sessionStorage.removeItem('access_token')
+  
+  // 清除管理员标记
+  localStorage.removeItem('isAdmin')
+  
+  // 清除用户信息
+  localStorage.removeItem('user_info')
+  
+  // 更新状态
   isAuthenticated.value = false
   currentUser.value = null
 
