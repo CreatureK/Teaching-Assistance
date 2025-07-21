@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### cursor ###
+.cursor/
+
+### 测试结果 ###
+test_result_txt/
