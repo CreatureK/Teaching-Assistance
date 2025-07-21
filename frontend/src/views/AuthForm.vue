@@ -65,6 +65,10 @@ onMounted(() => {
   // 先检查sessionStorage，再检查localStorage
   if (sessionStorage.getItem('access_token') || localStorage.getItem('access_token')) {
     router.push('/')
+  } else {
+    // 如果未登录，清除可能残留的状态
+    localStorage.removeItem('isAdmin')
+    sessionStorage.removeItem('isAdmin')
   }
   
   // 添加鼠标移动事件监听
@@ -75,6 +79,10 @@ const toggleMode = () => {
   isRegister.value = !isRegister.value
   errorMessage.value = ''
   successMessage.value = ''
+  
+  // 清除可能残留的状态
+  localStorage.removeItem('isAdmin')
+  sessionStorage.removeItem('isAdmin')
   
   // 切换模式时清空所有字段
   if (isRegister.value) {
@@ -142,7 +150,7 @@ const submit = async () => {
       }
     } else {
       // 登录 - 检查是否为管理员登录
-      const loginEmail = email.value || username.value
+      const loginEmail = email.value
       
       if (loginEmail === 'admin@admin') {
         // 管理员登录
@@ -151,18 +159,17 @@ const submit = async () => {
           password: password.value
         })
         
-        const response = await adminApi.login({
-          username: username.value,
-          password: password.value
-        })
-        
-        console.log('管理员登录响应:', response)
-        
-        if (response.token && response.user) {
-          // 管理员登录成功，保存token
-          localStorage.setItem('access_token', response.token)
-          localStorage.setItem('user_info', JSON.stringify(response.user))
-          localStorage.setItem('isAdmin', 'true') // 标记为管理员登录
+        try {
+          const response = await adminApi.login({
+            username: username.value || 'admin', // 如果未提供用户名，使用默认值'admin'
+            password: password.value
+          })
+          
+          console.log('管理员登录响应:', response)
+          
+          // 标记为管理员登录
+          localStorage.setItem('isAdmin', 'true')
+          sessionStorage.setItem('isAdmin', 'true')
           
           successMessage.value = '管理员登录成功'
           
@@ -174,9 +181,9 @@ const submit = async () => {
           setTimeout(() => {
             router.push('/admin')
           }, 300)
-        } else {
-          errorMessage.value = '管理员登录失败，请检查用户名和密码'
-          console.error('管理员登录失败:', response)
+        } catch (error: any) {
+          errorMessage.value = error.message || '管理员登录失败，请检查用户名和密码'
+          console.error('管理员登录失败:', error)
         }
       } else {
         // 普通用户登录
@@ -196,11 +203,28 @@ const submit = async () => {
           // 登录成功，令牌存储在auth.ts中已完成
           successMessage.value = '登录成功'
           
+          // 确保不是管理员
+          localStorage.setItem('isAdmin', 'false')
+          sessionStorage.setItem('isAdmin', 'false')
+          
+          // 清除所有本地存储的视图状态，确保进入课程管理页面
+          localStorage.removeItem('showFunctionSelect');
+          localStorage.removeItem('showCourseInfo');
+          localStorage.removeItem('showCourseDescription');
+          localStorage.removeItem('showCourseOutline');
+          localStorage.removeItem('showTeachingLecture');
+          localStorage.removeItem('selectedCourseTitle');
+          localStorage.removeItem('selectedCourseId');
+          localStorage.removeItem('selectedModuleId');
+          
+          // 设置导航来源标记
+          sessionStorage.setItem('fromLogin', 'true');
+          
           // 显示成功信息后，主动触发登录状态更改事件
           window.dispatchEvent(new Event('login-state-changed'))
           console.log('已触发登录状态变更事件')
           
-          // 短暂延迟以显示成功消息，然后跳转
+          // 短暂延迟以显示成功消息，然后跳转到首页
           setTimeout(() => {
             router.push('/')
           }, 300)
