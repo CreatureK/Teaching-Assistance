@@ -174,38 +174,6 @@ public class LLMLectureService {
             return "响应解析失败: " + e.getMessage();
         }
     }
-//    private String callLLM(String prompt) {
-//        // 构建请求参数
-//        Map<String, Object> requestBody = new HashMap<>();
-//        requestBody.put("model", openAIConfig.getModelName());
-//        List<Map<String, Object>> messages = new ArrayList<>();
-//        Map<String, Object> systemMsg = new HashMap<>();
-//        systemMsg.put("role", "system");
-//        systemMsg.put("content", "你是一名课程讲义内容生成专家。请根据用户提供的单元信息和要求，生成结构化、详细的讲义内容。");
-//        messages.add(systemMsg);
-//        Map<String, Object> userMsg = new HashMap<>();
-//        userMsg.put("role", "user");
-//        userMsg.put("content", prompt);
-//        messages.add(userMsg);
-//        requestBody.put("messages", messages);
-//        Map<String, Object> headers = new HashMap<>();
-//        headers.put("Authorization", "Bearer " + openAIConfig.getApiKey());
-//        String jsonBody;
-//        try {
-//            jsonBody = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(requestBody);
-//        } catch (Exception e) {
-//            return "请求体序列化失败: " + e.getMessage();
-//        }
-//        String response = HttpUtil.postJson(
-//            openAIConfig.getApiUrl(),
-//            jsonBody,
-//            headers
-//        );
-//        // 直接返回JSON响应，让调用方解析
-//        return response;
-//    }
-
-
 
     private String getOrDefault(Future<String> future) {
         try {
