@@ -1,19 +1,19 @@
 <script setup lang="ts">
 // 导入路由视图组件
 import { RouterView } from 'vue-router'
-import { StagewiseToolbar } from '@stagewise/toolbar-vue'
+// import { StagewiseToolbar } from '@stagewise/toolbar-vue'
 
-const isDev = import.meta.env.DEV
-const stagewise = {
-  plugins: []
-}
+// const isDev = import.meta.env.DEV
+// const stagewise = {
+//   plugins: []
+// }
 </script>
 
 <template>
   <div class="app-container">
     <RouterView />
   </div>
-  <StagewiseToolbar v-if="isDev" :config="stagewise" />
+  <!-- <StagewiseToolbar v-if="isDev" :config="stagewise" /> -->
 </template>
 
 <style>
