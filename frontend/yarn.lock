@@ -719,14 +719,6 @@ dunder-proto@^1.0.1:
     es-errors "^1.3.0"
     gopd "^1.2.0"
 
-echart@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/echart/-/echart-0.1.3.tgz#0761a2a66267bb5f7bda39e830af91aa146d7038"
-  integrity sha512-DbTrEjHnYrSEqzRBkLhVs0T512ZZwSDW8hIE57lY2Rwui5j6sdFoO37W0tDq/Tb7Q25MaRAwiQMkMCzOX4FjWw==
-  dependencies:
-    koa "^2.2.0"
-    koa-router "^7.1.1"
-
 ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
@@ -969,13 +961,6 @@ isarray@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-0.0.1.tgz#8a18acfca9a8f4177e09abfc6038939b05d1eedf"
   integrity sha512-D2S+3GLxWH+uhrNEcoh/fnmYeP8E8/zHl644d/jdA0g2uyXvy3sb0qxotE+ne0LtccHknQzWwZEzhak7oJ0COQ==
-
-katex@^0.16.22:
-  version "0.16.22"
-  resolved "https://registry.yarnpkg.com/katex/-/katex-0.16.22.tgz#d2b3d66464b1e6d69e6463b28a86ced5a02c5ccd"
-  integrity sha512-XCHRdUw4lf3SKBaJe4EvgqIuWwkPSo9XoeO8GjQW94Bp7TWv9hNhzZjZ+OH9yf1UmLygb7DIT5GSFQiyt16zYg==
-  dependencies:
-    commander "^8.3.0"
 
 keygrip@~1.1.0:
   version "1.1.0"

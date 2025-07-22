@@ -541,4 +541,52 @@ button.more.toastui-editor-toolbar-icons {
   z-index: 3 !important;
   position: relative !important;
 }
+
+/* 自定义滚动条样式 */
+.toastui-editor .ProseMirror::-webkit-scrollbar,
+.toastui-editor-md-preview .toastui-editor-contents::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.toastui-editor .ProseMirror::-webkit-scrollbar-thumb,
+.toastui-editor-md-preview .toastui-editor-contents::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.toastui-editor .ProseMirror::-webkit-scrollbar-thumb:hover,
+.toastui-editor-md-preview .toastui-editor-contents::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.toastui-editor .ProseMirror::-webkit-scrollbar-track,
+.toastui-editor-md-preview .toastui-editor-contents::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+}
+
+/* 确保滚动区域有正确的overflow设置 */
+.toastui-editor .ProseMirror,
+.toastui-editor-md-preview .toastui-editor-contents {
+  overflow: auto !important;
+  max-height: 100% !important;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.05); /* Firefox */
+}
+
+/* 修复预览区宽度问题 */
+.toastui-editor-md-preview .toastui-editor-contents {
+  width: calc(100% + 25px) !important; /* 减去滚动条宽度 */
+  padding-right: 5px !important;
+  box-sizing: border-box !important;
+}
+
+/* 确保编辑区域有固定高度以显示滚动条 */
+.toastui-editor-md-container,
+.toastui-editor-ww-container {
+  height: calc(100%) !important;
+}
 </style>

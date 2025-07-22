@@ -602,6 +602,10 @@ input:focus {
   opacity: 1;
 }
 
+.toggle-password:focus {
+  outline: none;
+}
+
 .submit-button {
   width: 100%;
   padding: 12px;
