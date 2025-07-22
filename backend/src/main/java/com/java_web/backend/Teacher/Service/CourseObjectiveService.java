@@ -49,6 +49,7 @@ public class CourseObjectiveService {
         request.setRequest(prompt);
 
         // 调用LLM服务生成内容
+
         var response = llmService.generateIntroductionAndTarget(request);
         
         // 返回分离的教学内容和教学目标

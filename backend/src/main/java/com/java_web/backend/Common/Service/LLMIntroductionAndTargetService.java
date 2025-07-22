@@ -71,12 +71,17 @@ public class LLMIntroductionAndTargetService {
                 JSONObject choice = choices.getJSONObject(0);
                 JSONObject message = choice.getJSONObject("message");
                 String content = message.getString("content");
+
+                content = cleanLLMResponse(content);
                 
                 // 解析LLM返回的JSON内容
                 JSONObject contentJson = new JSONObject(content);
                 String courseIntroduction = contentJson.getString("course_introduction");
                 String teachingTarget = contentJson.getString("teaching_target");
-                
+
+                System.out.println(courseIntroduction);
+                System.out.println(teachingTarget);
+
                 return new IntroductionAndTargetResponse(courseId, courseIntroduction, teachingTarget);
             }
         } catch (Exception e) {
@@ -137,5 +142,18 @@ public class LLMIntroductionAndTargetService {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private static String cleanLLMResponse(String response) {
+        if (response == null) return "";
+
+        response = response.trim();
+        if (response.startsWith("```")) {
+            response = response.replaceFirst("```json", ""); // 去除 ```json 或 ```
+        }
+        if (response.endsWith("```")) {
+            response = response.substring(0, response.lastIndexOf("```")).trim(); // 去尾部 ```
+        }
+        return response;
     }
 } 
