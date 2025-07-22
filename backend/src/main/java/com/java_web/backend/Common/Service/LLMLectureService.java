@@ -137,7 +137,7 @@ public class LLMLectureService {
 
         response = response.trim();
         if (response.startsWith("```")) {
-            response = response.replaceFirst("```[a-zA-Z]*\\n?", ""); // 去除 ```json 或 ```
+            response = response.replaceFirst("```json", ""); // 去除 ```json 或 ```
         }
         if (response.endsWith("```")) {
             response = response.substring(0, response.lastIndexOf("```")).trim(); // 去尾部 ```
