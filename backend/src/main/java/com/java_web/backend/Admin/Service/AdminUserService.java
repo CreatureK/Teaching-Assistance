@@ -90,4 +90,39 @@ public class AdminUserService {
     public User getUserInfo(Integer id) {
         return userMapper.selectById(id);
     }
+    
+    public ResponseEntity<?> updateUsername(Integer id, String username) {
+        User user = userMapper.selectById(id);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("用户不存在");
+        }
+        
+        user.setUsername(username);
+        user.setUpdatedAt(new Date()); // 更新修改时间
+        
+        userMapper.updateById(user);
+        return ResponseEntity.ok("用户名更新成功");
+    }
+    
+    public ResponseEntity<?> updateEmail(Integer id, String email) {
+        User user = userMapper.selectById(id);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("用户不存在");
+        }
+        
+        // 检查新邮箱是否已被其他用户使用
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("email", email)
+                  .ne("id", id); // 排除当前用户
+        
+        if (userMapper.selectOne(queryWrapper) != null) {
+            return ResponseEntity.badRequest().body("该邮箱已被其他用户注册");
+        }
+        
+        user.setEmail(email);
+        user.setUpdatedAt(new Date()); // 更新修改时间
+        
+        userMapper.updateById(user);
+        return ResponseEntity.ok("邮箱更新成功");
+    }
 }

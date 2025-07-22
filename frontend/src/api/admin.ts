@@ -28,6 +28,33 @@ export interface LoginResponse {
   user: User
 }
 
+export interface DashboardData {
+  userStats: {
+    totalUsers: number
+    teacherCount: number
+    adminCount: number
+  }
+  courseStats: {
+    totalCourses: number
+    pendingCount: number
+    approvedCount: number
+    rejectedCount: number
+  }
+}
+
+// 系统统计数据
+export const getDashboardData = async (): Promise<any> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/admin/statistics/dashboard`, {
+      headers: getAuthHeaders()
+    })
+    return response
+  } catch (error) {
+    console.error('获取统计数据失败:', error)
+    throw new Error('获取统计数据失败')
+  }
+}
+
 // 管理员API接口
 export const adminApi = {
   // 管理员登录
@@ -118,6 +145,38 @@ export const adminApi = {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error('获取用户信息失败')
+      }
+      throw new Error('网络错误')
+    }
+  },
+
+  // 更新用户名
+  updateUsername: async (id: number, username: string): Promise<string> => {
+    try {
+      const response = await axios.put(`${API_BASE_URL}/admin/user/${id}/updateName`, 
+        { username },
+        { headers: getAuthHeaders() }
+      )
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data || '更新用户名失败')
+      }
+      throw new Error('网络错误')
+    }
+  },
+
+  // 更新用户邮箱
+  updateEmail: async (id: number, email: string): Promise<string> => {
+    try {
+      const response = await axios.put(`${API_BASE_URL}/admin/user/${id}/updateEmail`, 
+        { email },
+        { headers: getAuthHeaders() }
+      )
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data || '更新邮箱失败')
       }
       throw new Error('网络错误')
     }

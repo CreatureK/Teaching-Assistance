@@ -33,6 +33,17 @@ const restoreState = () => {
   const storedCourseId = localStorage.getItem('selectedCourseId')
   const storedModuleId = localStorage.getItem('selectedModuleId')
   
+  // 检查上次页面导航来源
+  const fromLogin = sessionStorage.getItem('fromLogin') === 'true'
+  
+  // 如果是从登录页面来的，不恢复视图状态，直接展示课程管理
+  if (fromLogin) {
+    // 清除标记
+    sessionStorage.removeItem('fromLogin')
+    return
+  }
+  
+  // 否则按照正常逻辑恢复状态
   if (storedShowFunctionSelect === 'true' && storedCourseTitle) {
     showFunctionSelect.value = true
     selectedCourseTitle.value = storedCourseTitle
@@ -92,10 +103,18 @@ onMounted(() => {
 const checkLoginStatus = () => {
   const token = sessionStorage.getItem('access_token') || localStorage.getItem('access_token')
   isLoggedIn.value = !!token
+  const isAdmin = localStorage.getItem('isAdmin') === 'true'
+  
+  console.log('[Home] 检查登录状态:', { isLoggedIn: isLoggedIn.value, isAdmin })
   
   if (!isLoggedIn.value) {
     // 如果未登录，跳转到登录页
+    console.log('[Home] 未登录，跳转到登录页')
     router.push('/login')
+  } else if (isAdmin) {
+    // 如果是管理员，跳转到管理页
+    console.log('[Home] 管理员用户，跳转到管理页')
+    router.push('/admin')
   } else {
     // 显示默认用户名
     username.value = authApi.currentUser.value || '教学用户'

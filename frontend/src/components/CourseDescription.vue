@@ -43,7 +43,7 @@
         <Markdown 
           ref="introductionMdRef"
           :initial-value="courseIntroduction" 
-          height="200px" 
+          height="250px" 
           preview-style="tab"
           :editable="true" 
         />
@@ -54,7 +54,7 @@
         <Markdown 
           ref="contentMdRef"
           :initial-value="courseContent" 
-          height="200px" 
+          height="250px" 
           preview-style="tab"
           :editable="true" 
         />
@@ -202,7 +202,7 @@ const handlePromptConfirm = async (content: string) => {
     }
     
     isGenerating.value = true;
-    generatingStatus.value = '正在提交生成请求...';
+    generatingStatus.value = '正在生成课程介绍和教学目标...';
     
     // 检查localStorage中是否有userId
     const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');

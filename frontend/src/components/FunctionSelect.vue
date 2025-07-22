@@ -243,6 +243,9 @@ const getModuleIcon = (iconName: string) => {
   justify-content: center;
   margin-bottom: 40px;
   position: relative;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .back-button {
@@ -258,7 +261,7 @@ const getModuleIcon = (iconName: string) => {
   height: 40px;
   border-radius: 50%;
   position: absolute;
-  left: 0;
+  left: 10px;
   transition: background-color 0.2s;
 }
 

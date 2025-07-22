@@ -10,7 +10,7 @@
       </el-col>
       
       <!-- 搜索框 -->
-      <el-col :span="12" class="search-container">
+      <!-- <el-col :span="12" class="search-container">
         <el-input
           v-model="searchQuery"
           placeholder="请输入内容"
@@ -18,13 +18,13 @@
           :prefix-icon="Search"
           clearable
         />
-      </el-col>
+      </el-col> -->
       
       <!-- 用户信息 -->
       <el-col :span="8">
         <div class="user-actions">
           <el-avatar :size="32" :icon="User" class="user-avatar" />
-          <span class="username">用户</span>
+          <span class="username">{{ username }}</span>
           <el-divider direction="vertical" />
           <el-button text type="primary" :icon="SwitchButton" @click="handleLogout" class="logout-btn">
             <span>退出</span>
@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Search, User, SwitchButton, InfoFilled } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
@@ -46,15 +46,67 @@ import { logout } from '@/api/auth';
 
 const router = useRouter();
 const searchQuery = ref('');
+const username = ref('用户');
+
+// 解析JWT token获取用户名
+const parseJwtToken = (token: string): any => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('解析token失败:', error);
+    return { sub: '用户' };
+  }
+};
+
+// 获取并设置用户名
+const getUsernameFromToken = () => {
+  try {
+    // 优先从localStorage获取token，如果没有则从sessionStorage获取
+    const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+    
+    if (token) {
+      const decoded = parseJwtToken(token);
+      if (decoded && decoded.sub) {
+        username.value = decoded.sub;
+      }
+    }
+  } catch (error) {
+    console.error('获取用户名失败:', error);
+  }
+};
+
+// 组件挂载时获取用户名
+onMounted(() => {
+  getUsernameFromToken();
+});
 
 // 退出登录功能
 const handleLogout = () => {
   // 使用API进行登出
   const result = logout();
   
-  localStorage.removeItem('showFunctionSelect')
-  localStorage.removeItem('showCourseInfo')
-  localStorage.removeItem('selectedCourseTitle')
+  // 清除所有本地存储的状态
+  localStorage.removeItem('showFunctionSelect');
+  localStorage.removeItem('showCourseInfo');
+  localStorage.removeItem('showCourseDescription');
+  localStorage.removeItem('showCourseOutline');
+  localStorage.removeItem('showTeachingLecture');
+  localStorage.removeItem('selectedCourseTitle');
+  localStorage.removeItem('selectedCourseId');
+  localStorage.removeItem('selectedModuleId');
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('isAdmin');
+  
+  sessionStorage.removeItem('access_token');
+  sessionStorage.removeItem('isAdmin');
   
   // 显示退出成功提示
   if (result.success) {
