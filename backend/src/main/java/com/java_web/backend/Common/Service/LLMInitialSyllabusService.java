@@ -149,6 +149,7 @@ public class LLMInitialSyllabusService {
                        "课程的中文名是" + courseTitle + "，请给出它的英文名。并且，你的返回值只允许生成json格式的数据，绝对不能是markdown!!!";
 
         String response = callLLM(prompt);
+        response = cleanLLMResponse(response);
         return response.trim();
     }
 
@@ -165,6 +166,7 @@ public class LLMInitialSyllabusService {
                        "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>。并且，你的返回值只允许生成json格式的数据，绝对不能是markdown!!!";
 
         String response = callLLM(prompt);
+        response = cleanLLMResponse(response);
         try {
             return objectMapper.readValue(response, Map.class);
         } catch (Exception e) {
@@ -186,6 +188,7 @@ public class LLMInitialSyllabusService {
                        "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>。并且，你的返回值只允许生成json格式的数据，绝对不能是markdown!!!";
 
         String response = callLLM(prompt);
+        response = cleanLLMResponse(response);
         try {
             return objectMapper.readValue(response, Map.class);
         } catch (Exception e) {
@@ -206,6 +209,7 @@ public class LLMInitialSyllabusService {
                        "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>。并且，你的返回值只允许生成json格式的数据，绝对不能是markdown!!!";
 
         String response = callLLM(prompt);
+        response = cleanLLMResponse(response);
         try {
             return objectMapper.readValue(response, Map.class);
         } catch (Exception e) {
@@ -227,6 +231,7 @@ public class LLMInitialSyllabusService {
                        "后续是用户的额外需求，但是首先，你需要判断用户的需求和本部分生成是否相关，再决定是否执行。在制作的过程中，用户的制作要求是:<request>" + request + "</request>。并且，你的返回值只允许生成json格式的数据，绝对不能是markdown!!!";
 
         String response = callLLM(prompt);
+        response = cleanLLMResponse(response);
         try {
             return objectMapper.readValue(response, Map.class);
         } catch (Exception e) {
@@ -294,5 +299,18 @@ public class LLMInitialSyllabusService {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    private static String cleanLLMResponse(String response) {
+        if (response == null) return "";
+
+        response = response.trim();
+        if (response.startsWith("```")) {
+            response = response.replaceFirst("```json", ""); // 去除 ```json 或 ```
+        }
+        if (response.endsWith("```")) {
+            response = response.substring(0, response.lastIndexOf("```")).trim(); // 去尾部 ```
+        }
+        return response;
     }
 } 
