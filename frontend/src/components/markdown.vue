@@ -258,6 +258,10 @@ onMounted(() => {
             emit('update:content', content);
             emit('change', content);
           }
+        },
+        load: () => {
+          // 编辑器内容加载完成后滚动到顶部
+          setTimeout(scrollToTop, 100);
         }
       },
       // 自定义渲染器钩子，处理渲染后的内容
@@ -269,6 +273,9 @@ onMounted(() => {
         }
       }
     });
+
+    // 使用延时确保内容渲染后再滚动到顶部
+    setTimeout(scrollToTop, 200);
 
     // 为编辑器的预览区域添加MathJax渲染
     // 在编辑器初始化后添加监听
@@ -308,6 +315,46 @@ const getMarkdown = () => {
 const setMarkdown = (content: string) => {
   if (editor) {
     editor.setMarkdown(content);
+    // 设置内容后滚动到顶部，使用延时确保内容渲染完成
+    setTimeout(scrollToTop, 100);
+  }
+};
+
+// 滚动编辑器到顶部
+const scrollToTop = () => {
+  if (editor) {
+    try {
+      // 尝试获取所有可能的编辑器内容区域
+      const mdEditor = editorEl.value?.querySelector('.toastui-editor-md-container .ProseMirror');
+      if (mdEditor) {
+        mdEditor.scrollTop = 0;
+      }
+      
+      // 处理预览区域
+      const previewArea = editorEl.value?.querySelector('.toastui-editor-md-preview .toastui-editor-contents');
+      if (previewArea) {
+        previewArea.scrollTop = 0;
+      }
+      
+      // 直接通过editor API尝试滚动
+      const editorInst = editor.getEditorElements();
+      if (editorInst && editorInst.mdEditor) {
+        editorInst.mdEditor.scrollTop = 0;
+      }
+      
+      // 处理整个容器
+      const editorContainer = editorEl.value?.querySelector('.toastui-editor-md-container');
+      if (editorContainer) {
+        editorContainer.scrollTop = 0;
+      }
+      
+      // 使用编辑器实例的scrollTop方法(如果存在)
+      if (editor.scrollTop) {
+        editor.scrollTop(0);
+      }
+    } catch (e) {
+      console.error('Failed to scroll editor to top:', e);
+    }
   }
 };
 
@@ -447,5 +494,51 @@ button.more.toastui-editor-toolbar-icons {
   display: block;
   text-align: center;
   margin: 1em 0;
+}
+
+/* 修复弹出菜单层叠顺序问题 */
+.toastui-editor-popup {
+  z-index: 20 !important;
+  position: absolute !important;
+}
+
+.toastui-editor-dropdown-toolbar {
+  z-index: 20 !important;
+}
+
+/* 确保编辑区内容不会覆盖弹出菜单 */
+.toastui-editor-defaultUI {
+  position: relative;
+}
+
+.toastui-editor .ProseMirror {
+  z-index: 1;
+}
+
+/* 强化编辑区域和弹出菜单的层叠关系 */
+.toastui-editor-popup, 
+.toastui-editor-dropdown-toolbar, 
+.toastui-editor-dropdown-menu,
+.toastui-editor-context-menu {
+  z-index: 50 !important; 
+  position: absolute !important;
+}
+
+.toastui-editor-toolbar {
+  z-index: 30 !important;
+  position: relative !important;
+}
+
+.toastui-editor-md-container,
+.toastui-editor-ww-container {
+  z-index: 10 !important;
+  position: relative !important;
+}
+
+.toastui-editor-md-container .ProseMirror,
+.toastui-editor-ww-container .ProseMirror,
+.toastui-editor .ProseMirror {
+  z-index: 3 !important;
+  position: relative !important;
 }
 </style>

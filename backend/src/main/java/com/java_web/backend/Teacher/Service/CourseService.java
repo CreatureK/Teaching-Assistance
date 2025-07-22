@@ -91,7 +91,7 @@ public class CourseService {
         Course course = new Course();
         course.setName(courseName);
         course.setTeacherId(teacherId);
-        course.setStatus("draft"); // 设置为草稿状态
+        course.setStatus("approved"); // 设置为草稿状态
         course.setIsDeleted(0);
         course.setCreatedAt(new Date());
 
